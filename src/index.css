@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Grupo Conexão — Identidade "Conexão Editorial"
+   Paleta clara, editorial, com terracota e mocha.
+   Todas as cores em HSL. */
+
+@layer base {
+  :root {
+    --background: 32 28% 93%;          /* cream off-white #F4EFE8 */
+    --foreground: 24 12% 15%;          /* marrom escuro #2B2622 */
+
+    --card: 36 38% 97%;                /* papel #FBF8F3 */
+    --card-foreground: 24 12% 15%;
+
+    --popover: 36 38% 97%;
+    --popover-foreground: 24 12% 15%;
+
+    --primary: 22 42% 64%;             /* terracota rosado #C99B7E */
+    --primary-foreground: 36 38% 97%;
+
+    --primary-deep: 22 33% 41%;        /* mocha #8B5E48 */
+
+    --secondary: 30 25% 88%;           /* bege ar #E8DDD0 */
+    --secondary-foreground: 24 12% 15%;
+
+    --muted: 30 18% 90%;
+    --muted-foreground: 24 8% 47%;     /* taupe #8A7F77 */
+
+    --accent: 22 42% 64%;
+    --accent-foreground: 36 38% 97%;
+
+    --destructive: 8 50% 47%;          /* terracota intensa */
+    --destructive-foreground: 36 38% 97%;
+
+    --border: 30 25% 86%;              /* #E5DDD2 */
+    --input: 30 25% 90%;
+    --ring: 22 42% 64%;
+
+    --radius: 1rem;
+
+    /* Gradientes — mantém nomes antigos para retrocompatibilidade */
+    --gradient-warm: linear-gradient(180deg, hsl(32 28% 93%) 0%, hsl(36 38% 97%) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(32 28% 93%) 0%, hsl(36 38% 97%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(22 42% 64% / 0.12) 0%, hsl(22 33% 41% / 0.06) 100%);
+    --gradient-terracotta: linear-gradient(135deg, hsl(22 42% 64%) 0%, hsl(20 38% 56%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(22 42% 64%) 0%, hsl(20 38% 56%) 100%);
+    --gradient-mocha: linear-gradient(135deg, hsl(22 33% 41%) 0%, hsl(22 33% 30%) 100%);
+
+    --shadow-soft: 0 12px 40px hsl(24 12% 15% / 0.08);
+    --shadow-ring: 0 0 0 1px hsl(22 33% 41% / 0.15);
+    --shadow-glow: 0 12px 40px hsl(22 42% 64% / 0.18);
+    --shadow-card: 0 8px 24px hsl(24 12% 15% / 0.06);
+
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 36 38% 97%;
+    --sidebar-foreground: 24 12% 15%;
+    --sidebar-primary: 22 42% 64%;
+    --sidebar-primary-foreground: 36 38% 97%;
+    --sidebar-accent: 30 25% 88%;
+    --sidebar-accent-foreground: 24 12% 15%;
+    --sidebar-border: 30 25% 86%;
+    --sidebar-ring: 22 42% 64%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  h1, h2, h3 {
+    @apply font-serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .label-tag {
+    @apply font-sans uppercase text-xs;
+    letter-spacing: 0.28em;
+    color: hsl(var(--primary-deep));
+  }
+
+  .label-tag-muted {
+    @apply font-sans uppercase text-xs;
+    letter-spacing: 0.28em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-display {
+    @apply font-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+}
+
+/* Print styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:break-before-page {
+    break-before: page;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+}
