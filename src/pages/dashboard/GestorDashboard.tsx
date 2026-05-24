@@ -478,9 +478,6 @@ const GestorDashboard = () => {
                         <TableCell className="text-muted-foreground">{arquiteto.empresa}</TableCell>
                         <TableCell className="font-bold text-primary">
                           {calcularPontos(arquiteto.vendas).toLocaleString()} pts
-                          <p className="text-xs text-muted-foreground font-normal">
-                            R$ {arquiteto.vendas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
                         </TableCell>
                         <TableCell className="font-bold text-primary">
                           {arquiteto.ultimaPremiacaoConquistada.toLocaleString()} pts
