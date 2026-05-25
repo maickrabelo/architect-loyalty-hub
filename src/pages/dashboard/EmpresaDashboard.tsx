@@ -281,13 +281,14 @@ const EmpresaDashboard = () => {
         {/* Architects List */}
         <Card className="bg-card border-border mb-8">
           <CardHeader>
-            <CardTitle>Arquitetos Cadastrados</CardTitle>
+            <CardTitle>Profissionais Cadastrados</CardTitle>
             <CardDescription>Desempenho e pontuação dos profissionais</CardDescription>
           </CardHeader>
           <CardContent>
             {arquitetos.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
-                Nenhum arquiteto cadastrado ainda
+                Nenhum profissional cadastrado ainda
+
               </p>
             ) : (
               <div className="space-y-4">
