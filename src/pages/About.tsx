@@ -8,7 +8,7 @@ import { PointsBadge } from "@/components/brand/PointsBadge";
 
 const About = () => {
   const benefits = [
-    { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o arquiteto." },
+    { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o profissional." },
     { icon: Trophy, title: "Níveis e Conquistas", description: "Bronze, Prata, Ouro e Platinum — quanto mais pontos, melhores os destinos." },
     { icon: MapPin, title: "Destinos Exclusivos", description: "Viagens nacionais e internacionais para hospedagens premium selecionadas." },
     { icon: Gift, title: "Premiações Especiais", description: "Além das viagens, bônus e benefícios exclusivos para os melhores colocados." },
