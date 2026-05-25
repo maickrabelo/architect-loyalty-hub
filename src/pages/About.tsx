@@ -9,16 +9,23 @@ import { PointsBadge } from "@/components/brand/PointsBadge";
 const About = () => {
   const benefits = [
     { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o profissional." },
-    { icon: Trophy, title: "Níveis e Conquistas", description: "Bronze, Prata, Ouro e Platinum — quanto mais pontos, melhores os destinos." },
-    { icon: MapPin, title: "Destinos Exclusivos", description: "Viagens nacionais e internacionais para hospedagens premium selecionadas." },
+    { icon: Trophy, title: "Faixas de Pontuação", description: "A cada faixa de pontos, uma curadoria de destinos sugeridos — você escolhe a viagem dentro da sua pontuação." },
+    { icon: MapPin, title: "Destinos Sugeridos", description: "Curadoria de viagens nacionais e internacionais — sugestões. O profissional é dono do destino e pode escolher outras viagens dentro daquela pontuação." },
     { icon: Gift, title: "Premiações Especiais", description: "Além das viagens, bônus e benefícios exclusivos para os melhores colocados." },
   ];
 
   const levels = [
-    { name: "Bronze", points: 999, range: "0 — 999 pontos", destination: "Destinos Nacionais" },
-    { name: "Prata", points: 2999, range: "1.000 — 2.999 pontos", destination: "América Latina" },
-    { name: "Ouro", points: 5999, range: "3.000 — 5.999 pontos", destination: "América do Norte e Europa" },
-    { name: "Platinum", points: 6000, range: "6.000+ pontos", destination: "Destinos Premium Mundiais" },
+    { name: "Club Med Lake Paradise", points: 400, range: "400 pontos", destination: "Brasil" },
+    { name: "Buenos Aires", points: 550, range: "550 pontos", destination: "Argentina" },
+    { name: "Fasano Boa Vista", points: 800, range: "800 pontos", destination: "Brasil" },
+    { name: "Amazônia", points: 1200, range: "1.200 pontos", destination: "Brasil" },
+    { name: "Fernando de Noronha", points: 1600, range: "1.600 pontos", destination: "Brasil" },
+    { name: "Atacama", points: 2000, range: "2.000 pontos", destination: "Chile" },
+    { name: "Portugal", points: 2500, range: "2.500 pontos", destination: "Europa" },
+    { name: "Egito", points: 3000, range: "3.000 pontos", destination: "África" },
+    { name: "África do Sul", points: 4000, range: "4.000 pontos", destination: "África" },
+    { name: "Tailândia", points: 5000, range: "5.000 pontos", destination: "Ásia" },
+    { name: "Japão", points: 6000, range: "6.000 pontos", destination: "Ásia" },
   ];
 
   return (
@@ -74,13 +81,18 @@ const About = () => {
           </section>
 
           <section className="animate-fade-in">
-            <SectionLabel className="mb-4">Níveis</SectionLabel>
-            <h2 className="text-display text-4xl mb-8 text-foreground">Patamares de conquista</h2>
+            <SectionLabel className="mb-4">Faixas de Pontuação</SectionLabel>
+            <h2 className="text-display text-4xl mb-4 text-foreground">Destinos sugeridos por pontuação</h2>
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+              Os destinos abaixo são <strong className="text-foreground">sugestões com curadoria</strong> do
+              Grupo Conexão para cada faixa de pontos. O profissional é o dono do seu destino —
+              dentro da mesma pontuação, é possível escolher outras viagens equivalentes.
+            </p>
             <div className="space-y-5">
               {levels.map((level, index) => (
                 <Card key={index} className="bg-card border border-border rounded-[1.25rem] p-8">
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-                    <PointsBadge value={level.points} label={level.name.toUpperCase()} size="md" variant={index === 3 ? "mocha" : "terracotta"} />
+                    <PointsBadge value={level.points} label={level.name.toUpperCase()} size="md" variant={index >= levels.length - 3 ? "mocha" : "terracotta"} />
                     <div className="flex-1">
                       <SectionLabel variant="muted" className="mb-2">{level.range}</SectionLabel>
                       <h3 className="text-display text-3xl text-foreground mb-1">{level.name}</h3>
