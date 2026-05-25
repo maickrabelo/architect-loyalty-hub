@@ -295,7 +295,7 @@ const Home = () => {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="relative h-[480px] rounded-[2rem] overflow-hidden order-2 md:order-1"
             >
-              <img src={arquitetoImg} alt="Arquiteto em estúdio" className="h-full w-full object-cover" loading="lazy" />
+              <img src={arquitetoImg} alt="Profissional em estúdio" className="h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-deep/30 to-transparent" />
             </motion.div>
 
