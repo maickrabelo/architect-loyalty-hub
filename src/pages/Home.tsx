@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
@@ -10,10 +10,6 @@ import { SectionLabel } from "@/components/brand/SectionLabel";
 import { WavePattern } from "@/components/brand/WavePattern";
 import { PointsBadge } from "@/components/brand/PointsBadge";
 import heroImg from "@/assets/home-hero.jpg";
-import destino1 from "@/assets/home-destino-1.jpg";
-import destino2 from "@/assets/home-destino-2.jpg";
-import destino3 from "@/assets/home-destino-3.jpg";
-import destino4 from "@/assets/home-destino-4.jpg";
 import arquitetoImg from "@/assets/home-arquiteto.jpg";
 
 const features = [
@@ -28,7 +24,7 @@ const features = [
 const stats = [
   { value: "2026", label: "Edição" },
   { value: "+120", label: "Profissionais" },
-  { value: "32", label: "Empresas" },
+  { value: "18", label: "Empresas" },
   { value: "8", label: "Destinos" },
 ];
 
@@ -59,14 +55,6 @@ const Home = () => {
     const id = setInterval(() => setSlideIdx((i) => (i + 1) % heroSlides.length), 5000);
     return () => clearInterval(id);
   }, []);
-
-  const showcaseRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: showcaseProgress } = useScroll({
-    target: showcaseRef,
-    offset: ["start end", "end start"],
-  });
-  const img1Y = useTransform(showcaseProgress, [0, 1], ["-10%", "15%"]);
-  const img2Y = useTransform(showcaseProgress, [0, 1], ["10%", "-15%"]);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -189,60 +177,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Showcase split with parallax images */}
-      <section ref={showcaseRef} className="py-28 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeUp}
-            >
-              <SectionLabel className="mb-6">Editorial · Destinos</SectionLabel>
-              <h2 className="text-display text-5xl md:text-6xl text-foreground mb-6 leading-[1]">
-                Cada conquista,<br />
-                <span className="italic text-primary-deep">um destino.</span>
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-8 max-w-md">
-                Descubra hospedagens cuidadosamente selecionadas em locais únicos.
-                De villas mediterrâneas a refúgios contemporâneos, cada viagem é
-                pensada como uma obra de design.
-              </p>
-              <Link to="/sobre">
-                <Button variant="premium" size="lg" className="group">
-                  Conhecer destinos
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-            </motion.div>
-
-            <div className="relative h-[520px]">
-              <motion.div
-                style={{ y: img1Y }}
-                className="absolute top-0 right-0 w-[70%] h-[60%] rounded-[2rem] overflow-hidden shadow-[var(--shadow-soft)]"
-              >
-                <img src={destino1} alt="Villa mediterrânea" className="h-full w-full object-cover" loading="lazy" />
-              </motion.div>
-              <motion.div
-                style={{ y: img2Y }}
-                className="absolute bottom-0 left-0 w-[65%] h-[55%] rounded-[2rem] overflow-hidden shadow-[var(--shadow-soft)] border-4 border-background"
-              >
-                <img src={destino2} alt="Suíte luxuosa minimalista" className="h-full w-full object-cover" loading="lazy" />
-              </motion.div>
-              <motion.div
-                initial={{ scale: 0, rotate: -45 }}
-                whileInView={{ scale: 1, rotate: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute top-[42%] left-[38%] z-10"
-              >
-                <PointsBadge value={1500} label="PONTOS" size="md" variant="terracotta" />
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Features */}
       <section className="py-24 relative bg-card/40">
