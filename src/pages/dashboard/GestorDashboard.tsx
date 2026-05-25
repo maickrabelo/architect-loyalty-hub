@@ -677,7 +677,7 @@ const GestorDashboard = () => {
                       <MapPin className="h-5 w-5 text-primary" />
                       Gerenciar Destinos de Premiação
                     </CardTitle>
-                    <CardDescription>Crie e edite destinos exclusivos para os arquitetos</CardDescription>
+                    <CardDescription>Crie e edite destinos exclusivos para os profissionais</CardDescription>
                   </div>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
