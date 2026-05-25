@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
@@ -10,10 +10,6 @@ import { SectionLabel } from "@/components/brand/SectionLabel";
 import { WavePattern } from "@/components/brand/WavePattern";
 import { PointsBadge } from "@/components/brand/PointsBadge";
 import heroImg from "@/assets/home-hero.jpg";
-import destino1 from "@/assets/home-destino-1.jpg";
-import destino2 from "@/assets/home-destino-2.jpg";
-import destino3 from "@/assets/home-destino-3.jpg";
-import destino4 from "@/assets/home-destino-4.jpg";
 import arquitetoImg from "@/assets/home-arquiteto.jpg";
 
 const features = [
