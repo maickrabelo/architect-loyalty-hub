@@ -53,7 +53,7 @@ export const RelatorioGestor = ({ mes, onMesChange, dataArquitetos, dataEmpresas
 
         <Card className="bg-card border-border print:shadow-none">
           <CardHeader>
-            <CardTitle>Top 5 Arquitetos do Mês</CardTitle>
+            <CardTitle>Top 5 Profissionais do Mês</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
