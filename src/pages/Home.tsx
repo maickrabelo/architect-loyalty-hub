@@ -14,8 +14,8 @@ import arquitetoImg from "@/assets/home-arquiteto.jpg";
 
 const features = [
   { icon: Award, title: "Programa de Pontos", description: "Acumule pontos a cada projeto e conquiste experiências selecionadas." },
-  { icon: Globe, title: "Destinos Editorial", description: "Hospedagens premium curadas com a precisão de um catálogo de arquitetura." },
-  { icon: TrendingUp, title: "Níveis de Progressão", description: "Evolua através de patamares e desbloqueie benefícios exclusivos." },
+  { icon: Globe, title: "Destinos Sugeridos", description: "Curadoria de hospedagens premium — sugestões; o profissional escolhe a viagem dentro da sua pontuação." },
+  { icon: TrendingUp, title: "Faixas de Pontuação", description: "Avance pelas faixas e desbloqueie novas curadorias de destinos." },
   { icon: Users, title: "Para Profissionais", description: "Acompanhe pontuação, conquistas e próximos destinos em tempo real." },
   { icon: Building2, title: "Para Empresas", description: "Reconheça profissionais e gerencie vendas com elegância." },
   { icon: Shield, title: "Gestão Completa", description: "Painel curado para gestores acompanharem todo o ecossistema." },
