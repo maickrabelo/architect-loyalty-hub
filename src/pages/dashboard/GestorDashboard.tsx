@@ -446,13 +446,14 @@ const GestorDashboard = () => {
               <CardHeader>
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <CardTitle>Todos os Arquitetos</CardTitle>
+                    <CardTitle>Todos os Profissionais</CardTitle>
                     <CardDescription>Ranking geral de pontuação</CardDescription>
                   </div>
                   <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Buscar arquiteto..."
+                      placeholder="Buscar profissional..."
+
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 bg-secondary"
