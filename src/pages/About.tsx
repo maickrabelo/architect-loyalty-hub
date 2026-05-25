@@ -33,8 +33,9 @@ const About = () => {
               Reconhecimento que<br />vira experiência.
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              O Grupo Conexão é um programa de fidelidade exclusivo que reconhece a excelência dos arquitetos
+              O Grupo Conexão é um programa de fidelidade exclusivo que reconhece a excelência dos profissionais
               através de um sistema de pontuação conectado às empresas parceiras.
+
             </p>
           </div>
 
