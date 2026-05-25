@@ -61,7 +61,7 @@ const Home = () => {
 
       {/* Hero slider — full width images, no overlay text */}
       <section className="relative w-full">
-        <div className="relative h-[60vh] md:h-[78vh] w-full overflow-hidden">
+        <div className="relative h-[32vh] sm:h-[50vh] md:h-[78vh] w-full overflow-hidden">
           <AnimatePresence mode="sync">
             <motion.img
               key={slideIdx}
@@ -95,7 +95,7 @@ const Home = () => {
         </div>
 
         {/* Text content below slider */}
-        <div className="container mx-auto px-4 pt-16 pb-20">
+        <div className="container mx-auto px-4 pt-8 md:pt-16 pb-20">
           <div className="max-w-5xl mx-auto">
             <motion.div
               initial="hidden"
@@ -174,8 +174,8 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 className="text-center md:border-r last:border-r-0 border-border"
               >
-                <div className="text-display text-5xl md:text-6xl text-primary-deep">{s.value}</div>
-                <div className="text-[0.7rem] tracking-[0.3em] uppercase text-muted-foreground mt-2">{s.label}</div>
+                <div className="text-display text-3xl sm:text-5xl md:text-6xl text-primary-deep break-words">{s.value}</div>
+                <div className="text-[0.6rem] sm:text-[0.7rem] tracking-[0.2em] sm:tracking-[0.3em] uppercase text-muted-foreground mt-2">{s.label}</div>
               </motion.div>
             ))}
           </div>
