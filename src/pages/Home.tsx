@@ -140,8 +140,9 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="max-w-2xl text-lg text-foreground/80 leading-relaxed mb-10"
             >
-              Um programa editorial que conecta empresas parceiras a arquitetos por meio de pontos,
+              Um programa editorial que conecta empresas parceiras a profissionais por meio de pontos,
               níveis e viagens curadas para destinos premium ao redor do mundo.
+
             </motion.p>
 
             <motion.div
