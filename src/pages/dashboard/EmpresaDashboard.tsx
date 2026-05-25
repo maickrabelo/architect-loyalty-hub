@@ -216,7 +216,7 @@ const EmpresaDashboard = () => {
               Lançar Venda
             </CardTitle>
             <CardDescription>
-              Registre o valor da venda do arquiteto (R$ 1.000 = 1 ponto)
+              Registre o valor da venda do profissional (R$ 1.000 = 1 ponto)
             </CardDescription>
           </CardHeader>
           <CardContent>
