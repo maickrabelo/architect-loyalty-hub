@@ -709,7 +709,7 @@ const GestorDashboard = () => {
                         <div className="space-y-2">
                           <Label>Descrição</Label>
                           <Textarea
-                            placeholder="Descreva a experiência premium que o arquiteto terá neste destino..."
+                            placeholder="Descreva a experiência premium que o profissional terá neste destino..."
                             value={formData.descricao}
                             onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                             className="bg-secondary min-h-24"
