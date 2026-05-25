@@ -15,10 +15,17 @@ const About = () => {
   ];
 
   const levels = [
-    { name: "Bronze", points: 999, range: "0 — 999 pontos", destination: "Destinos Nacionais" },
-    { name: "Prata", points: 2999, range: "1.000 — 2.999 pontos", destination: "América Latina" },
-    { name: "Ouro", points: 5999, range: "3.000 — 5.999 pontos", destination: "América do Norte e Europa" },
-    { name: "Platinum", points: 6000, range: "6.000+ pontos", destination: "Destinos Premium Mundiais" },
+    { name: "Club Med Lake Paradise", points: 400, range: "400 pontos", destination: "Brasil" },
+    { name: "Buenos Aires", points: 550, range: "550 pontos", destination: "Argentina" },
+    { name: "Fasano Boa Vista", points: 800, range: "800 pontos", destination: "Brasil" },
+    { name: "Amazônia", points: 1200, range: "1.200 pontos", destination: "Brasil" },
+    { name: "Fernando de Noronha", points: 1600, range: "1.600 pontos", destination: "Brasil" },
+    { name: "Atacama", points: 2000, range: "2.000 pontos", destination: "Chile" },
+    { name: "Portugal", points: 2500, range: "2.500 pontos", destination: "Europa" },
+    { name: "Egito", points: 3000, range: "3.000 pontos", destination: "África" },
+    { name: "África do Sul", points: 4000, range: "4.000 pontos", destination: "África" },
+    { name: "Tailândia", points: 5000, range: "5.000 pontos", destination: "Ásia" },
+    { name: "Japão", points: 6000, range: "6.000 pontos", destination: "Ásia" },
   ];
 
   return (
