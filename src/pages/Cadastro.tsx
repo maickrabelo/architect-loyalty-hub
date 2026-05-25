@@ -64,6 +64,15 @@ const Cadastro = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [imagemPreview, setImagemPreview] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tipoCadastro, setTipoCadastro] = useState<"liberal" | "escritorio">("liberal");
+  const [membros, setMembros] = useState<Array<{ nome: string; telefone: string; nascimento: string }>>([
+    { nome: "", telefone: "", nascimento: "" },
+  ]);
+
+  const addMembro = () => setMembros([...membros, { nome: "", telefone: "", nascimento: "" }]);
+  const removeMembro = (i: number) => setMembros(membros.filter((_, idx) => idx !== i));
+  const updateMembro = (i: number, field: "nome" | "telefone" | "nascimento", value: string) =>
+    setMembros(membros.map((m, idx) => (idx === i ? { ...m, [field]: value } : m)));
   
   // Form state
   const [formData, setFormData] = useState({
