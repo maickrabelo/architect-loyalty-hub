@@ -173,6 +173,29 @@ const Cadastro = () => {
       return;
     }
 
+    // Validar membros se for escritório
+    let membrosTexto = "";
+    if (tipoCadastro === "escritorio") {
+      const membrosValidos = membros.filter((m) => m.nome.trim() || m.telefone.trim() || m.nascimento.trim());
+      if (membrosValidos.length === 0) {
+        toast.error("Adicione ao menos um sócio ou membro do escritório.");
+        return;
+      }
+      for (const m of membrosValidos) {
+        if (!m.nome.trim() || !m.telefone.trim() || !m.nascimento.trim()) {
+          toast.error("Preencha nome, telefone e data de nascimento de todos os sócios/membros.");
+          return;
+        }
+      }
+      membrosTexto =
+        "\n\n[Tipo: Escritório]\nSócios/Membros:\n" +
+        membrosValidos
+          .map((m, i) => `${i + 1}. ${m.nome} — Tel: ${m.telefone} — Nasc: ${m.nascimento}`)
+          .join("\n");
+    } else {
+      membrosTexto = "\n\n[Tipo: Profissional Liberal]";
+    }
+
     // Validate form data using zod schema
     try {
       registerSchema.parse({
