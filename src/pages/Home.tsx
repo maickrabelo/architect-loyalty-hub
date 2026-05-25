@@ -150,6 +150,11 @@ const Home = () => {
                   Sobre o Programa
                 </Button>
               </Link>
+              <Link to="/cadastro">
+                <Button size="lg" variant="outline" className="text-base px-10 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
+                  Quero me Cadastrar
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </div>
