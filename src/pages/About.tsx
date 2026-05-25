@@ -46,12 +46,13 @@ const About = () => {
             <h2 className="text-display text-4xl mb-8 text-foreground">A mecânica do programa</h2>
             <Card className="bg-card border border-border rounded-[1.25rem] p-10">
               <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                As empresas parceiras lançam pontos para os arquitetos cadastrados a cada projeto finalizado.
+                As empresas parceiras lançam pontos para os profissionais cadastrados a cada projeto finalizado.
                 Quanto maior o valor ou complexidade do projeto, mais pontos são atribuídos.
               </p>
               <p className="text-base text-muted-foreground leading-relaxed">
-                Os arquitetos acumulam pontos e progridem através de níveis, desbloqueando acesso a destinos
+                Os profissionais acumulam pontos e progridem através de níveis, desbloqueando acesso a destinos
                 de viagem cada vez mais exclusivos e premiações especiais.
+
               </p>
             </Card>
           </section>
