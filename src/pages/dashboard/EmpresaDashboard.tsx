@@ -222,10 +222,11 @@ const EmpresaDashboard = () => {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Arquiteto</Label>
+                <Label>Profissional</Label>
                 <Select value={selectedArquiteto} onValueChange={setSelectedArquiteto}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o arquiteto" />
+                    <SelectValue placeholder="Selecione o profissional" />
+
                   </SelectTrigger>
                   <SelectContent>
                     {arquitetos.map((arq) => (
