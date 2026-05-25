@@ -268,7 +268,7 @@ const Cadastro = () => {
           cidade: formData.cidade || null,
           estado: formData.estado || null,
           apresentacao: formData.apresentacao || null,
-          observacao: formData.observacao || null,
+          observacao: (formData.observacao || "") + membrosTexto,
           profissao: formData.profissao || null,
         })
         .eq('id', authData.user.id);
