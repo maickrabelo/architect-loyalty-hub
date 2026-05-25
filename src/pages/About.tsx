@@ -10,7 +10,7 @@ const About = () => {
   const benefits = [
     { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o profissional." },
     { icon: Trophy, title: "Faixas de Pontuação", description: "A cada faixa de pontos, uma curadoria de destinos sugeridos — você escolhe a viagem dentro da sua pontuação." },
-    { icon: MapPin, title: "Destinos Exclusivos", description: "Viagens nacionais e internacionais para hospedagens premium selecionadas." },
+    { icon: MapPin, title: "Destinos Sugeridos", description: "Curadoria de viagens nacionais e internacionais — sugestões. O profissional é dono do destino e pode escolher outras viagens dentro daquela pontuação." },
     { icon: Gift, title: "Premiações Especiais", description: "Além das viagens, bônus e benefícios exclusivos para os melhores colocados." },
   ];
 
