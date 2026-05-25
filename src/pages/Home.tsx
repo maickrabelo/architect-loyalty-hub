@@ -56,14 +56,6 @@ const Home = () => {
     return () => clearInterval(id);
   }, []);
 
-  const showcaseRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: showcaseProgress } = useScroll({
-    target: showcaseRef,
-    offset: ["start end", "end start"],
-  });
-  const img1Y = useTransform(showcaseProgress, [0, 1], ["-10%", "15%"]);
-  const img2Y = useTransform(showcaseProgress, [0, 1], ["10%", "-15%"]);
-
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
