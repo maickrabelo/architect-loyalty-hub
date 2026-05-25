@@ -25,7 +25,6 @@ const stats = [
   { value: "2026", label: "Edição" },
   { value: "+120", label: "Profissionais" },
   { value: "18", label: "Empresas" },
-  { value: "8", label: "Destinos" },
 ];
 
 const fadeUp = {
@@ -160,7 +159,7 @@ const Home = () => {
       {/* Stats marquee */}
       <section className="border-y border-border bg-card/50">
         <div className="container mx-auto px-4 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-3 gap-6">
             {stats.map((s, i) => (
               <motion.div
                 key={s.label}
