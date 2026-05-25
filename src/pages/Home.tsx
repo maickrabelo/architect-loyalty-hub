@@ -78,8 +78,9 @@ const Home = () => {
           <AnimatePresence mode="sync">
             <motion.img
               key={slideIdx}
-              src={heroSlides[slideIdx]}
-              alt="Destino editorial"
+              src={heroSlides[slideIdx].src}
+              alt={heroSlides[slideIdx].alt}
+
               initial={{ opacity: 0, scale: 1.08 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
