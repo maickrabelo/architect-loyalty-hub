@@ -81,13 +81,18 @@ const About = () => {
           </section>
 
           <section className="animate-fade-in">
-            <SectionLabel className="mb-4">Níveis</SectionLabel>
-            <h2 className="text-display text-4xl mb-8 text-foreground">Patamares de conquista</h2>
+            <SectionLabel className="mb-4">Faixas de Pontuação</SectionLabel>
+            <h2 className="text-display text-4xl mb-4 text-foreground">Destinos sugeridos por pontuação</h2>
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+              Os destinos abaixo são <strong className="text-foreground">sugestões com curadoria</strong> do
+              Grupo Conexão para cada faixa de pontos. O profissional é o dono do seu destino —
+              dentro da mesma pontuação, é possível escolher outras viagens equivalentes.
+            </p>
             <div className="space-y-5">
               {levels.map((level, index) => (
                 <Card key={index} className="bg-card border border-border rounded-[1.25rem] p-8">
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-                    <PointsBadge value={level.points} label={level.name.toUpperCase()} size="md" variant={index === 3 ? "mocha" : "terracotta"} />
+                    <PointsBadge value={level.points} label={level.name.toUpperCase()} size="md" variant={index >= levels.length - 3 ? "mocha" : "terracotta"} />
                     <div className="flex-1">
                       <SectionLabel variant="muted" className="mb-2">{level.range}</SectionLabel>
                       <h3 className="text-display text-3xl text-foreground mb-1">{level.name}</h3>
