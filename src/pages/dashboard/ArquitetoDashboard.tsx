@@ -211,7 +211,7 @@ const ArquitetoDashboard = () => {
                 Destinos Premium
               </h2>
               <p className="text-muted-foreground mt-1">
-                Conquiste pontos e realize a viagem dos seus sonhos
+                Sugestões com curadoria — você é dono do seu destino e pode escolher outras viagens dentro da mesma pontuação.
               </p>
             </div>
           </div>
