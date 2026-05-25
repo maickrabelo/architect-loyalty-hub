@@ -28,7 +28,7 @@ const features = [
 const stats = [
   { value: "2026", label: "Edição" },
   { value: "+120", label: "Profissionais" },
-  { value: "32", label: "Empresas" },
+  { value: "18", label: "Empresas" },
   { value: "8", label: "Destinos" },
 ];
 
