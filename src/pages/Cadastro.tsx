@@ -401,6 +401,96 @@ const Cadastro = () => {
                 </div>
               </div>
 
+              {/* Tipo de Cadastro */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold border-b border-border pb-2">Tipo de Cadastro</h3>
+                <RadioGroup
+                  value={tipoCadastro}
+                  onValueChange={(v) => setTipoCadastro(v as "liberal" | "escritorio")}
+                  className="grid md:grid-cols-2 gap-4"
+                >
+                  <label
+                    htmlFor="tipo-liberal"
+                    className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
+                      tipoCadastro === "liberal" ? "border-primary bg-secondary" : "border-border"
+                    }`}
+                  >
+                    <RadioGroupItem value="liberal" id="tipo-liberal" className="mt-1" />
+                    <div>
+                      <div className="font-medium">Profissional Liberal</div>
+                      <p className="text-sm text-muted-foreground">Cadastro individual de profissional autônomo.</p>
+                    </div>
+                  </label>
+                  <label
+                    htmlFor="tipo-escritorio"
+                    className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
+                      tipoCadastro === "escritorio" ? "border-primary bg-secondary" : "border-border"
+                    }`}
+                  >
+                    <RadioGroupItem value="escritorio" id="tipo-escritorio" className="mt-1" />
+                    <div>
+                      <div className="font-medium">Escritório</div>
+                      <p className="text-sm text-muted-foreground">Cadastro de escritório com sócios e membros.</p>
+                    </div>
+                  </label>
+                </RadioGroup>
+
+                {tipoCadastro === "escritorio" && (
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base">Sócios e Membros do Escritório *</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={addMembro}>
+                        <Plus className="h-4 w-4 mr-1" /> Adicionar
+                      </Button>
+                    </div>
+                    {membros.map((m, i) => (
+                      <div key={i} className="grid md:grid-cols-[1fr_1fr_1fr_auto] gap-3 items-end p-4 rounded-lg border border-border bg-secondary/40">
+                        <div className="space-y-2">
+                          <Label htmlFor={`membro-nome-${i}`}>Nome *</Label>
+                          <Input
+                            id={`membro-nome-${i}`}
+                            value={m.nome}
+                            onChange={(e) => updateMembro(i, "nome", e.target.value)}
+                            className="bg-secondary"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`membro-tel-${i}`}>Telefone *</Label>
+                          <Input
+                            id={`membro-tel-${i}`}
+                            type="tel"
+                            value={m.telefone}
+                            onChange={(e) => updateMembro(i, "telefone", e.target.value)}
+                            className="bg-secondary"
+                            placeholder="(00) 00000-0000"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`membro-nasc-${i}`}>Data de Nascimento *</Label>
+                          <Input
+                            id={`membro-nasc-${i}`}
+                            type="date"
+                            value={m.nascimento}
+                            onChange={(e) => updateMembro(i, "nascimento", e.target.value)}
+                            className="bg-secondary"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeMembro(i)}
+                          disabled={membros.length === 1}
+                          aria-label="Remover membro"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Dados Pessoais */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold border-b border-border pb-2">Dados Pessoais</h3>
