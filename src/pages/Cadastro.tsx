@@ -436,7 +436,7 @@ const Cadastro = () => {
                       value={formData.profissao}
                       onChange={(e) => updateField("profissao", e.target.value)}
                       className="bg-secondary"
-                      placeholder="Ex: Arquiteto(a)"
+                      placeholder="Ex: Arquiteto(a), Designer, Decorador(a)"
                     />
                   </div>
                 </div>
