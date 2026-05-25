@@ -20,14 +20,14 @@ const features = [
   { icon: Award, title: "Programa de Pontos", description: "Acumule pontos a cada projeto e conquiste experiências selecionadas." },
   { icon: Globe, title: "Destinos Editorial", description: "Hospedagens premium curadas com a precisão de um catálogo de arquitetura." },
   { icon: TrendingUp, title: "Níveis de Progressão", description: "Evolua através de patamares e desbloqueie benefícios exclusivos." },
-  { icon: Users, title: "Para Arquitetos", description: "Acompanhe pontuação, conquistas e próximos destinos em tempo real." },
+  { icon: Users, title: "Para Profissionais", description: "Acompanhe pontuação, conquistas e próximos destinos em tempo real." },
   { icon: Building2, title: "Para Empresas", description: "Reconheça profissionais e gerencie vendas com elegância." },
   { icon: Shield, title: "Gestão Completa", description: "Painel curado para gestores acompanharem todo o ecossistema." },
 ];
 
 const stats = [
   { value: "2026", label: "Edição" },
-  { value: "+120", label: "Arquitetos" },
+  { value: "+120", label: "Profissionais" },
   { value: "32", label: "Empresas" },
   { value: "8", label: "Destinos" },
 ];
@@ -37,7 +37,20 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
-const heroSlides = [heroImg, destino3, destino4, destino1, destino2];
+const heroSlides = [
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-CLUBMED.png", alt: "Club Med" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-BUENOS.png", alt: "Buenos Aires" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-FASANO.png", alt: "Fasano" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-AMZONIA.png", alt: "Amazônia" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-FERNANDO.png", alt: "Fernando de Noronha" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-ATACAMA.png", alt: "Atacama" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-PORTUGAL.png", alt: "Portugal" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-EGITO.png", alt: "Egito" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-AFRICA.png", alt: "África" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-TAILANDIA.png", alt: "Tailândia" },
+  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-JAPAO.png", alt: "Japão" },
+];
+
 
 const Home = () => {
   const [slideIdx, setSlideIdx] = useState(0);
@@ -65,13 +78,14 @@ const Home = () => {
           <AnimatePresence mode="sync">
             <motion.img
               key={slideIdx}
-              src={heroSlides[slideIdx]}
-              alt="Destino editorial"
+              src={heroSlides[slideIdx].src}
+              alt={heroSlides[slideIdx].alt}
+
               initial={{ opacity: 0, scale: 1.08 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain bg-background"
             />
           </AnimatePresence>
 
@@ -126,8 +140,9 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="max-w-2xl text-lg text-foreground/80 leading-relaxed mb-10"
             >
-              Um programa editorial que conecta empresas parceiras a arquitetos por meio de pontos,
+              Um programa editorial que conecta empresas parceiras a profissionais por meio de pontos,
               níveis e viagens curadas para destinos premium ao redor do mundo.
+
             </motion.p>
 
             <motion.div
@@ -280,7 +295,7 @@ const Home = () => {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="relative h-[480px] rounded-[2rem] overflow-hidden order-2 md:order-1"
             >
-              <img src={arquitetoImg} alt="Arquiteto em estúdio" className="h-full w-full object-cover" loading="lazy" />
+              <img src={arquitetoImg} alt="Profissional em estúdio" className="h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-deep/30 to-transparent" />
             </motion.div>
 

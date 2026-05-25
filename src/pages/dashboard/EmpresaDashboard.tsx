@@ -181,7 +181,8 @@ const EmpresaDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Arquitetos
+                Profissionais
+
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -215,16 +216,17 @@ const EmpresaDashboard = () => {
               Lançar Venda
             </CardTitle>
             <CardDescription>
-              Registre o valor da venda do arquiteto (R$ 1.000 = 1 ponto)
+              Registre o valor da venda do profissional (R$ 1.000 = 1 ponto)
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Arquiteto</Label>
+                <Label>Profissional</Label>
                 <Select value={selectedArquiteto} onValueChange={setSelectedArquiteto}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o arquiteto" />
+                    <SelectValue placeholder="Selecione o profissional" />
+
                   </SelectTrigger>
                   <SelectContent>
                     {arquitetos.map((arq) => (
@@ -279,13 +281,14 @@ const EmpresaDashboard = () => {
         {/* Architects List */}
         <Card className="bg-card border-border mb-8">
           <CardHeader>
-            <CardTitle>Arquitetos Cadastrados</CardTitle>
+            <CardTitle>Profissionais Cadastrados</CardTitle>
             <CardDescription>Desempenho e pontuação dos profissionais</CardDescription>
           </CardHeader>
           <CardContent>
             {arquitetos.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
-                Nenhum arquiteto cadastrado ainda
+                Nenhum profissional cadastrado ainda
+
               </p>
             ) : (
               <div className="space-y-4">
@@ -320,7 +323,7 @@ const EmpresaDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
-              Investimento por Arquiteto no Período
+              Investimento por Profissional no Período
             </CardTitle>
             <CardDescription>
               Baseado na última premiação conquistada (R$ 1.000 em vendas = 1 ponto)
@@ -471,7 +474,7 @@ const EmpresaDashboard = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Data</TableHead>
-                    <TableHead>Arquiteto</TableHead>
+                    <TableHead>Profissional</TableHead>
                     <TableHead>Cliente</TableHead>
                     <TableHead className="text-right">Valor</TableHead>
                     <TableHead className="text-right">Pontos</TableHead>

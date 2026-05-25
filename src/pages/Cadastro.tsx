@@ -278,7 +278,7 @@ const Cadastro = () => {
               <Award className="h-8 w-8 text-primary-deep" strokeWidth={1.5} />
             </div>
             <SectionLabel className="mb-2">Cadastro</SectionLabel>
-            <CardTitle className="text-display text-4xl">Cadastro de Arquiteto</CardTitle>
+            <CardTitle className="text-display text-4xl">Cadastro de Profissional</CardTitle>
             <CardDescription className="text-base mt-2">
               Preencha seus dados para se cadastrar no Grupo Conexão
             </CardDescription>
@@ -436,7 +436,7 @@ const Cadastro = () => {
                       value={formData.profissao}
                       onChange={(e) => updateField("profissao", e.target.value)}
                       className="bg-secondary"
-                      placeholder="Ex: Arquiteto(a)"
+                      placeholder="Ex: Arquiteto(a), Designer, Decorador(a)"
                     />
                   </div>
                 </div>

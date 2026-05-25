@@ -8,7 +8,7 @@ import { PointsBadge } from "@/components/brand/PointsBadge";
 
 const About = () => {
   const benefits = [
-    { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o arquiteto." },
+    { icon: Target, title: "Pontuação por Projeto", description: "Cada projeto realizado com empresas parceiras gera pontos para o profissional." },
     { icon: Trophy, title: "Níveis e Conquistas", description: "Bronze, Prata, Ouro e Platinum — quanto mais pontos, melhores os destinos." },
     { icon: MapPin, title: "Destinos Exclusivos", description: "Viagens nacionais e internacionais para hospedagens premium selecionadas." },
     { icon: Gift, title: "Premiações Especiais", description: "Além das viagens, bônus e benefícios exclusivos para os melhores colocados." },
@@ -33,8 +33,9 @@ const About = () => {
               Reconhecimento que<br />vira experiência.
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              O Grupo Conexão é um programa de fidelidade exclusivo que reconhece a excelência dos arquitetos
+              O Grupo Conexão é um programa de fidelidade exclusivo que reconhece a excelência dos profissionais
               através de um sistema de pontuação conectado às empresas parceiras.
+
             </p>
           </div>
 
@@ -45,12 +46,13 @@ const About = () => {
             <h2 className="text-display text-4xl mb-8 text-foreground">A mecânica do programa</h2>
             <Card className="bg-card border border-border rounded-[1.25rem] p-10">
               <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                As empresas parceiras lançam pontos para os arquitetos cadastrados a cada projeto finalizado.
+                As empresas parceiras lançam pontos para os profissionais cadastrados a cada projeto finalizado.
                 Quanto maior o valor ou complexidade do projeto, mais pontos são atribuídos.
               </p>
               <p className="text-base text-muted-foreground leading-relaxed">
-                Os arquitetos acumulam pontos e progridem através de níveis, desbloqueando acesso a destinos
+                Os profissionais acumulam pontos e progridem através de níveis, desbloqueando acesso a destinos
                 de viagem cada vez mais exclusivos e premiações especiais.
+
               </p>
             </Card>
           </section>

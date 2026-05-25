@@ -392,7 +392,8 @@ const GestorDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Arquitetos
+                Profissionais
+
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -433,7 +434,7 @@ const GestorDashboard = () => {
         {/* Tabs */}
         <Tabs defaultValue="arquitetos" className="space-y-6">
           <TabsList className="grid w-full md:w-auto grid-cols-4 bg-card/50">
-            <TabsTrigger value="arquitetos">Arquitetos</TabsTrigger>
+            <TabsTrigger value="arquitetos">Profissionais</TabsTrigger>
             <TabsTrigger value="empresas">Empresas</TabsTrigger>
             <TabsTrigger value="destinos">Destinos</TabsTrigger>
             <TabsTrigger value="relatorios">Relatórios</TabsTrigger>
@@ -445,13 +446,14 @@ const GestorDashboard = () => {
               <CardHeader>
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <CardTitle>Todos os Arquitetos</CardTitle>
+                    <CardTitle>Todos os Profissionais</CardTitle>
                     <CardDescription>Ranking geral de pontuação</CardDescription>
                   </div>
                   <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Buscar arquiteto..."
+                      placeholder="Buscar profissional..."
+
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 bg-secondary"
@@ -675,7 +677,7 @@ const GestorDashboard = () => {
                       <MapPin className="h-5 w-5 text-primary" />
                       Gerenciar Destinos de Premiação
                     </CardTitle>
-                    <CardDescription>Crie e edite destinos exclusivos para os arquitetos</CardDescription>
+                    <CardDescription>Crie e edite destinos exclusivos para os profissionais</CardDescription>
                   </div>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
@@ -707,7 +709,7 @@ const GestorDashboard = () => {
                         <div className="space-y-2">
                           <Label>Descrição</Label>
                           <Textarea
-                            placeholder="Descreva a experiência premium que o arquiteto terá neste destino..."
+                            placeholder="Descreva a experiência premium que o profissional terá neste destino..."
                             value={formData.descricao}
                             onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                             className="bg-secondary min-h-24"
