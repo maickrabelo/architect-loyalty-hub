@@ -323,7 +323,7 @@ const EmpresaDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
-              Investimento por Arquiteto no Período
+              Investimento por Profissional no Período
             </CardTitle>
             <CardDescription>
               Baseado na última premiação conquistada (R$ 1.000 em vendas = 1 ponto)
