@@ -474,7 +474,7 @@ const EmpresaDashboard = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Data</TableHead>
-                    <TableHead>Arquiteto</TableHead>
+                    <TableHead>Profissional</TableHead>
                     <TableHead>Cliente</TableHead>
                     <TableHead className="text-right">Valor</TableHead>
                     <TableHead className="text-right">Pontos</TableHead>
