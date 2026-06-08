@@ -1,0 +1,32 @@
+{
+  "name": "Grupo Conexão",
+  "short_name": "Conexão",
+  "description": "Programa de fidelidade premium para arquitetos. Acumule pontos, conquiste destinos exclusivos e viva experiências de hospitalidade selecionadas.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5ede2",
+  "theme_color": "#3d2817",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
