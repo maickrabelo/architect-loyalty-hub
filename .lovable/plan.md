@@ -1,60 +1,44 @@
-# Plano: App Nativo com Capacitor
+# Plano: PWA instalável (Android e iOS)
 
 ## Objetivo
-Transformar o app React atual (Grupo Conexão — programa de fidelidade para arquitetos) em um app nativo instalável no iPhone e Android usando Capacitor.
+Tornar o app "Grupo Conexão" instalável na tela inicial de celulares Android e iPhone, sem precisar de Capacitor, Android Studio ou Xcode. O usuário acessa o site publicado pelo navegador e usa "Adicionar à tela inicial" — o app abre em tela cheia, com ícone próprio, como um app nativo.
 
----
+> Observação: este é um PWA **somente instalável** (sem modo offline). Funciona online normalmente. Se depois você quiser que ele abra sem internet, é uma segunda etapa.
 
 ## O que será feito
 
-### 1. Instalar dependências do Capacitor
-Adicionar ao projeto:
-- `@capacitor/core` — core do Capacitor
-- `@capacitor/cli` — ferramentas de CLI
-- `@capacitor/ios` — suporte a iOS
-- `@capacitor/android` — suporte a Android
+1. **Manifesto do app** (`public/manifest.webmanifest`)
+   - `name`: Grupo Conexão
+   - `short_name`: Conexão
+   - `display`: standalone (abre em tela cheia, sem barra do navegador)
+   - `background_color` e `theme_color`: tons da marca (creme / mocha)
+   - `start_url`: `/`
+   - `icons`: 192x192 e 512x512 (normal e `maskable` para Android)
 
-### 2. Inicializar configuração Capacitor
-Criar `capacitor.config.ts` na raiz do projeto com:
-- **appID**: `app.lovable.ce0cb83984654192a01bcd54c8629744`
-- **appName**: `architect-loyalty-hub`
-- **server.url**: URL do preview do sandbox com `?forceHideBadge=true` (habilita hot-reload durante desenvolvimento)
-- **server.cleartext**: `true` (permite conexão HTTP para dev)
+2. **Ícones do app** (em `public/`)
+   - `icon-192.png`
+   - `icon-512.png`
+   - `icon-maskable-512.png` (área segura para Android adaptar a forma)
+   - `apple-touch-icon.png` (180x180, usado pelo iOS na tela inicial)
+   - Gerados a partir da identidade visual da marca (paleta creme/terracota/mocha, tipografia Cormorant).
 
-### 3. Otimizar `index.html` para mobile
-Adicionar meta tags específicas para app nativo:
-- `viewport` ajustado (já existe, manter)
-- `apple-mobile-web-app-capable` e `apple-mobile-web-app-status-bar-style`
-- `theme-color` para Android
-- Ícone e splashscreen mínimos
+3. **Tags no `index.html`**
+   - `<link rel="manifest" href="/manifest.webmanifest">`
+   - `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`
+   - Manter `theme-color`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style` e `apple-mobile-web-app-title` (já existem, só revisar valores).
 
-### 4. Configurar build para mobile
-Ajustar `vite.config.ts` se necessário para garantir que o build funcione corretamente com Capacitor.
+## O que **não** será feito (proposital)
+- Nenhum service worker, `vite-plugin-pwa` ou cache offline.
+- Nenhuma mudança em rotas, autenticação, banco ou lógica do app.
+- Sem push notifications (precisa de provedor externo; podemos fazer depois).
 
-### 5. Adicionar plataformas nativas
-Rodar `npx cap add ios` e `npx cap add android` para gerar os projetos nativos.
+## Como o usuário vai instalar depois do deploy
 
-### 6. Atualizar scripts do package.json
-Adicionar scripts úteis:
-- `build:mobile`: build otimizado para Capacitor
-- `sync:ios` / `sync:android`: sincronizar código com plataformas
-- `open:ios` / `open:android`: abrir no Xcode / Android Studio
+**Android (Chrome):** abrir o site → menu ⋮ → "Instalar app" / "Adicionar à tela inicial".
 
----
+**iPhone (Safari):** abrir o site → botão Compartilhar → "Adicionar à Tela de Início".
 
-## Como o usuário usará depois
+O app aparece com ícone próprio e abre em tela cheia, como um app nativo.
 
-1. **Exportar o projeto para GitHub** (botão no Lovable)
-2. **Git pull** no repositório local
-3. **npm install** para instalar dependências
-4. **npm run build** para gerar o build
-5. **npx cap sync** para sincronizar o código nativo
-6. **npx cap run ios** ou **npx cap run android** para rodar no emulador/dispositivo
-
-> Para iOS: precisa de um Mac com Xcode instalado.  
-> Para Android: precisa do Android Studio instalado.
-
----
-
-## Resultado esperado
-O projeto terá as pastas `ios/` e `android/` geradas pelo Capacitor, com configuração pronta para build e publicação nas lojas de apps (App Store e Google Play). O app manterá todas as funcionalidades atuais (autenticação, dashboards, pontos, etc.) rodando em um WebView nativo com acesso total aos recursos do celular.
+## Publicação
+Depois de implementar, é preciso clicar em **Publish** no Lovable para o PWA ficar disponível no domínio público — instalação por navegador só funciona no site publicado, não no preview do editor.
