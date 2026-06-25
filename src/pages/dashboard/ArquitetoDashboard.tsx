@@ -53,9 +53,9 @@ const ArquitetoDashboard = () => {
     queryKey: ["ranking-arquitetos", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_ranking_arquitetos");
+      const { data, error } = await (supabase.rpc as any)("get_ranking_arquitetos");
       if (error) throw error;
-      return (data || []).map((r: any) => ({
+      return ((data as any[]) || []).map((r: any) => ({
         arquiteto_id: r.arquiteto_id,
         total: Number(r.total) || 0,
         mes: Number(r.mes) || 0,
