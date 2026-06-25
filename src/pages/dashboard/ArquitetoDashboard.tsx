@@ -79,7 +79,8 @@ const ArquitetoDashboard = () => {
 
   /* ----------- Destinos ----------- */
   const { data: destinos = [] } = useQuery({
-    queryKey: ["premiacoes"],
+    queryKey: ["premiacoes", user?.id],
+    enabled: !!user?.id,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("premiacoes")
