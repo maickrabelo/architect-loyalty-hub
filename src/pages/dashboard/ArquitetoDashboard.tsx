@@ -53,27 +53,14 @@ const ArquitetoDashboard = () => {
     queryKey: ["ranking-arquitetos", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("vendas")
-        .select("arquiteto_id, valor_venda, data_venda");
+      const { data, error } = await supabase.rpc("get_ranking_arquitetos");
       if (error) throw error;
-
-      const now = new Date();
-      const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
-      const inicioAno = new Date(now.getFullYear(), 0, 1);
-
-      const totals = new Map<string, { total: number; mes: number; ano: number }>();
-      for (const v of data || []) {
-        const d = new Date(v.data_venda);
-        const e = totals.get(v.arquiteto_id) || { total: 0, mes: 0, ano: 0 };
-        e.total += Number(v.valor_venda) || 0;
-        if (d >= inicioAno) e.ano += Number(v.valor_venda) || 0;
-        if (d >= inicioMes) e.mes += Number(v.valor_venda) || 0;
-        totals.set(v.arquiteto_id, e);
-      }
-      return Array.from(totals.entries())
-        .map(([arquiteto_id, t]) => ({ arquiteto_id, ...t }))
-        .sort((a, b) => b.total - a.total);
+      return (data || []).map((r: any) => ({
+        arquiteto_id: r.arquiteto_id,
+        total: Number(r.total) || 0,
+        mes: Number(r.mes) || 0,
+        ano: Number(r.ano) || 0,
+      }));
     },
   });
 
