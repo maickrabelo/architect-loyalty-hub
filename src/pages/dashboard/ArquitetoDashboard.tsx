@@ -50,7 +50,8 @@ const ArquitetoDashboard = () => {
 
   /* ----------- Ranking (todos os arquitetos) ----------- */
   const { data: ranking = [] } = useQuery({
-    queryKey: ["ranking-arquitetos"],
+    queryKey: ["ranking-arquitetos", user?.id],
+    enabled: !!user?.id,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("vendas")
