@@ -250,6 +250,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      arquiteto_tem_venda_com_empresa: {
+        Args: { _empresa_id: string; _user_id: string }
+        Returns: boolean
+      }
+      get_profissionais_publicos: {
+        Args: never
+        Returns: {
+          cidade: string
+          estado: string
+          id: string
+          imagem_profissional: string
+          nome: string
+          nome_divulgacao: string
+          profissao: string
+        }[]
+      }
       get_ranking_arquitetos: {
         Args: never
         Returns: {
@@ -265,6 +281,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_empresa_owner: {
+        Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
       }
     }
