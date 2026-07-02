@@ -209,6 +209,9 @@ const EmpresaDashboard = () => {
           </Card>
         </div>
 
+        {/* Gráficos */}
+        <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
+
         {/* Launch Sales */}
         <Card className="mb-8 bg-gradient-premium border-primary/20">
           <CardHeader>
