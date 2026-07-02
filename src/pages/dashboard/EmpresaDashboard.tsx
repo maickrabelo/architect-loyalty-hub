@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEmpresaData } from "@/hooks/useEmpresaData";
+import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -207,6 +208,9 @@ const EmpresaDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Gráficos */}
+        <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
 
         {/* Launch Sales */}
         <Card className="mb-8 bg-gradient-premium border-primary/20">
