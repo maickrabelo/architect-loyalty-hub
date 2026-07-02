@@ -250,6 +250,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_ranking_arquitetos: {
+        Args: never
+        Returns: {
+          ano: number
+          arquiteto_id: string
+          mes: number
+          nome: string
+          total: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
