@@ -2,6 +2,16 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
+type ProfissionalPublico = {
+  id: string;
+  nome: string | null;
+  nome_divulgacao: string | null;
+  profissao: string | null;
+  cidade: string | null;
+  estado: string | null;
+  imagem_profissional: string | null;
+};
+
 export const useEmpresaData = () => {
   const { user } = useAuth();
 
@@ -14,7 +24,7 @@ export const useEmpresaData = () => {
         .from('empresas')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -25,26 +35,13 @@ export const useEmpresaData = () => {
   const { data: arquitetos = [], isLoading: isLoadingArquitetos } = useQuery({
     queryKey: ['arquitetos'],
     queryFn: async () => {
-      // Primeiro buscar IDs de usuários com role 'arquiteto'
-      const { data: rolesData, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id')
-        .eq('role', 'arquiteto');
-      
-      if (rolesError) throw rolesError;
-      if (!rolesData || rolesData.length === 0) return [];
-
-      const arquitetosIds = rolesData.map(r => r.user_id);
-
-      // Buscar perfis dos arquitetos
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .in('id', arquitetosIds);
+      const { data, error } = await (supabase as any)
+        .rpc('get_profissionais_publicos');
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as ProfissionalPublico[];
     },
+    enabled: !!user,
   });
 
   const { data: vendas = [], isLoading: isLoadingVendas } = useQuery({
@@ -54,10 +51,7 @@ export const useEmpresaData = () => {
       
       const { data, error } = await supabase
         .from('vendas')
-        .select(`
-          *,
-          profiles!vendas_arquiteto_id_fkey(nome)
-        `)
+        .select('*')
         .eq('empresa_id', empresa.id)
         .order('data_venda', { ascending: false });
       
@@ -85,6 +79,7 @@ export const useEmpresaData = () => {
     
     return {
       ...arq,
+      nome: arq.nome_divulgacao || arq.nome || 'Profissional sem nome',
       vendasTotal,
       ultimoCliente: ultimaVenda?.observacao || 'Sem vendas',
       ultimaPremiacaoConquistada: Math.floor(vendasTotal / 1000) >= 1000 ? 1000 : 
