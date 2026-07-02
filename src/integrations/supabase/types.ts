@@ -237,6 +237,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vendas_arquiteto_id_fkey"
+            columns: ["arquiteto_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_publicos"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "vendas_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
@@ -247,7 +254,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profissionais_publicos: {
+        Row: {
+          cidade: string | null
+          estado: string | null
+          id: string | null
+          imagem_profissional: string | null
+          nome: string | null
+          nome_divulgacao: string | null
+          profissao: string | null
+        }
+        Insert: {
+          cidade?: string | null
+          estado?: string | null
+          id?: string | null
+          imagem_profissional?: string | null
+          nome?: string | null
+          nome_divulgacao?: string | null
+          profissao?: string | null
+        }
+        Update: {
+          cidade?: string | null
+          estado?: string | null
+          id?: string | null
+          imagem_profissional?: string | null
+          nome?: string | null
+          nome_divulgacao?: string | null
+          profissao?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       arquiteto_tem_venda_com_empresa: {
