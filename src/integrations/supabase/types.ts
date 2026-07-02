@@ -237,13 +237,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "vendas_arquiteto_id_fkey"
-            columns: ["arquiteto_id"]
-            isOneToOne: false
-            referencedRelation: "profissionais_publicos"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "vendas_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
@@ -254,41 +247,24 @@ export type Database = {
       }
     }
     Views: {
-      profissionais_publicos: {
-        Row: {
-          cidade: string | null
-          estado: string | null
-          id: string | null
-          imagem_profissional: string | null
-          nome: string | null
-          nome_divulgacao: string | null
-          profissao: string | null
-        }
-        Insert: {
-          cidade?: string | null
-          estado?: string | null
-          id?: string | null
-          imagem_profissional?: string | null
-          nome?: string | null
-          nome_divulgacao?: string | null
-          profissao?: string | null
-        }
-        Update: {
-          cidade?: string | null
-          estado?: string | null
-          id?: string | null
-          imagem_profissional?: string | null
-          nome?: string | null
-          nome_divulgacao?: string | null
-          profissao?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       arquiteto_tem_venda_com_empresa: {
         Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
+      }
+      get_profissionais_publicos: {
+        Args: never
+        Returns: {
+          cidade: string
+          estado: string
+          id: string
+          imagem_profissional: string
+          nome: string
+          nome_divulgacao: string
+          profissao: string
+        }[]
       }
       get_ranking_arquitetos: {
         Args: never
