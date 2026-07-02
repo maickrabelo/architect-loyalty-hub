@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEmpresaData } from "@/hooks/useEmpresaData";
+import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
