@@ -65,16 +65,24 @@ serve(async (req) => {
       return created.user.id;
     }
 
-    // 1) Empresas
-    for (const e of empresasMap) {
+    // Concurrency runner
+    async function runPool<T>(items: T[], limit: number, fn: (t: T) => Promise<void>) {
+      let i = 0;
+      const workers = Array.from({ length: limit }, async () => {
+        while (i < items.length) {
+          const idx = i++;
+          try { await fn(items[idx]); } catch (e) { log.push(`erro: ${(e as Error).message}`); }
+        }
+      });
+      await Promise.all(workers);
+    }
+
+    // 1) Empresas — em paralelo (concorrência 8)
+    await runPool(empresasMap, 8, async (e) => {
       const { data: existing } = await admin
         .from("empresas").select("id").eq("nome", e.nome).maybeSingle();
-      if (existing?.id) {
-        empresaIds.set(e.nome, existing.id);
-        continue;
-      }
+      if (existing?.id) { empresaIds.set(e.nome, existing.id); return; }
       const userId = await getOrCreate(e.email, e.senha, e.nome);
-      // ensure empresa role
       await admin.from("user_roles").delete().eq("user_id", userId).eq("role", "arquiteto");
       await admin.from("user_roles").upsert({ user_id: userId, role: "empresa" }, { onConflict: "user_id,role" });
       const { data: emp, error: eErr } = await admin
@@ -85,28 +93,22 @@ serve(async (req) => {
       if (eErr) throw new Error(`empresa ${e.nome}: ${eErr.message}`);
       empresaIds.set(e.nome, emp.id);
       credenciais.push({ tipo: "lojista", nome: e.nome, email: e.email, senha: e.senha });
-      log.push(`empresa criada: ${e.nome}`);
-    }
+    });
 
-    // 2) Profissionais
-    for (const p of profsMap) {
+    // 2) Profissionais — em paralelo (concorrência 10)
+    await runPool(profsMap, 10, async (p) => {
       const { data: existing } = await admin
         .from("profiles").select("id").eq("email", p.email).maybeSingle();
-      if (existing?.id) {
-        profIds.set(p.nome, existing.id);
-        continue;
-      }
+      if (existing?.id) { profIds.set(p.nome, existing.id); return; }
       const userId = await getOrCreate(p.email, p.senha, p.nome);
       await admin.from("profiles").update({
         nome_divulgacao: p.nome, profissao: "Arquiteto(a)",
         cidade: "Uberaba", estado: "MG",
       }).eq("id", userId);
-      // ensure arquiteto role (trigger already inserts it)
       await admin.from("user_roles").upsert({ user_id: userId, role: "arquiteto" }, { onConflict: "user_id,role" });
       profIds.set(p.nome, userId);
       credenciais.push({ tipo: "profissional", nome: p.nome, email: p.email, senha: p.senha });
-      log.push(`profissional criado: ${p.nome}`);
-    }
+    });
 
     // 3) Vendas — apaga existentes das empresas importadas e reinsere
     const empresaIdList = [...empresaIds.values()];
