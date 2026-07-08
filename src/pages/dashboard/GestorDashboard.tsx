@@ -811,18 +811,14 @@ const GestorDashboard = () => {
             <RelatorioGestor
               mes={mesRelatorio}
               onMesChange={setMesRelatorio}
-              dataArquitetos={gestorData.arquitetos.slice(0, 5).map(arq => ({
-                nome: arq.nome.split(' ')[0],
-                pontos: calcularPontos(arq.vendas)
+              dataArquitetos={rankingArquitetos.slice(0, 5).map(arq => ({
+                nome: (arq.nome ?? '—').split(' ')[0],
+                pontos: Number(arq.pontos),
               }))}
-              dataEmpresas={empresas.slice(0, 5).map(emp => {
-                const vendasEmp = vendas.filter(v => v.empresa_id === emp.id);
-                const totalVendasEmp = vendasEmp.reduce((sum, v) => sum + Number(v.valor_venda), 0);
-                return {
-                  nome: emp.nome,
-                  pontos: calcularPontos(totalVendasEmp)
-                };
-              })}
+              dataEmpresas={rankingEmpresas.slice(0, 5).map(emp => ({
+                nome: emp.nome,
+                pontos: Number(emp.pontos),
+              }))}
             />
           </TabsContent>
         </Tabs>
