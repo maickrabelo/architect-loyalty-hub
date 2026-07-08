@@ -92,6 +92,54 @@ export type Database = {
         }
         Relationships: []
       }
+      premiacoes_snapshot: {
+        Row: {
+          arquiteto_id: string
+          categoria_premio: number
+          created_at: string
+          custo: number
+          empresa_id: string
+          id: string
+          pontos: number
+          vendas: number
+        }
+        Insert: {
+          arquiteto_id: string
+          categoria_premio?: number
+          created_at?: string
+          custo?: number
+          empresa_id: string
+          id?: string
+          pontos?: number
+          vendas?: number
+        }
+        Update: {
+          arquiteto_id?: string
+          categoria_premio?: number
+          created_at?: string
+          custo?: number
+          empresa_id?: string
+          id?: string
+          pontos?: number
+          vendas?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premiacoes_snapshot_arquiteto_id_fkey"
+            columns: ["arquiteto_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "premiacoes_snapshot_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           apresentacao: string | null
@@ -254,6 +302,7 @@ export type Database = {
         Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
       }
+      get_admin_overview: { Args: never; Returns: Json }
       get_profissionais_publicos: {
         Args: never
         Returns: {
