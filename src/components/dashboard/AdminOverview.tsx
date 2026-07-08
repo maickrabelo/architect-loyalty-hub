@@ -351,14 +351,14 @@ function EmpresaDetalheDialog({ empresaId, onClose }: { empresaId: string | null
     enabled: !!empresaId,
     queryFn: async () => {
       const { data: emp } = await supabase.from("empresas").select("*").eq("id", empresaId!).maybeSingle();
-      const { data: prems } = await supabase.from("premiacoes_snapshot").select("*").eq("empresa_id", empresaId!);
-      const arqIds = (prems || []).map((p: any) => p.arquiteto_id);
+      const { data: prems } = await (supabase as any).from("premiacoes_snapshot").select("*").eq("empresa_id", empresaId!);
+      const arqIds = ((prems as any[]) || []).map((p) => p.arquiteto_id);
       let profs: any[] = [];
       if (arqIds.length) {
         const { data: p } = await supabase.from("profiles").select("id, nome, nome_divulgacao").in("id", arqIds);
         profs = p || [];
       }
-      return { emp, prems: prems || [], profs };
+      return { emp, prems: (prems as any[]) || [], profs };
     },
   });
 
