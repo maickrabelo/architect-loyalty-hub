@@ -27,6 +27,17 @@ serve(async (req) => {
     if (!token) throw new Error("Não autorizado");
     const { data: userData } = await admin.auth.getUser(token);
     if (!userData?.user) throw new Error("Não autorizado");
+
+    // Bootstrap: se ainda não existir nenhum gestor, promove o chamador
+    const { count: gestorCount } = await admin
+      .from("user_roles").select("*", { count: "exact", head: true }).eq("role", "gestor");
+    if (!gestorCount || gestorCount === 0) {
+      await admin.from("user_roles").upsert(
+        { user_id: userData.user.id, role: "gestor" },
+        { onConflict: "user_id,role" },
+      );
+    }
+
     const { data: role } = await admin
       .from("user_roles").select("role")
       .eq("user_id", userData.user.id).eq("role", "gestor").maybeSingle();
