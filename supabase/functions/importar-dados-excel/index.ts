@@ -58,11 +58,22 @@ serve(async (req) => {
       const { data: existing } = await admin
         .from("profiles").select("id").eq("email", email).maybeSingle();
       if (existing?.id) return existing.id;
-      const { data: created, error } = await admin.auth.admin.createUser({
-        email, password: senha, email_confirm: true, user_metadata: { nome },
-      });
-      if (error || !created.user) throw new Error(`createUser ${email}: ${error?.message}`);
-      return created.user.id;
+      // Tenta encontrar user existente em auth
+      let userId: string | undefined;
+      const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      const found = list?.users?.find((u) => u.email === email);
+      if (found) {
+        userId = found.id;
+      } else {
+        const { data: created, error } = await admin.auth.admin.createUser({
+          email, password: senha, email_confirm: true, user_metadata: { nome },
+        });
+        if (error || !created.user) throw new Error(`createUser ${email}: ${error?.message}`);
+        userId = created.user.id;
+      }
+      // Garante profile
+      await admin.from("profiles").upsert({ id: userId, email, nome }, { onConflict: "id" });
+      return userId!;
     }
 
     // Concurrency runner
