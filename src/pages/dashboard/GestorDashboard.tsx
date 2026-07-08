@@ -75,20 +75,22 @@ const GestorDashboard = () => {
     },
   });
 
-  // Fetch vendas para calcular totais
-  const { data: vendas = [] } = useQuery({
-    queryKey: ['vendas-gestor'],
+  // Fetch overview agregado (fonte única de verdade para pontos/vendas)
+  const { data: overview } = useQuery({
+    queryKey: ['admin-overview'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('vendas')
-        .select('*');
-      
+      const { data, error } = await supabase.rpc('get_admin_overview');
       if (error) throw error;
-      return data || [];
+      return data as any;
     },
   });
 
-  // Fetch arquitetos
+  const rankingEmpresas: Array<{ id: string; nome: string; vendas: number; pontos: number; profissionais: number }> =
+    overview?.ranking_empresas ?? [];
+  const rankingArquitetos: Array<{ id: string; nome: string; vendas: number; pontos: number; empresas: number }> =
+    overview?.ranking_arquitetos ?? [];
+
+  // Fetch arquitetos (para contador do card superior)
   const { data: arquitetos = [] } = useQuery({
     queryKey: ['arquitetos-gestor'],
     queryFn: async () => {
@@ -117,23 +119,9 @@ const GestorDashboard = () => {
     return Math.floor(valorVendas / 1000);
   };
 
-  // Calculate stats from real data
-  const vendasTotais = vendas.reduce((sum, v) => sum + Number(v.valor_venda), 0);
-  const pontosTotais = calcularPontos(vendasTotais);
-
-  // Mock data - atualizado com valores de vendas
-  const [gestorData] = useState({
-    arquitetos: [
-      { id: 1, nome: "Ana Silva", empresa: "Construtora ABC", vendas: 4250000, ultimaPremiacaoConquistada: 3000 },
-      { id: 2, nome: "Carlos Santos", empresa: "Materiais Premium", vendas: 3890000, ultimaPremiacaoConquistada: 3000 },
-      { id: 3, nome: "Marina Costa", empresa: "Design & Co", vendas: 6100000, ultimaPremiacaoConquistada: 6000 },
-      { id: 4, nome: "Pedro Oliveira", empresa: "Edificar Plus", vendas: 2150000, ultimaPremiacaoConquistada: 2000 },
-      { id: 5, nome: "Julia Ferreira", empresa: "Materiais Premium", vendas: 5420000, ultimaPremiacaoConquistada: 5000 },
-      { id: 6, nome: "Roberto Lima", empresa: "Construtora XYZ", vendas: 1890000, ultimaPremiacaoConquistada: 1000 },
-      { id: 7, nome: "Beatriz Alves", empresa: "Design & Co", vendas: 780000, ultimaPremiacaoConquistada: 500 },
-      { id: 8, nome: "Fernando Dias", empresa: "Edificar Plus", vendas: 4670000, ultimaPremiacaoConquistada: 4000 },
-    ],
-  });
+  // Totais agregados vindos do RPC
+  const vendasTotais = Number(overview?.kpis?.total_vendas ?? 0);
+  const pontosTotais = Number(overview?.kpis?.total_pontos ?? 0);
 
   // Mutation para criar empresa
   const createEmpresaMutation = useMutation({
@@ -357,9 +345,8 @@ const GestorDashboard = () => {
     createEmpresaMutation.mutate(empresaFormData);
   };
 
-  const filteredArquitetos = gestorData.arquitetos.filter(arq =>
-    arq.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    arq.empresa.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredArquitetos = rankingArquitetos.filter(arq =>
+    arq.nome?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getNivelColor = (nivel: string) => {
@@ -473,22 +460,22 @@ const GestorDashboard = () => {
                     <TableRow>
                       <TableHead>Posição</TableHead>
                       <TableHead>Nome</TableHead>
-                      <TableHead>Empresa</TableHead>
+                      <TableHead>Empresas Parceiras</TableHead>
+                      <TableHead>Vendas</TableHead>
                       <TableHead>Pontos</TableHead>
-                      <TableHead>Premiação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredArquitetos.map((arquiteto, index) => (
                       <TableRow key={arquiteto.id}>
                         <TableCell className="font-medium">#{index + 1}</TableCell>
-                        <TableCell className="font-semibold">{arquiteto.nome}</TableCell>
-                        <TableCell className="text-muted-foreground">{arquiteto.empresa}</TableCell>
-                        <TableCell className="font-bold text-primary">
-                          {calcularPontos(arquiteto.vendas).toLocaleString()} pts
+                        <TableCell className="font-semibold">{arquiteto.nome ?? '—'}</TableCell>
+                        <TableCell className="text-muted-foreground">{arquiteto.empresas}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          R$ {Number(arquiteto.vendas).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </TableCell>
                         <TableCell className="font-bold text-primary">
-                          {arquiteto.ultimaPremiacaoConquistada.toLocaleString()} pts
+                          {Number(arquiteto.pontos).toLocaleString()} pts
                         </TableCell>
                       </TableRow>
                     ))}
@@ -637,8 +624,8 @@ const GestorDashboard = () => {
                 ) : (
                   <div className="space-y-4">
                     {empresas.map((empresa) => {
-                      const vendasEmpresa = vendas.filter(v => v.empresa_id === empresa.id);
-                      const totalVendas = vendasEmpresa.reduce((sum, v) => sum + Number(v.valor_venda), 0);
+                      const rank = rankingEmpresas.find(r => r.id === empresa.id);
+                      const totalVendas = Number(rank?.vendas ?? 0);
                       
                       return (
                         <div 
@@ -824,18 +811,14 @@ const GestorDashboard = () => {
             <RelatorioGestor
               mes={mesRelatorio}
               onMesChange={setMesRelatorio}
-              dataArquitetos={gestorData.arquitetos.slice(0, 5).map(arq => ({
-                nome: arq.nome.split(' ')[0],
-                pontos: calcularPontos(arq.vendas)
+              dataArquitetos={rankingArquitetos.slice(0, 5).map(arq => ({
+                nome: (arq.nome ?? '—').split(' ')[0],
+                pontos: Number(arq.pontos),
               }))}
-              dataEmpresas={empresas.slice(0, 5).map(emp => {
-                const vendasEmp = vendas.filter(v => v.empresa_id === emp.id);
-                const totalVendasEmp = vendasEmp.reduce((sum, v) => sum + Number(v.valor_venda), 0);
-                return {
-                  nome: emp.nome,
-                  pontos: calcularPontos(totalVendasEmp)
-                };
-              })}
+              dataEmpresas={rankingEmpresas.slice(0, 5).map(emp => ({
+                nome: emp.nome,
+                pontos: Number(emp.pontos),
+              }))}
             />
           </TabsContent>
         </Tabs>
