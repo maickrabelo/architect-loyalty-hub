@@ -53,16 +53,30 @@ serve(async (req) => {
     const empresaIds = new Map<string, string>(); // nome -> empresas.id
     const profIds = new Map<string, string>(); // nome -> profiles.id
 
-    // Helper: get or create user
+    // Pré-carrega users existentes (cache email->id)
+    const authIndex = new Map<string, string>();
+    for (let page = 1; page <= 20; page++) {
+      const { data: pg } = await admin.auth.admin.listUsers({ page, perPage: 200 });
+      const users = pg?.users ?? [];
+      for (const u of users) if (u.email) authIndex.set(u.email.toLowerCase(), u.id);
+      if (users.length < 200) break;
+    }
+
+    // Helper: get or create user (usa cache)
     async function getOrCreate(email: string, senha: string, nome: string): Promise<string> {
-      const { data: existing } = await admin
-        .from("profiles").select("id").eq("email", email).maybeSingle();
-      if (existing?.id) return existing.id;
-      const { data: created, error } = await admin.auth.admin.createUser({
-        email, password: senha, email_confirm: true, user_metadata: { nome },
-      });
-      if (error || !created.user) throw new Error(`createUser ${email}: ${error?.message}`);
-      return created.user.id;
+      const key = email.toLowerCase();
+      let userId = authIndex.get(key);
+      if (!userId) {
+        const { data: created, error } = await admin.auth.admin.createUser({
+          email, password: senha, email_confirm: true, user_metadata: { nome },
+        });
+        if (error || !created.user) throw new Error(`createUser ${email}: ${error?.message}`);
+        userId = created.user.id;
+        authIndex.set(key, userId);
+      }
+      // Garante profile (trigger pode não existir)
+      await admin.from("profiles").upsert({ id: userId, email, nome }, { onConflict: "id" });
+      return userId;
     }
 
     // Concurrency runner
