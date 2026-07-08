@@ -345,9 +345,8 @@ const GestorDashboard = () => {
     createEmpresaMutation.mutate(empresaFormData);
   };
 
-  const filteredArquitetos = gestorData.arquitetos.filter(arq =>
-    arq.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    arq.empresa.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredArquitetos = rankingArquitetos.filter(arq =>
+    arq.nome?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getNivelColor = (nivel: string) => {
