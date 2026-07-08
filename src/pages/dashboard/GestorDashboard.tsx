@@ -433,13 +433,18 @@ const GestorDashboard = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="arquitetos" className="space-y-6">
-          <TabsList className="grid w-full md:w-auto grid-cols-4 bg-card/50">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full md:w-auto grid-cols-5 bg-card/50">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="arquitetos">Profissionais</TabsTrigger>
             <TabsTrigger value="empresas">Empresas</TabsTrigger>
             <TabsTrigger value="destinos">Destinos</TabsTrigger>
             <TabsTrigger value="relatorios">Relatórios</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="overview">
+            <AdminOverview />
+          </TabsContent>
 
           {/* Architects Tab */}
           <TabsContent value="arquitetos">
