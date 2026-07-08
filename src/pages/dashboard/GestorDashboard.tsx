@@ -624,8 +624,8 @@ const GestorDashboard = () => {
                 ) : (
                   <div className="space-y-4">
                     {empresas.map((empresa) => {
-                      const vendasEmpresa = vendas.filter(v => v.empresa_id === empresa.id);
-                      const totalVendas = vendasEmpresa.reduce((sum, v) => sum + Number(v.valor_venda), 0);
+                      const rank = rankingEmpresas.find(r => r.id === empresa.id);
+                      const totalVendas = Number(rank?.vendas ?? 0);
                       
                       return (
                         <div 
