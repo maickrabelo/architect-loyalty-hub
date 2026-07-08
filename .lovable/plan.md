@@ -1,44 +1,80 @@
-# Plano: PWA instalável (Android e iOS)
 
 ## Objetivo
-Tornar o app "Grupo Conexão" instalável na tela inicial de celulares Android e iPhone, sem precisar de Capacitor, Android Studio ou Xcode. O usuário acessa o site publicado pelo navegador e usa "Adicionar à tela inicial" — o app abre em tela cheia, com ícone próprio, como um app nativo.
+Importar todos os dados do arquivo `RelatorioGeral_20240101_20260706.xlsx` para o sistema, criando lojistas com login, profissionais e vendas fidedignas, e um dashboard administrativo (gestor) rico em gráficos, tabelas e filtros.
 
-> Observação: este é um PWA **somente instalável** (sem modo offline). Funciona online normalmente. Se depois você quiser que ele abra sem internet, é uma segunda etapa.
+## O que existe no Excel (mapeamento por aba)
 
-## O que será feito
+| Aba | Uso |
+|---|---|
+| Faturamento Mensal | Vendas totais e ticket médio por mês (2024/01 → 2026/06) |
+| Taxa de Conversão | KPI: 90 pontuados / 249 cadastrados = 36,14% |
+| Profissionais Mais Atuantes | Ranking geral (91 profissionais com pontos) |
+| Distribuição Pontos | Matriz Empresa × Profissional (vendas + pontos) |
+| Profissionais x Associados | Vínculo profissional ↔ lojistas em que vendeu |
+| Relatório Geral | Ranking com Pontos Premiados / Não Premiados / % |
+| 15 abas por Empresa | Antonelli Esquadrias, Carré, Casa Decor, Design Center, ELETRO FONTE, Hidráulica Uberaba, IGUATEMI, Madeireira Pindorama, Pool House, Reginez, Rogério Marzola, Shopping Das Pedras, +3 restantes — cada uma com profissionais premiados, vendas R$, pontos, categoria prêmio, custo |
 
-1. **Manifesto do app** (`public/manifest.webmanifest`)
-   - `name`: Grupo Conexão
-   - `short_name`: Conexão
-   - `display`: standalone (abre em tela cheia, sem barra do navegador)
-   - `background_color` e `theme_color`: tons da marca (creme / mocha)
-   - `start_url`: `/`
-   - `icons`: 192x192 e 512x512 (normal e `maskable` para Android)
+## Etapa 1 — Importação dos dados (backend)
 
-2. **Ícones do app** (em `public/`)
-   - `icon-192.png`
-   - `icon-512.png`
-   - `icon-maskable-512.png` (área segura para Android adaptar a forma)
-   - `apple-touch-icon.png` (180x180, usado pelo iOS na tela inicial)
-   - Gerados a partir da identidade visual da marca (paleta creme/terracota/mocha, tipografia Cormorant).
+1. **Script de parsing** (executado no sandbox) lê o `.xlsx` e gera:
+   - lista de empresas (nome, e-mail gerado `slug@conexao.com`, senha padrão `Conexao@2025`)
+   - lista de profissionais únicos (nome → e-mail `slug@arquiteto.conexao.com`, senha `Conexao@2025`)
+   - vendas: 1 linha por par (empresa, profissional) com `valor_venda` e `data_venda` distribuída dentro do período coberto pela aba "Faturamento Mensal" (proporcional ao faturamento mensal daquele mês)
+2. **Edge function `importar-dados-excel`** (uso único, protegida por role `gestor`):
+   - Cria usuários via `auth.admin.createUser` para cada empresa e profissional
+   - Insere `empresas`, `profiles` (com `nome_divulgacao`, `profissao = "Arquiteto(a)"`, cidade Uberaba/MG padrão) e `vendas`
+   - Idempotente: verifica existência antes de inserir
+3. Botão "Importar dados do relatório" no Dashboard Gestor dispara a função.
 
-3. **Tags no `index.html`**
-   - `<link rel="manifest" href="/manifest.webmanifest">`
-   - `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`
-   - Manter `theme-color`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style` e `apple-mobile-web-app-title` (já existem, só revisar valores).
+## Etapa 2 — Dashboard Administrativo (Gestor)
 
-## O que **não** será feito (proposital)
-- Nenhum service worker, `vite-plugin-pwa` ou cache offline.
-- Nenhuma mudança em rotas, autenticação, banco ou lógica do app.
-- Sem push notifications (precisa de provedor externo; podemos fazer depois).
+Nova aba "Visão Geral do Programa" em `GestorDashboard.tsx` com:
 
-## Como o usuário vai instalar depois do deploy
+**KPIs no topo**
+- Total vendido no período
+- Total de pontos distribuídos
+- Nº de lojistas ativos
+- Nº de profissionais cadastrados / pontuados
+- Taxa de conversão (pontuados ÷ cadastrados)
+- Ticket médio
 
-**Android (Chrome):** abrir o site → menu ⋮ → "Instalar app" / "Adicionar à tela inicial".
+**Gráficos (Recharts)**
+1. **Linha** — Faturamento mensal (2024–2026) com toggle "Vendas R$" / "Pontos"
+2. **Barra empilhada** — Pontos distribuídos por mês, empilhados por empresa
+3. **Barra horizontal** — Top 15 profissionais por pontos
+4. **Pizza** — Distribuição de pontos por empresa
+5. **Barra** — Ranking de lojistas por custo de premiação
+6. **Heatmap/tabela cruzada** — Empresa × Profissional (vendas R$)
 
-**iPhone (Safari):** abrir o site → botão Compartilhar → "Adicionar à Tela de Início".
+**Tabelas interativas** (com busca, ordenação, exportar CSV)
+- Lojistas: nome, total vendas, pontos distribuídos, custo total, nº profissionais atendidos
+- Profissionais: nome, vendas, pontos acumulados, pontos premiados, pontos não premiados
+- Detalhamento por lojista: ao clicar numa linha abre modal com aba dedicada (réplica da aba do Excel)
 
-O app aparece com ícone próprio e abre em tela cheia, como um app nativo.
+**Filtros globais**
+- Período (mês inicial / mês final)
+- Lojista (multi-select)
+- Profissional (busca)
 
-## Publicação
-Depois de implementar, é preciso clicar em **Publish** no Lovable para o PWA ficar disponível no domínio público — instalação por navegador só funciona no site publicado, não no preview do editor.
+## Etapa 3 — Dashboard por Empresa
+Cada lojista importado terá login e verá, no seu dashboard existente (`EmpresaDashboard`), somente as vendas/profissionais vinculados a ele — os gráficos já implementados exibirão os números reais.
+
+## Detalhes técnicos
+
+- **Datas**: como o Excel só tem valores mensais agregados por par, cada venda importada usará `data_venda = último dia do mês` proporcional. Para o dashboard mensal isso é suficiente e mantém somas idênticas ao Excel.
+- **Pontos**: mantém a regra existente `1 pt = R$ 1.000`; os totais baterão com a coluna "Pontos Acumulados" do Excel.
+- **Categorias de prêmio / custo**: novos campos opcionais em `vendas` não são necessários — armazenados agregados numa tabela `premiacoes_snapshot` (empresa_id, profissional_id, categoria_premio, custo) alimentada pelo importador e usada nos gráficos de custo.
+- **Segurança**: nova migration com `GRANT` e RLS para `premiacoes_snapshot` (SELECT para `gestor` e para o próprio `empresa` dono).
+- **Credenciais geradas**: no fim da importação, a edge function devolve um CSV com `tipo, nome, email, senha` para download no dashboard do gestor.
+
+## Entregáveis
+- Migration + tabela `premiacoes_snapshot`
+- Edge function `importar-dados-excel`
+- Script/JSON com os dados extraídos do Excel (embutido na função)
+- Componentes: `AdminOverview.tsx`, `AdminKpis.tsx`, `AdminCharts.tsx`, `AdminTables.tsx`, `EmpresaDetalheModal.tsx`
+- Nova aba no `GestorDashboard.tsx`
+- CSV de credenciais para o gestor
+
+## Fora de escopo
+- Envio de e-mail automático aos lojistas/profissionais com as credenciais (o gestor entrega manualmente via CSV).
+- Edição manual dos dados importados via UI (feita somente pelo fluxo normal de novas vendas).
