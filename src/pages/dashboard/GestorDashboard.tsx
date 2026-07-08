@@ -75,20 +75,22 @@ const GestorDashboard = () => {
     },
   });
 
-  // Fetch vendas para calcular totais
-  const { data: vendas = [] } = useQuery({
-    queryKey: ['vendas-gestor'],
+  // Fetch overview agregado (fonte única de verdade para pontos/vendas)
+  const { data: overview } = useQuery({
+    queryKey: ['admin-overview'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('vendas')
-        .select('*');
-      
+      const { data, error } = await supabase.rpc('get_admin_overview');
       if (error) throw error;
-      return data || [];
+      return data as any;
     },
   });
 
-  // Fetch arquitetos
+  const rankingEmpresas: Array<{ id: string; nome: string; vendas: number; pontos: number; profissionais: number }> =
+    overview?.ranking_empresas ?? [];
+  const rankingArquitetos: Array<{ id: string; nome: string; vendas: number; pontos: number; empresas: number }> =
+    overview?.ranking_arquitetos ?? [];
+
+  // Fetch arquitetos (para contador do card superior)
   const { data: arquitetos = [] } = useQuery({
     queryKey: ['arquitetos-gestor'],
     queryFn: async () => {
@@ -117,23 +119,9 @@ const GestorDashboard = () => {
     return Math.floor(valorVendas / 1000);
   };
 
-  // Calculate stats from real data
-  const vendasTotais = vendas.reduce((sum, v) => sum + Number(v.valor_venda), 0);
-  const pontosTotais = calcularPontos(vendasTotais);
-
-  // Mock data - atualizado com valores de vendas
-  const [gestorData] = useState({
-    arquitetos: [
-      { id: 1, nome: "Ana Silva", empresa: "Construtora ABC", vendas: 4250000, ultimaPremiacaoConquistada: 3000 },
-      { id: 2, nome: "Carlos Santos", empresa: "Materiais Premium", vendas: 3890000, ultimaPremiacaoConquistada: 3000 },
-      { id: 3, nome: "Marina Costa", empresa: "Design & Co", vendas: 6100000, ultimaPremiacaoConquistada: 6000 },
-      { id: 4, nome: "Pedro Oliveira", empresa: "Edificar Plus", vendas: 2150000, ultimaPremiacaoConquistada: 2000 },
-      { id: 5, nome: "Julia Ferreira", empresa: "Materiais Premium", vendas: 5420000, ultimaPremiacaoConquistada: 5000 },
-      { id: 6, nome: "Roberto Lima", empresa: "Construtora XYZ", vendas: 1890000, ultimaPremiacaoConquistada: 1000 },
-      { id: 7, nome: "Beatriz Alves", empresa: "Design & Co", vendas: 780000, ultimaPremiacaoConquistada: 500 },
-      { id: 8, nome: "Fernando Dias", empresa: "Edificar Plus", vendas: 4670000, ultimaPremiacaoConquistada: 4000 },
-    ],
-  });
+  // Totais agregados vindos do RPC
+  const vendasTotais = Number(overview?.kpis?.total_vendas ?? 0);
+  const pontosTotais = Number(overview?.kpis?.total_pontos ?? 0);
 
   // Mutation para criar empresa
   const createEmpresaMutation = useMutation({
