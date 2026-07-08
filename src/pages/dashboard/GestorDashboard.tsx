@@ -460,22 +460,22 @@ const GestorDashboard = () => {
                     <TableRow>
                       <TableHead>Posição</TableHead>
                       <TableHead>Nome</TableHead>
-                      <TableHead>Empresa</TableHead>
+                      <TableHead>Empresas Parceiras</TableHead>
+                      <TableHead>Vendas</TableHead>
                       <TableHead>Pontos</TableHead>
-                      <TableHead>Premiação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredArquitetos.map((arquiteto, index) => (
                       <TableRow key={arquiteto.id}>
                         <TableCell className="font-medium">#{index + 1}</TableCell>
-                        <TableCell className="font-semibold">{arquiteto.nome}</TableCell>
-                        <TableCell className="text-muted-foreground">{arquiteto.empresa}</TableCell>
-                        <TableCell className="font-bold text-primary">
-                          {calcularPontos(arquiteto.vendas).toLocaleString()} pts
+                        <TableCell className="font-semibold">{arquiteto.nome ?? '—'}</TableCell>
+                        <TableCell className="text-muted-foreground">{arquiteto.empresas}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          R$ {Number(arquiteto.vendas).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </TableCell>
                         <TableCell className="font-bold text-primary">
-                          {arquiteto.ultimaPremiacaoConquistada.toLocaleString()} pts
+                          {Number(arquiteto.pontos).toLocaleString()} pts
                         </TableCell>
                       </TableRow>
                     ))}
