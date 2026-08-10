@@ -25,7 +25,14 @@ const FinanceiroDashboard = () => {
     if (!loading && (!user || (userRole !== "financeiro" && userRole !== "gestor"))) {
       navigate("/login");
     }
-  }, [user, userRole, loading, navigate]);
+    if (!loading && (userRole === "financeiro" || userRole === "gestor")) {
+      supabase.rpc("marcar_faturas_vencidas").then(() => {
+        queryClient.invalidateQueries({ queryKey: ["faturas"] });
+        queryClient.invalidateQueries({ queryKey: ["empresas-financeiro"] });
+      });
+    }
+  }, [user, userRole, loading, navigate, queryClient]);
+
 
   return (
     <div className="min-h-screen bg-background">
