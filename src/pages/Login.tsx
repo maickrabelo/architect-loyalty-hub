@@ -24,6 +24,7 @@ const Login = () => {
         case "arquiteto": navigate("/dashboard/arquiteto"); break;
         case "empresa": navigate("/dashboard/empresa"); break;
         case "gestor": navigate("/dashboard/gestor"); break;
+        case "financeiro": navigate("/dashboard/financeiro"); break;
       }
     }
   }, [user, userRole, loading, navigate]);
