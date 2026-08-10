@@ -50,7 +50,7 @@ Todas com GRANTs e RLS: financeiro/gestor acessam tudo; a empresa lê apenas as 
 **Dashboard da empresa**
 - Banner vermelho em destaque quando houver fatura em aberto: "Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação."
 - Bloqueio de lançamento de vendas quando travada, com aviso.
-- Nova aba **Financeiro**: faturas do mês, saldo de campanha e relatório dos meses já fechados (com total esperado do programa e inadimplência agregada anônima).
+- Nova aba **Financeiro**: faturas do mês detalhadas por item (mensalidade, pontos, cobranças extras), saldo de campanha e relatório dos meses já fechados (com total esperado do programa e inadimplência agregada anônima).
 
 ## Fora de escopo
 - Integração com gateway de pagamento/boleto (marcação de pagamento é manual).
