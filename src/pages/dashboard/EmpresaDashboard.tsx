@@ -301,7 +301,7 @@ const EmpresaDashboard = () => {
               variant="premium" 
               className="w-full md:w-auto mt-4"
               onClick={handleLancarVenda}
-              disabled={lancarVendaMutation.isPending}
+              disabled={lancarVendaMutation.isPending || (empresa as any).bloqueada}
             >
               {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
             </Button>
