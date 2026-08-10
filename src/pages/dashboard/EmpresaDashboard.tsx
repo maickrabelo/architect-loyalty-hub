@@ -22,6 +22,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useEmpresaData } from "@/hooks/useEmpresaData";
 import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
+import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -176,6 +177,19 @@ const EmpresaDashboard = () => {
           </Button>
         </div>
 
+        {/* Aviso de fatura em aberto */}
+        {(empresa as any).bloqueada && (
+          <div className="mb-8 rounded-lg border-2 border-destructive bg-destructive/10 p-4">
+            <p className="font-semibold text-destructive">
+              Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação.
+            </p>
+            {(empresa as any).motivo_bloqueio && (
+              <p className="text-sm text-destructive/80 mt-1">{(empresa as any).motivo_bloqueio}</p>
+            )}
+          </div>
+        )}
+
+
         {/* Stats Overview */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-card border-border">
@@ -212,8 +226,20 @@ const EmpresaDashboard = () => {
         {/* Gráficos */}
         <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
 
+        {/* Área financeira */}
+        <div className="mb-8">
+          <EmpresaFinanceiro empresaId={empresa.id} />
+        </div>
+
         {/* Launch Sales */}
         <Card className="mb-8 bg-gradient-premium border-primary/20">
+          {(empresa as any).bloqueada && (
+            <div className="px-6 pt-6">
+              <p className="text-sm font-medium text-destructive">
+                Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
+              </p>
+            </div>
+          )}
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5" />
@@ -275,7 +301,7 @@ const EmpresaDashboard = () => {
               variant="premium" 
               className="w-full md:w-auto mt-4"
               onClick={handleLancarVenda}
-              disabled={lancarVendaMutation.isPending}
+              disabled={lancarVendaMutation.isPending || (empresa as any).bloqueada}
             >
               {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
             </Button>

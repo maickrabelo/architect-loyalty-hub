@@ -14,9 +14,207 @@ export type Database = {
   }
   public: {
     Tables: {
+      bloqueios_empresa: {
+        Row: {
+          acao: string
+          created_at: string
+          created_by: string | null
+          empresa_id: string
+          id: string
+          justificativa: string
+          origem: string
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          created_by?: string | null
+          empresa_id: string
+          id?: string
+          justificativa: string
+          origem?: string
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          created_by?: string | null
+          empresa_id?: string
+          id?: string
+          justificativa?: string
+          origem?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bloqueios_empresa_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caixas_mensais: {
+        Row: {
+          created_at: string
+          fechado_em: string | null
+          fechado_por: string | null
+          id: string
+          mes: string
+          observacao: string | null
+          status: string
+          total_faturado: number
+          total_inadimplencia: number
+          total_pago: number
+          total_recebido: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fechado_em?: string | null
+          fechado_por?: string | null
+          id?: string
+          mes: string
+          observacao?: string | null
+          status?: string
+          total_faturado?: number
+          total_inadimplencia?: number
+          total_pago?: number
+          total_recebido?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fechado_em?: string | null
+          fechado_por?: string | null
+          id?: string
+          mes?: string
+          observacao?: string | null
+          status?: string
+          total_faturado?: number
+          total_inadimplencia?: number
+          total_pago?: number
+          total_recebido?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cobrancas_extras: {
+        Row: {
+          ativa: boolean
+          created_at: string
+          created_by: string | null
+          descricao: string
+          id: string
+          mes_inicial: string
+          meses: number
+          updated_at: string
+          valor_mensal: number
+        }
+        Insert: {
+          ativa?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao: string
+          id?: string
+          mes_inicial: string
+          meses?: number
+          updated_at?: string
+          valor_mensal?: number
+        }
+        Update: {
+          ativa?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao?: string
+          id?: string
+          mes_inicial?: string
+          meses?: number
+          updated_at?: string
+          valor_mensal?: number
+        }
+        Relationships: []
+      }
+      cobrancas_extras_empresas: {
+        Row: {
+          cobranca_id: string
+          created_at: string
+          empresa_id: string
+          id: string
+          valor_mensal: number | null
+        }
+        Insert: {
+          cobranca_id: string
+          created_at?: string
+          empresa_id: string
+          id?: string
+          valor_mensal?: number | null
+        }
+        Update: {
+          cobranca_id?: string
+          created_at?: string
+          empresa_id?: string
+          id?: string
+          valor_mensal?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cobrancas_extras_empresas_cobranca_id_fkey"
+            columns: ["cobranca_id"]
+            isOneToOne: false
+            referencedRelation: "cobrancas_extras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cobrancas_extras_empresas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      configuracoes_financeiras: {
+        Row: {
+          campanha_fim: string
+          campanha_inicio: string
+          created_at: string
+          dia_vencimento: number
+          id: string
+          percentual_mensal: number
+          salario_minimo: number
+          updated_at: string
+          valor_ponto: number
+          vencimento_saldo: string
+        }
+        Insert: {
+          campanha_fim?: string
+          campanha_inicio?: string
+          created_at?: string
+          dia_vencimento?: number
+          id?: string
+          percentual_mensal?: number
+          salario_minimo?: number
+          updated_at?: string
+          valor_ponto?: number
+          vencimento_saldo?: string
+        }
+        Update: {
+          campanha_fim?: string
+          campanha_inicio?: string
+          created_at?: string
+          dia_vencimento?: number
+          id?: string
+          percentual_mensal?: number
+          salario_minimo?: number
+          updated_at?: string
+          valor_ponto?: number
+          vencimento_saldo?: string
+        }
+        Relationships: []
+      }
       empresas: {
         Row: {
           ativa: boolean | null
+          bloqueada: boolean
           cidade: string | null
           cnpj: string | null
           created_at: string | null
@@ -24,6 +222,7 @@ export type Database = {
           endereco: string | null
           estado: string | null
           id: string
+          motivo_bloqueio: string | null
           nome: string
           telefone: string | null
           updated_at: string | null
@@ -31,6 +230,7 @@ export type Database = {
         }
         Insert: {
           ativa?: boolean | null
+          bloqueada?: boolean
           cidade?: string | null
           cnpj?: string | null
           created_at?: string | null
@@ -38,6 +238,7 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id?: string
+          motivo_bloqueio?: string | null
           nome: string
           telefone?: string | null
           updated_at?: string | null
@@ -45,6 +246,7 @@ export type Database = {
         }
         Update: {
           ativa?: boolean | null
+          bloqueada?: boolean
           cidade?: string | null
           cnpj?: string | null
           created_at?: string | null
@@ -52,12 +254,183 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id?: string
+          motivo_bloqueio?: string | null
           nome?: string
           telefone?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      fatura_itens: {
+        Row: {
+          cobranca_extra_id: string | null
+          created_at: string
+          descricao: string
+          fatura_id: string
+          id: string
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          cobranca_extra_id?: string | null
+          created_at?: string
+          descricao: string
+          fatura_id: string
+          id?: string
+          tipo: string
+          valor?: number
+        }
+        Update: {
+          cobranca_extra_id?: string | null
+          created_at?: string
+          descricao?: string
+          fatura_id?: string
+          id?: string
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fatura_itens_cobranca_extra_id_fkey"
+            columns: ["cobranca_extra_id"]
+            isOneToOne: false
+            referencedRelation: "cobrancas_extras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fatura_itens_fatura_id_fkey"
+            columns: ["fatura_id"]
+            isOneToOne: false
+            referencedRelation: "faturas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faturas: {
+        Row: {
+          created_at: string
+          custo_pontos_total: number
+          empresa_id: string
+          id: string
+          mes: string
+          observacao: string | null
+          pago_em: string | null
+          pontos: number
+          status: string
+          updated_at: string
+          valor_extras: number
+          valor_mensalidade: number
+          valor_pago: number
+          valor_pontos_mes: number
+          valor_total: number
+          vencimento: string
+        }
+        Insert: {
+          created_at?: string
+          custo_pontos_total?: number
+          empresa_id: string
+          id?: string
+          mes: string
+          observacao?: string | null
+          pago_em?: string | null
+          pontos?: number
+          status?: string
+          updated_at?: string
+          valor_extras?: number
+          valor_mensalidade?: number
+          valor_pago?: number
+          valor_pontos_mes?: number
+          valor_total?: number
+          vencimento: string
+        }
+        Update: {
+          created_at?: string
+          custo_pontos_total?: number
+          empresa_id?: string
+          id?: string
+          mes?: string
+          observacao?: string | null
+          pago_em?: string | null
+          pontos?: number
+          status?: string
+          updated_at?: string
+          valor_extras?: number
+          valor_mensalidade?: number
+          valor_pago?: number
+          valor_pontos_mes?: number
+          valor_total?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faturas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movimentacoes_financeiras: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          created_by: string | null
+          data: string
+          descricao: string
+          empresa_id: string | null
+          fatura_id: string | null
+          id: string
+          mes: string
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao: string
+          empresa_id?: string | null
+          fatura_id?: string | null
+          id?: string
+          mes: string
+          tipo: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao?: string
+          empresa_id?: string | null
+          fatura_id?: string | null
+          id?: string
+          mes?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_financeiras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_financeiras_fatura_id_fkey"
+            columns: ["fatura_id"]
+            isOneToOne: false
+            referencedRelation: "faturas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       premiacoes: {
         Row: {
@@ -224,6 +597,50 @@ export type Database = {
         }
         Relationships: []
       }
+      saldo_campanha: {
+        Row: {
+          ano: number
+          created_at: string
+          empresa_id: string
+          id: string
+          quitado: boolean
+          updated_at: string
+          valor_acumulado: number
+          valor_pago: number
+          vencimento: string | null
+        }
+        Insert: {
+          ano: number
+          created_at?: string
+          empresa_id: string
+          id?: string
+          quitado?: boolean
+          updated_at?: string
+          valor_acumulado?: number
+          valor_pago?: number
+          vencimento?: string | null
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          empresa_id?: string
+          id?: string
+          quitado?: boolean
+          updated_at?: string
+          valor_acumulado?: number
+          valor_pago?: number
+          vencimento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saldo_campanha_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -302,6 +719,20 @@ export type Database = {
         Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
       }
+      definir_bloqueio_empresa: {
+        Args: {
+          _bloquear: boolean
+          _empresa_id: string
+          _justificativa: string
+        }
+        Returns: undefined
+      }
+      empresa_esta_bloqueada: {
+        Args: { _empresa_id: string }
+        Returns: boolean
+      }
+      fechar_caixa: { Args: { _mes: string }; Returns: Json }
+      gerar_faturas_mes: { Args: { _mes: string }; Returns: Json }
       get_admin_overview: { Args: never; Returns: Json }
       get_profissionais_publicos: {
         Args: never
@@ -325,6 +756,10 @@ export type Database = {
           total: number
         }[]
       }
+      get_relatorio_financeiro_empresa: {
+        Args: { _empresa_id: string; _mes: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -336,9 +771,12 @@ export type Database = {
         Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
       }
+      is_financeiro: { Args: { _user_id: string }; Returns: boolean }
+      marcar_faturas_vencidas: { Args: never; Returns: Json }
+      reabrir_caixa: { Args: { _mes: string }; Returns: undefined }
     }
     Enums: {
-      app_role: "arquiteto" | "empresa" | "gestor"
+      app_role: "arquiteto" | "empresa" | "gestor" | "financeiro"
       sexo_type: "masculino" | "feminino" | "outro" | "prefiro_nao_informar"
     }
     CompositeTypes: {
@@ -467,7 +905,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["arquiteto", "empresa", "gestor"],
+      app_role: ["arquiteto", "empresa", "gestor", "financeiro"],
       sexo_type: ["masculino", "feminino", "outro", "prefiro_nao_informar"],
     },
   },
