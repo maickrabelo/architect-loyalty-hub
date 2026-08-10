@@ -30,7 +30,7 @@ Todas com GRANTs e RLS: financeiro/gestor acessam tudo; a empresa lê apenas as 
 
 - Novo valor `financeiro` no enum `app_role` e função `is_financeiro()`.
 - RLS de `vendas`: bloquear INSERT/UPDATE quando a empresa estiver travada.
-- Função `gerar_faturas_mes(mes)`: calcula pontos do mês por empresa e cria/atualiza as faturas + saldo de campanha.
+- Função `gerar_faturas_mes(mes)`: calcula pontos do mês por empresa, aplica as cobranças extras vigentes naquele mês e cria/atualiza as faturas (com itens) + saldo de campanha.
 - Função `fechar_caixa(mes)`: valida movimentações, consolida totais e trava o mês.
 - Job diário para marcar faturas vencidas e travar empresas automaticamente.
 - Função `get_relatorio_financeiro_empresa(empresa, mes)`: dados do mês fechado para a empresa — seus valores, total geral esperado do programa e total de inadimplência agregado (sem identificar devedores).
