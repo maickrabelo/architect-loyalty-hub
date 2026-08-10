@@ -43,6 +43,7 @@ Todas com GRANTs e RLS: financeiro/gestor acessam tudo; a empresa lê apenas as 
 - Aba **Faturas**: geração das faturas do mês, marcação de pago/parcial, filtros e exportação CSV.
 - Aba **Saldo de campanha**: quanto cada empresa deve no fechamento do ano.
 - Aba **Fluxo de caixa**: lançamento de recebimentos e pagamentos, saldo do período, botão "Fechar caixa" com revisão das movimentações.
+- Aba **Cobranças extras**: criar cobrança (descrição, valor mensal, mês inicial, nº de meses), escolher as empresas e ajustar o valor de cada uma, ver período/parcelas restantes e encerrar antecipadamente.
 - Aba **Bloqueios**: travar/liberar empresa com justificativa obrigatória + histórico completo.
 - Aba **Configurações**: salário mínimo, valor do ponto, % mensal, período da campanha.
 
