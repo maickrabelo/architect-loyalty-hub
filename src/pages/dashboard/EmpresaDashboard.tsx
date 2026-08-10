@@ -176,6 +176,19 @@ const EmpresaDashboard = () => {
           </Button>
         </div>
 
+        {/* Aviso de fatura em aberto */}
+        {(empresa as any).bloqueada && (
+          <div className="mb-8 rounded-lg border-2 border-destructive bg-destructive/10 p-4">
+            <p className="font-semibold text-destructive">
+              Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação.
+            </p>
+            {(empresa as any).motivo_bloqueio && (
+              <p className="text-sm text-destructive/80 mt-1">{(empresa as any).motivo_bloqueio}</p>
+            )}
+          </div>
+        )}
+
+
         {/* Stats Overview */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-card border-border">
