@@ -368,10 +368,15 @@ const GestorDashboard = () => {
             <h1 className="text-4xl font-bold mb-2">Dashboard do Gestor</h1>
             <p className="text-xl text-muted-foreground">Visão completa do sistema</p>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => navigate("/dashboard/financeiro")}>
+              Módulo Financeiro
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          </div>
         </div>
 
         {/* Stats Overview */}
