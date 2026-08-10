@@ -1,80 +1,52 @@
+# Módulo Financeiro
 
-## Objetivo
-Importar todos os dados do arquivo `RelatorioGeral_20240101_20260706.xlsx` para o sistema, criando lojistas com login, profissionais e vendas fidedignas, e um dashboard administrativo (gestor) rico em gráficos, tabelas e filtros.
+Novo papel **gestor financeiro** com dashboard próprio, faturamento mensal por lojista, fluxo de caixa, fechamento de caixa e bloqueio de empresas inadimplentes.
 
-## O que existe no Excel (mapeamento por aba)
+## Regras de negócio
 
-| Aba | Uso |
-|---|---|
-| Faturamento Mensal | Vendas totais e ticket médio por mês (2024/01 → 2026/06) |
-| Taxa de Conversão | KPI: 90 pontuados / 249 cadastrados = 36,14% |
-| Profissionais Mais Atuantes | Ranking geral (91 profissionais com pontos) |
-| Distribuição Pontos | Matriz Empresa × Profissional (vendas + pontos) |
-| Profissionais x Associados | Vínculo profissional ↔ lojistas em que vendeu |
-| Relatório Geral | Ranking com Pontos Premiados / Não Premiados / % |
-| 15 abas por Empresa | Antonelli Esquadrias, Carré, Casa Decor, Design Center, ELETRO FONTE, Hidráulica Uberaba, IGUATEMI, Madeireira Pindorama, Pool House, Reginez, Rogério Marzola, Shopping Das Pedras, +3 restantes — cada uma com profissionais premiados, vendas R$, pontos, categoria prêmio, custo |
+- 1 ponto distribuído = R$ 10,00 de custo para o lojista.
+- Fatura mensal da empresa = mensalidade (1 salário mínimo, valor global configurável) + 50% do custo dos pontos do mês.
+- Os outros 50% acumulam como "saldo de campanha", cobrado no fim da campanha (período configurável pelo financeiro, com data de vencimento do saldo).
+- Empresa com fatura vencida e não paga fica **travada** automaticamente e não consegue lançar novas vendas/pontos.
+- O financeiro pode travar/liberar manualmente, sempre com justificativa obrigatória, gerando histórico.
 
-## Etapa 1 — Importação dos dados (backend)
+## Estrutura de dados (novas tabelas)
 
-1. **Script de parsing** (executado no sandbox) lê o `.xlsx` e gera:
-   - lista de empresas (nome, e-mail gerado `slug@conexao.com`, senha padrão `Conexao@2025`)
-   - lista de profissionais únicos (nome → e-mail `slug@arquiteto.conexao.com`, senha `Conexao@2025`)
-   - vendas: 1 linha por par (empresa, profissional) com `valor_venda` e `data_venda` distribuída dentro do período coberto pela aba "Faturamento Mensal" (proporcional ao faturamento mensal daquele mês)
-2. **Edge function `importar-dados-excel`** (uso único, protegida por role `gestor`):
-   - Cria usuários via `auth.admin.createUser` para cada empresa e profissional
-   - Insere `empresas`, `profiles` (com `nome_divulgacao`, `profissao = "Arquiteto(a)"`, cidade Uberaba/MG padrão) e `vendas`
-   - Idempotente: verifica existência antes de inserir
-3. Botão "Importar dados do relatório" no Dashboard Gestor dispara a função.
+- `configuracoes_financeiras`: valor do salário mínimo, valor por ponto (padrão 10), % cobrado no mês (padrão 50), início/fim da campanha, vencimento do saldo final.
+- `caixas_mensais`: mês de referência, status (aberto/fechado), data de fechamento, quem fechou, totais consolidados.
+- `faturas`: empresa, mês, pontos do mês, valor mensalidade, valor pontos do mês (50%), valor total, vencimento, status (aberta/paga/parcial/vencida/cancelada), data de pagamento.
+- `saldo_campanha`: acumulado dos 50% diferidos por empresa e ano de campanha, com status de quitação.
+- `movimentacoes_financeiras`: lançamentos de recebimento e pagamento (data, tipo, categoria, descrição, valor, empresa opcional, fatura opcional, caixa do mês).
+- `bloqueios_empresa`: histórico de travamento/liberação com justificativa, autor, data, origem (automático/manual).
+- Campo `bloqueada` em `empresas` (+ motivo atual).
 
-## Etapa 2 — Dashboard Administrativo (Gestor)
+Todas com GRANTs e RLS: financeiro/gestor acessam tudo; a empresa lê apenas as próprias faturas/saldo e o relatório do mês fechado.
 
-Nova aba "Visão Geral do Programa" em `GestorDashboard.tsx` com:
+## Backend
 
-**KPIs no topo**
-- Total vendido no período
-- Total de pontos distribuídos
-- Nº de lojistas ativos
-- Nº de profissionais cadastrados / pontuados
-- Taxa de conversão (pontuados ÷ cadastrados)
-- Ticket médio
+- Novo valor `financeiro` no enum `app_role` e função `is_financeiro()`.
+- RLS de `vendas`: bloquear INSERT/UPDATE quando a empresa estiver travada.
+- Função `gerar_faturas_mes(mes)`: calcula pontos do mês por empresa e cria/atualiza as faturas + saldo de campanha.
+- Função `fechar_caixa(mes)`: valida movimentações, consolida totais e trava o mês.
+- Job diário para marcar faturas vencidas e travar empresas automaticamente.
+- Função `get_relatorio_financeiro_empresa(empresa, mes)`: dados do mês fechado para a empresa — seus valores, total geral esperado do programa e total de inadimplência agregado (sem identificar devedores).
 
-**Gráficos (Recharts)**
-1. **Linha** — Faturamento mensal (2024–2026) com toggle "Vendas R$" / "Pontos"
-2. **Barra empilhada** — Pontos distribuídos por mês, empilhados por empresa
-3. **Barra horizontal** — Top 15 profissionais por pontos
-4. **Pizza** — Distribuição de pontos por empresa
-5. **Barra** — Ranking de lojistas por custo de premiação
-6. **Heatmap/tabela cruzada** — Empresa × Profissional (vendas R$)
+## Telas
 
-**Tabelas interativas** (com busca, ordenação, exportar CSV)
-- Lojistas: nome, total vendas, pontos distribuídos, custo total, nº profissionais atendidos
-- Profissionais: nome, vendas, pontos acumulados, pontos premiados, pontos não premiados
-- Detalhamento por lojista: ao clicar numa linha abre modal com aba dedicada (réplica da aba do Excel)
+**/dashboard/financeiro** (papel financeiro, gestor também acessa)
+- KPIs: faturado no mês, recebido, em aberto, inadimplência, saldo de campanha acumulado.
+- Aba **Resumo mensal**: tabela por empresa (pontos, custo total, 50% do mês, mensalidade, total da fatura, status) + gráficos de pontos e receita por mês.
+- Aba **Faturas**: geração das faturas do mês, marcação de pago/parcial, filtros e exportação CSV.
+- Aba **Saldo de campanha**: quanto cada empresa deve no fechamento do ano.
+- Aba **Fluxo de caixa**: lançamento de recebimentos e pagamentos, saldo do período, botão "Fechar caixa" com revisão das movimentações.
+- Aba **Bloqueios**: travar/liberar empresa com justificativa obrigatória + histórico completo.
+- Aba **Configurações**: salário mínimo, valor do ponto, % mensal, período da campanha.
 
-**Filtros globais**
-- Período (mês inicial / mês final)
-- Lojista (multi-select)
-- Profissional (busca)
-
-## Etapa 3 — Dashboard por Empresa
-Cada lojista importado terá login e verá, no seu dashboard existente (`EmpresaDashboard`), somente as vendas/profissionais vinculados a ele — os gráficos já implementados exibirão os números reais.
-
-## Detalhes técnicos
-
-- **Datas**: como o Excel só tem valores mensais agregados por par, cada venda importada usará `data_venda = último dia do mês` proporcional. Para o dashboard mensal isso é suficiente e mantém somas idênticas ao Excel.
-- **Pontos**: mantém a regra existente `1 pt = R$ 1.000`; os totais baterão com a coluna "Pontos Acumulados" do Excel.
-- **Categorias de prêmio / custo**: novos campos opcionais em `vendas` não são necessários — armazenados agregados numa tabela `premiacoes_snapshot` (empresa_id, profissional_id, categoria_premio, custo) alimentada pelo importador e usada nos gráficos de custo.
-- **Segurança**: nova migration com `GRANT` e RLS para `premiacoes_snapshot` (SELECT para `gestor` e para o próprio `empresa` dono).
-- **Credenciais geradas**: no fim da importação, a edge function devolve um CSV com `tipo, nome, email, senha` para download no dashboard do gestor.
-
-## Entregáveis
-- Migration + tabela `premiacoes_snapshot`
-- Edge function `importar-dados-excel`
-- Script/JSON com os dados extraídos do Excel (embutido na função)
-- Componentes: `AdminOverview.tsx`, `AdminKpis.tsx`, `AdminCharts.tsx`, `AdminTables.tsx`, `EmpresaDetalheModal.tsx`
-- Nova aba no `GestorDashboard.tsx`
-- CSV de credenciais para o gestor
+**Dashboard da empresa**
+- Banner vermelho em destaque quando houver fatura em aberto: "Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação."
+- Bloqueio de lançamento de vendas quando travada, com aviso.
+- Nova aba **Financeiro**: faturas do mês, saldo de campanha e relatório dos meses já fechados (com total esperado do programa e inadimplência agregada anônima).
 
 ## Fora de escopo
-- Envio de e-mail automático aos lojistas/profissionais com as credenciais (o gestor entrega manualmente via CSV).
-- Edição manual dos dados importados via UI (feita somente pelo fluxo normal de novas vendas).
+- Integração com gateway de pagamento/boleto (marcação de pagamento é manual).
+- Envio automático de e-mail de cobrança.
