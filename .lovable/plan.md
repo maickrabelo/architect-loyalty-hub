@@ -15,7 +15,10 @@ Novo papel **gestor financeiro** com dashboard próprio, faturamento mensal por 
 
 - `configuracoes_financeiras`: valor do salário mínimo, valor por ponto (padrão 10), % cobrado no mês (padrão 50), início/fim da campanha, vencimento do saldo final.
 - `caixas_mensais`: mês de referência, status (aberto/fechado), data de fechamento, quem fechou, totais consolidados.
-- `faturas`: empresa, mês, pontos do mês, valor mensalidade, valor pontos do mês (50%), valor total, vencimento, status (aberta/paga/parcial/vencida/cancelada), data de pagamento.
+- `faturas`: empresa, mês, pontos do mês, valor mensalidade, valor pontos do mês (50%), valor de extras, valor total, vencimento, status (aberta/paga/parcial/vencida/cancelada), data de pagamento.
+- `cobrancas_extras`: descrição, valor mensal padrão, mês inicial, quantidade de meses, ativa/cancelada.
+- `cobrancas_extras_empresas`: vínculo cobrança ↔ empresa com valor mensal específico (sobrescreve o padrão).
+- `fatura_itens`: linhas da fatura (mensalidade, pontos, cada cobrança extra) para detalhamento e histórico imutável.
 - `saldo_campanha`: acumulado dos 50% diferidos por empresa e ano de campanha, com status de quitação.
 - `movimentacoes_financeiras`: lançamentos de recebimento e pagamento (data, tipo, categoria, descrição, valor, empresa opcional, fatura opcional, caixa do mês).
 - `bloqueios_empresa`: histórico de travamento/liberação com justificativa, autor, data, origem (automático/manual).
