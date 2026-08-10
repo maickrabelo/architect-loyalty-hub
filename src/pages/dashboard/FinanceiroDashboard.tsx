@@ -18,6 +18,7 @@ import FinanceiroConfig from "@/components/financeiro/FinanceiroConfig";
 
 const FinanceiroDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, userRole, signOut, loading } = useAuth();
   const [mes, setMes] = useState(mesAtual());
   const { data: caixa } = useCaixa(mes);
