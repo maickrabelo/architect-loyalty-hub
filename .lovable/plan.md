@@ -5,8 +5,9 @@ Novo papel **gestor financeiro** com dashboard próprio, faturamento mensal por 
 ## Regras de negócio
 
 - 1 ponto distribuído = R$ 10,00 de custo para o lojista.
-- Fatura mensal da empresa = mensalidade (1 salário mínimo, valor global configurável) + 50% do custo dos pontos do mês.
+- Fatura mensal da empresa = mensalidade (1 salário mínimo, valor global configurável) + 50% do custo dos pontos do mês + cobranças extras ativas no mês.
 - Os outros 50% acumulam como "saldo de campanha", cobrado no fim da campanha (período configurável pelo financeiro, com data de vencimento do saldo).
+- **Cobranças extras**: o financeiro cria uma cobrança (ex.: "Realização do evento Y") com valor mensal (ex.: R$ 1.500,00), mês inicial e quantidade de meses. Pode ser aplicada a uma, várias ou todas as empresas, com valor ajustável por empresa. Entra automaticamente como linha separada na fatura de cada mês vigente e pode ser cancelada/encerrada antecipadamente (faturas já geradas não mudam).
 - Empresa com fatura vencida e não paga fica **travada** automaticamente e não consegue lançar novas vendas/pontos.
 - O financeiro pode travar/liberar manualmente, sempre com justificativa obrigatória, gerando histórico.
 
