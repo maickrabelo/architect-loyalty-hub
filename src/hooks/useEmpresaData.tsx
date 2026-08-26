@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { destinoAtual } from '@/lib/destinos';
+
 
 type ProfissionalPublico = {
   id: string;
@@ -82,8 +84,9 @@ export const useEmpresaData = () => {
       nome: arq.nome_divulgacao || arq.nome || 'Profissional sem nome',
       vendasTotal,
       ultimoCliente: ultimaVenda?.observacao || 'Sem vendas',
-      ultimaPremiacaoConquistada: Math.floor(vendasTotal / 1000) >= 1000 ? 1000 : 
-                                   Math.floor(vendasTotal / 1000) >= 500 ? 500 : 0
+      ultimaPremiacaoConquistada: destinoAtual(Math.floor(vendasTotal / 1000))?.pontos ?? 0,
+      destinoAtual: destinoAtual(Math.floor(vendasTotal / 1000))?.nome ?? null,
+
     };
   });
 
