@@ -82,8 +82,9 @@ export const useEmpresaData = () => {
       nome: arq.nome_divulgacao || arq.nome || 'Profissional sem nome',
       vendasTotal,
       ultimoCliente: ultimaVenda?.observacao || 'Sem vendas',
-      ultimaPremiacaoConquistada: Math.floor(vendasTotal / 1000) >= 1000 ? 1000 : 
-                                   Math.floor(vendasTotal / 1000) >= 500 ? 500 : 0
+      ultimaPremiacaoConquistada: destinoAtual(Math.floor(vendasTotal / 1000))?.pontos ?? 0,
+      destinoAtual: destinoAtual(Math.floor(vendasTotal / 1000))?.nome ?? null,
+
     };
   });
 
