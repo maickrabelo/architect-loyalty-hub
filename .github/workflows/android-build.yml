@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Ensure Gradle Wrapper is executable
+        run: chmod +x android/gradlew
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
