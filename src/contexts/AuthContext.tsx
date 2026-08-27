@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { initializePushNotifications } from '@/services/pushNotifications';
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +21,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [userRole, setUserRole] = useState<'arquiteto' | 'empresa' | 'gestor' | 'financeiro' | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    let cancelled = false;
+    let dispose: (() => void) | undefined;
+
+    void initializePushNotifications(user.id).then((cleanup) => {
+      if (cancelled) {
+        cleanup();
+      } else {
+        dispose = cleanup;
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      dispose?.();
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -80,7 +101,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string, userData: any) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectOrigin = (import.meta.env.VITE_PUBLIC_WEB_URL || window.location.origin).replace(/\/$/, "");
+    const redirectUrl = `${redirectOrigin}/`;
     
     const { error } = await supabase.auth.signUp({
       email,
