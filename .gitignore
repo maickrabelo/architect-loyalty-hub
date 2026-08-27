@@ -1,3 +1,8 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
 # Logs
 logs
 *.log
@@ -11,6 +16,8 @@ node_modules
 dist
 dist-ssr
 *.local
+android/app/google-services.json
+supabase/functions/**/service-account.json
 
 # Editor directories and files
 .vscode/*
