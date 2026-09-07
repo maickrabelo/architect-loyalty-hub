@@ -29,6 +29,7 @@ import {
 import { DestinoCard } from "@/components/DestinoCard";
 import { RelatorioGestor } from "@/components/RelatorioGestor";
 import AdminOverview from "@/components/dashboard/AdminOverview";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
@@ -349,6 +350,8 @@ const GestorDashboard = () => {
     arq.nome?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const pagArquitetos = usePaginacao(filteredArquitetos);
+
   const getNivelColor = (nivel: string) => {
     switch (nivel) {
       case "Platinum": return "text-primary";
@@ -471,9 +474,9 @@ const GestorDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredArquitetos.map((arquiteto, index) => (
+                    {pagArquitetos.paginados.map((arquiteto, index) => (
                       <TableRow key={arquiteto.id}>
-                        <TableCell className="font-medium">#{index + 1}</TableCell>
+                        <TableCell className="font-medium">#{(pagArquitetos.pagina - 1) * 10 + index + 1}</TableCell>
                         <TableCell className="font-semibold">{arquiteto.nome ?? '—'}</TableCell>
                         <TableCell className="text-muted-foreground">{arquiteto.empresas}</TableCell>
                         <TableCell className="text-muted-foreground">
@@ -486,6 +489,7 @@ const GestorDashboard = () => {
                     ))}
                   </TableBody>
                 </Table>
+                <PaginacaoControles pagina={pagArquitetos.pagina} totalPaginas={pagArquitetos.totalPaginas} onChange={pagArquitetos.setPagina} />
               </CardContent>
             </Card>
           </TabsContent>

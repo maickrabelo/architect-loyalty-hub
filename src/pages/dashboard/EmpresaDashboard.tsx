@@ -25,6 +25,7 @@ import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
 import EmpresaRateio from "@/components/dashboard/EmpresaRateio";
 import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -148,6 +149,10 @@ const EmpresaDashboard = () => {
 
   const investimentoPorArquiteto = calcularInvestimentoPorArquiteto();
   const totalInvestimento = Object.values(investimentoPorArquiteto).reduce((sum, val) => sum + val, 0);
+
+  const arquitetosOrdenados = [...arquitetos].sort((a, b) => b.vendasTotal - a.vendasTotal);
+  const pagDesempenho = usePaginacao(arquitetosOrdenados);
+  const pagInvestimento = usePaginacao(arquitetos);
 
   if (authLoading || isLoading) {
     return (
@@ -377,7 +382,7 @@ const EmpresaDashboard = () => {
               </p>
             ) : (
               <div className="space-y-4">
-                {[...arquitetos].sort((a, b) => b.vendasTotal - a.vendasTotal).map((arquiteto) => (
+                {pagDesempenho.paginados.map((arquiteto) => (
                   <div 
                     key={arquiteto.id}
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-secondary rounded-lg gap-4"
@@ -398,6 +403,7 @@ const EmpresaDashboard = () => {
                     </div>
                   </div>
                 ))}
+                <PaginacaoControles pagina={pagDesempenho.pagina} totalPaginas={pagDesempenho.totalPaginas} onChange={pagDesempenho.setPagina} />
               </div>
             )}
           </CardContent>
@@ -492,7 +498,7 @@ const EmpresaDashboard = () => {
             </div>
 
             <div className="space-y-3">
-              {arquitetos.map((arquiteto) => {
+              {pagInvestimento.paginados.map((arquiteto) => {
                 const investimento = investimentoPorArquiteto[arquiteto.id] || 0;
                 const percentual = totalInvestimento > 0 
                   ? ((investimento / totalInvestimento) * 100).toFixed(1)
@@ -526,6 +532,7 @@ const EmpresaDashboard = () => {
                   </div>
                 );
               })}
+              <PaginacaoControles pagina={pagInvestimento.pagina} totalPaginas={pagInvestimento.totalPaginas} onChange={pagInvestimento.setPagina} />
             </div>
           </CardContent>
         </Card>

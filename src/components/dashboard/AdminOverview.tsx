@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
@@ -107,6 +108,8 @@ export default function AdminOverview() {
     if (!data) return [];
     return data.ranking_arquitetos.filter(a => a.nome.toLowerCase().includes(buscaProf.toLowerCase()));
   }, [data, buscaProf]);
+
+  const pagArqs = usePaginacao(arqsFiltrados);
 
   const exportCSV = (rows: any[], filename: string) => {
     if (rows.length === 0) return;
@@ -310,9 +313,9 @@ export default function AdminOverview() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {arqsFiltrados.map((a, i) => (
+                {pagArqs.paginados.map((a, i) => (
                   <TableRow key={a.id}>
-                    <TableCell>#{i + 1}</TableCell>
+                    <TableCell>#{(pagArqs.pagina - 1) * 10 + i + 1}</TableCell>
                     <TableCell className="font-medium">{a.nome}</TableCell>
                     <TableCell className="text-right">{fmtBRL(Number(a.vendas))}</TableCell>
                     <TableCell className="text-right font-bold text-primary">{Number(a.pontos).toLocaleString("pt-BR")}</TableCell>
@@ -322,6 +325,7 @@ export default function AdminOverview() {
               </TableBody>
             </Table>
           </div>
+          <PaginacaoControles pagina={pagArqs.pagina} totalPaginas={pagArqs.totalPaginas} onChange={pagArqs.setPagina} />
         </CardContent>
       </Card>
 
