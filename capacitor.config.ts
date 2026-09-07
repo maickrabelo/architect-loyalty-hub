@@ -1,19 +1,13 @@
-import type { CapacitorConfig } from "@capacitor/cli";
-
-const remoteServerUrl = process.env.CAP_SERVER_URL?.trim();
+import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "br.com.grupoconexao.app",
-  appName: "Grupo Conexão",
-  webDir: "dist",
-  ...(remoteServerUrl
-    ? {
-        server: {
-          url: remoteServerUrl,
-          cleartext: remoteServerUrl.startsWith("http://"),
-        },
-      }
-    : {}),
+  appId: 'app.lovable.ce0cb83984654192a01bcd54c8629744',
+  appName: 'architect-loyalty-hub',
+  webDir: 'dist',
+  server: {
+    url: 'https://ce0cb839-8465-4192-a01b-cd54c8629744.lovableproject.com?forceHideBadge=true',
+    cleartext: true,
+  },
 };
 
 export default config;
