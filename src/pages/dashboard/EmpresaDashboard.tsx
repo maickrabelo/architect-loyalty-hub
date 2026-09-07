@@ -532,6 +532,7 @@ const EmpresaDashboard = () => {
                   </div>
                 );
               })}
+              <PaginacaoControles pagina={pagInvestimento.pagina} totalPaginas={pagInvestimento.totalPaginas} onChange={pagInvestimento.setPagina} />
             </div>
           </CardContent>
         </Card>
