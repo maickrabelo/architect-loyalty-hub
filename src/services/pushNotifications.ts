@@ -1,11 +1,10 @@
 import { Capacitor } from '@capacitor/core';
-import {
+import type { PluginListenerHandle } from '@capacitor/core';
+import type {
   ActionPerformed,
   PushNotificationSchema,
-  PushNotifications,
   Token,
 } from '@capacitor/push-notifications';
-import type { PluginListenerHandle } from '@capacitor/core';
 import { supabase } from '@/integrations/supabase/client';
 
 const ANDROID_CHANNEL_ID = 'grupo-conexao-default';
@@ -22,18 +21,19 @@ export async function initializePushNotifications(userId: string): Promise<() =>
   const handles: PluginListenerHandle[] = [];
 
   try {
-    if (Capacitor.getPlatform() === 'android') {
-      await PushNotifications.createChannel({
-        id: ANDROID_CHANNEL_ID,
-        name: 'Grupo Conexão',
-        description: 'Notificações importantes do programa de relacionamento',
-        importance: 4,
-        visibility: 1,
-        vibration: true,
-        lights: true,
-        lightColor: '#C48B72',
-      });
-    }
+    // Carregado só no app nativo — nunca entra no bundle do navegador.
+    const { PushNotifications } = await import('@capacitor/push-notifications');
+
+    await PushNotifications.createChannel({
+      id: ANDROID_CHANNEL_ID,
+      name: 'Grupo Conexão',
+      description: 'Notificações importantes do programa de relacionamento',
+      importance: 4,
+      visibility: 1,
+      vibration: true,
+      lights: true,
+      lightColor: '#C48B72',
+    });
 
     handles.push(
       await PushNotifications.addListener('registration', async (token: Token) => {
