@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -17,6 +18,24 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const PushRouteBridge = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handlePushRoute = (event: Event) => {
+      const route = (event as CustomEvent<{ route?: unknown }>).detail?.route;
+      if (typeof route === "string" && route.startsWith("/")) {
+        navigate(route);
+      }
+    };
+
+    window.addEventListener("grupo-conexao:push-route", handlePushRoute);
+    return () => window.removeEventListener("grupo-conexao:push-route", handlePushRoute);
+  }, [navigate]);
+
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -24,6 +43,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <PushRouteBridge />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
