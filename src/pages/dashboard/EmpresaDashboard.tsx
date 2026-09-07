@@ -23,6 +23,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEmpresaData } from "@/hooks/useEmpresaData";
 import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
+import EmpresaRateio from "@/components/dashboard/EmpresaRateio";
+import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -37,6 +39,7 @@ const EmpresaDashboard = () => {
   const [selectedArquiteto, setSelectedArquiteto] = useState("");
   const [valorVenda, setValorVenda] = useState("");
   const [cliente, setCliente] = useState("");
+  const [clienteTelefone, setClienteTelefone] = useState("");
 
   // Redirect if not empresa
   useEffect(() => {
@@ -52,7 +55,7 @@ const EmpresaDashboard = () => {
 
   // Mutation para lançar venda
   const lancarVendaMutation = useMutation({
-    mutationFn: async (data: { arquiteto_id: string; valor_venda: number; observacao: string }) => {
+    mutationFn: async (data: { arquiteto_id: string; valor_venda: number; observacao: string; cliente_telefone: string }) => {
       if (!empresa) throw new Error("Empresa não encontrada");
 
       const pontos = calcularPontos(data.valor_venda);
@@ -65,6 +68,8 @@ const EmpresaDashboard = () => {
           valor_venda: data.valor_venda,
           pontos_calculados: pontos,
           observacao: data.observacao,
+          cliente_nome: data.observacao,
+          cliente_telefone: data.cliente_telefone,
           data_venda: new Date().toISOString().split('T')[0],
         });
 
@@ -76,6 +81,7 @@ const EmpresaDashboard = () => {
       setSelectedArquiteto("");
       setValorVenda("");
       setCliente("");
+      setClienteTelefone("");
     },
     onError: (error: any) => {
       toast.error("Erro ao lançar venda: " + error.message);
@@ -83,8 +89,8 @@ const EmpresaDashboard = () => {
   });
 
   const handleLancarVenda = () => {
-    if (!selectedArquiteto || !valorVenda || !cliente) {
-      toast.error("Preencha todos os campos");
+    if (!selectedArquiteto || !valorVenda || !cliente.trim() || !clienteTelefone.trim()) {
+      toast.error("Informe o profissional, o valor e o nome e telefone do cliente");
       return;
     }
 
@@ -97,7 +103,8 @@ const EmpresaDashboard = () => {
     lancarVendaMutation.mutate({
       arquiteto_id: selectedArquiteto,
       valor_venda: valor,
-      observacao: cliente,
+      observacao: cliente.trim(),
+      cliente_telefone: clienteTelefone.trim(),
     });
   };
 
@@ -190,6 +197,96 @@ const EmpresaDashboard = () => {
         )}
 
 
+        {/* Launch Sales */}
+        <Card className="mb-8 bg-gradient-premium border-primary/20">
+          {(empresa as any).bloqueada && (
+            <div className="px-6 pt-6">
+              <p className="text-sm font-medium text-destructive">
+                Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
+              </p>
+            </div>
+          )}
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Lançar Venda
+            </CardTitle>
+            <CardDescription>
+              Registre o valor da venda do profissional (R$ 1.000 = 1 ponto)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label>Profissional</Label>
+                <Select value={selectedArquiteto} onValueChange={setSelectedArquiteto}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o profissional" />
+
+                  </SelectTrigger>
+                  <SelectContent>
+                    {arquitetos.map((arq) => (
+                      <SelectItem key={arq.id} value={arq.id}>
+                        {arq.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Valor da Venda (R$)</Label>
+                <Input
+                  type="number"
+                  placeholder="Ex: 50000"
+                  value={valorVenda}
+                  onChange={(e) => setValorVenda(e.target.value)}
+                  className="bg-secondary"
+                  disabled={lancarVendaMutation.isPending}
+                />
+                {valorVenda && (
+                  <p className="text-xs text-muted-foreground">
+                    = {calcularPontos(parseFloat(valorVenda) || 0)} pontos
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Cliente do profissional *</Label>
+                <Input
+                  placeholder="Nome do cliente"
+                  value={cliente}
+                  onChange={(e) => setCliente(e.target.value)}
+                  className="bg-secondary"
+                  disabled={lancarVendaMutation.isPending}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Telefone do cliente *</Label>
+                <Input
+                  placeholder="(00) 00000-0000"
+                  value={clienteTelefone}
+                  onChange={(e) => setClienteTelefone(e.target.value)}
+                  className="bg-secondary"
+                  disabled={lancarVendaMutation.isPending}
+                  required
+                />
+              </div>
+            </div>
+            
+            <Button 
+              variant="premium" 
+              className="w-full md:w-auto mt-4"
+              onClick={handleLancarVenda}
+              disabled={lancarVendaMutation.isPending || (empresa as any).bloqueada}
+            >
+              {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Stats Overview */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-card border-border">
@@ -231,83 +328,6 @@ const EmpresaDashboard = () => {
           <EmpresaFinanceiro empresaId={empresa.id} />
         </div>
 
-        {/* Launch Sales */}
-        <Card className="mb-8 bg-gradient-premium border-primary/20">
-          {(empresa as any).bloqueada && (
-            <div className="px-6 pt-6">
-              <p className="text-sm font-medium text-destructive">
-                Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
-              </p>
-            </div>
-          )}
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Plus className="h-5 w-5" />
-              Lançar Venda
-            </CardTitle>
-            <CardDescription>
-              Registre o valor da venda do profissional (R$ 1.000 = 1 ponto)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>Profissional</Label>
-                <Select value={selectedArquiteto} onValueChange={setSelectedArquiteto}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o profissional" />
-
-                  </SelectTrigger>
-                  <SelectContent>
-                    {arquitetos.map((arq) => (
-                      <SelectItem key={arq.id} value={arq.id}>
-                        {arq.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Valor da Venda (R$)</Label>
-                <Input
-                  type="number"
-                  placeholder="Ex: 50000"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
-                  className="bg-secondary"
-                  disabled={lancarVendaMutation.isPending}
-                />
-                {valorVenda && (
-                  <p className="text-xs text-muted-foreground">
-                    = {calcularPontos(parseFloat(valorVenda) || 0)} pontos
-                  </p>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Cliente</Label>
-                <Input
-                  placeholder="Nome do cliente"
-                  value={cliente}
-                  onChange={(e) => setCliente(e.target.value)}
-                  className="bg-secondary"
-                  disabled={lancarVendaMutation.isPending}
-                />
-              </div>
-            </div>
-            
-            <Button 
-              variant="premium" 
-              className="w-full md:w-auto mt-4"
-              onClick={handleLancarVenda}
-              disabled={lancarVendaMutation.isPending || (empresa as any).bloqueada}
-            >
-              {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
-            </Button>
-          </CardContent>
-        </Card>
-
         {/* Architects List */}
         <Card className="bg-card border-border mb-8">
           <CardHeader>
@@ -322,7 +342,7 @@ const EmpresaDashboard = () => {
               </p>
             ) : (
               <div className="space-y-4">
-                {arquitetos.map((arquiteto) => (
+                {[...arquitetos].sort((a, b) => b.vendasTotal - a.vendasTotal).map((arquiteto) => (
                   <div 
                     key={arquiteto.id}
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-secondary rounded-lg gap-4"
@@ -475,6 +495,12 @@ const EmpresaDashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Rateio da premiação */}
+        <EmpresaRateio empresaId={empresa.id} />
+
+        {/* Lançamentos e histórico por profissional */}
+        <EmpresaLancamentos vendas={vendas as any} arquitetos={arquitetos} nomeEmpresa={empresa.nome} />
+
         {/* Histórico de Vendas */}
         <Card className="mb-8 bg-card border-border">
           <CardHeader>
@@ -526,7 +552,7 @@ const EmpresaDashboard = () => {
                         <TableCell>
                           {arquitetos.find(a => a.id === venda.arquiteto_id)?.nome || 'N/A'}
                         </TableCell>
-                        <TableCell>{venda.observacao}</TableCell>
+                        <TableCell>{(venda as any).cliente_nome || venda.observacao}</TableCell>
                         <TableCell className="text-right font-semibold">
                           R$ {Number(venda.valor_venda).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </TableCell>
