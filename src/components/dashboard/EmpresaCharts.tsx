@@ -13,6 +13,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  LabelList,
 } from "recharts";
 
 type Venda = {
@@ -128,13 +129,23 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
   const formatBRL = (n: number) =>
     n >= 1000 ? `R$ ${(n / 1000).toFixed(0)}k` : `R$ ${n.toFixed(0)}`;
 
+  const brlCheio = (n: number) =>
+    `R$ ${Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+
+  const totalEvolucao = evolucao.reduce((s, e) => s + e.total, 0);
+  const totalPontosPizza = topProfissionais.reduce((s, t) => s + t.pontos, 0);
+  const totalPorAno = anosDisponiveis.map((y) => ({
+    ano: y,
+    total: comparativoAnos.reduce((s, row: any) => s + Number(row[String(y)] || 0), 0),
+  }));
+
   return (
     <div className="grid md:grid-cols-2 gap-6 mb-8">
       {/* Evolução */}
       <Card className="bg-card border-border md:col-span-2">
         <CardHeader>
           <CardTitle>Evolução de Vendas</CardTitle>
-          <CardDescription>Últimos 12 meses</CardDescription>
+          <CardDescription>Últimos 12 meses · Total: {brlCheio(totalEvolucao)}</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={configEvolucao} className="h-[280px] w-full">
@@ -143,7 +154,9 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
               <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={formatBRL} />
               <ChartTooltip content={<ChartTooltipContent formatter={(v) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`} />} />
-              <Line type="monotone" dataKey="total" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="total" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }}>
+                <LabelList dataKey="total" position="top" fontSize={10} formatter={(v: number) => (v ? formatBRL(Number(v)) : "")} />
+              </Line>
             </LineChart>
           </ChartContainer>
         </CardContent>
@@ -153,7 +166,9 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Média de Pontos por Profissional</CardTitle>
-          <CardDescription>Média por venda registrada</CardDescription>
+          <CardDescription>
+            Média por venda registrada · Total de pontos: {arquitetos.reduce((s, a) => s + calcularPontos(a.vendasTotal), 0).toLocaleString("pt-BR")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {mediaPorProf.length === 0 ? (
@@ -165,7 +180,9 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
                 <XAxis dataKey="nome" stroke="hsl(var(--muted-foreground))" fontSize={11} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="media" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="media" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="media" position="top" fontSize={10} />
+                </Bar>
               </BarChart>
             </ChartContainer>
           )}
@@ -176,7 +193,7 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Top Profissionais por Pontuação</CardTitle>
-          <CardDescription>Distribuição dos mais pontuados</CardDescription>
+          <CardDescription>Distribuição dos mais pontuados · Total: {totalPontosPizza.toLocaleString("pt-BR")} pontos</CardDescription>
         </CardHeader>
         <CardContent>
           {topProfissionais.length === 0 ? (
@@ -185,7 +202,7 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
             <ChartContainer config={configPizza} className="h-[280px] w-full">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent nameKey="nome" />} />
-                <Pie data={topProfissionais} dataKey="pontos" nameKey="nome" outerRadius={90} label={(e: any) => `${e.nome}`}>
+                <Pie data={topProfissionais} dataKey="pontos" nameKey="nome" outerRadius={90} label={(e: any) => `${e.nome}: ${Number(e.pontos).toLocaleString("pt-BR")}`}>
                   {topProfissionais.map((_, i) => (
                     <Cell key={i} fill={CORES[i % CORES.length]} />
                   ))}
@@ -200,7 +217,10 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
       <Card className="bg-card border-border md:col-span-2">
         <CardHeader>
           <CardTitle>Comparativo de Vendas — Ano a Ano</CardTitle>
-          <CardDescription>Mesmo mês comparado entre anos diferentes</CardDescription>
+          <CardDescription>
+            Mesmo mês comparado entre anos diferentes ·{" "}
+            {totalPorAno.map((t) => `${t.ano}: ${brlCheio(t.total)}`).join(" · ")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {anosDisponiveis.length === 0 ? (
@@ -214,7 +234,9 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
                 <ChartTooltip content={<ChartTooltipContent formatter={(v) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`} />} />
                 <ChartLegend content={<ChartLegendContent />} />
                 {anosDisponiveis.map((y, i) => (
-                  <Bar key={y} dataKey={String(y)} fill={CORES[i % CORES.length]} radius={[4, 4, 0, 0]} />
+                  <Bar key={y} dataKey={String(y)} fill={CORES[i % CORES.length]} radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey={String(y)} position="top" fontSize={9} formatter={(v: number) => (v ? formatBRL(Number(v)) : "")} />
+                  </Bar>
                 ))}
               </BarChart>
             </ChartContainer>
