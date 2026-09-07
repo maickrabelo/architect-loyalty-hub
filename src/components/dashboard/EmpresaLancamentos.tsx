@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { formatBRL } from "@/hooks/useFinanceiro";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 
 type Venda = {
   id: string;
@@ -41,6 +42,8 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
     [arquitetos, vendas],
   );
 
+  const pagPontuados = usePaginacao(pontuados);
+
   const historico = useMemo(
     () =>
       vendas
@@ -77,7 +80,7 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
                   </TableCell>
                 </TableRow>
               )}
-              {pontuados.map((p) =>
+              {pagPontuados.paginados.map((p) =>
                 vendas
                   .filter((v) => v.arquiteto_id === p.id)
                   .sort((a, b) => (a.data_venda < b.data_venda ? 1 : -1))
@@ -93,6 +96,7 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
               )}
             </TableBody>
           </Table>
+          <PaginacaoControles pagina={pagPontuados.pagina} totalPaginas={pagPontuados.totalPaginas} onChange={pagPontuados.setPagina} />
         </CardContent>
       </Card>
 
