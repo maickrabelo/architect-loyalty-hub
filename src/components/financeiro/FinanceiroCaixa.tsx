@@ -31,7 +31,12 @@ const FinanceiroCaixa = ({ mes }: { mes: string }) => {
     const pag = movs.filter((m: any) => m.tipo === "pagamento").reduce((s: number, m: any) => s + Number(m.valor), 0);
     const faturado = faturas.reduce((s: number, f: any) => s + Number(f.valor_total), 0);
     const inad = faturas.filter((f: any) => f.status !== "paga").reduce((s: number, f: any) => s + (Number(f.valor_total) - Number(f.valor_pago)), 0);
-    return { rec, pag, saldo: rec - pag, faturado, inad };
+    const fundoReserva = faturas.reduce(
+      (s: number, f: any) => s + (Number(f.custo_pontos_total) - Number(f.valor_pontos_mes)),
+      0,
+    );
+    const pontosMes = faturas.reduce((s: number, f: any) => s + Number(f.valor_pontos_mes), 0);
+    return { rec, pag, saldo: rec - pag, faturado, inad, fundoReserva, pontosMes };
   }, [movs, faturas]);
 
   const salvar = useMutation({
@@ -108,6 +113,30 @@ const FinanceiroCaixa = ({ mes }: { mes: string }) => {
           </Card>
         ))}
       </div>
+
+      <Card className="border-primary/30">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Fundo de reserva — {labelMes(mes)}</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border p-4">
+            <p className="text-xs text-muted-foreground">Pontos cobrados no mês (entra no caixa)</p>
+            <p className="text-xl font-semibold">{formatBRL(totais.pontosMes)}</p>
+          </div>
+          <div className="rounded-lg border p-4 bg-primary/5">
+            <p className="text-xs text-muted-foreground">Fundo de reserva (parte diferida dos pontos)</p>
+            <p className="text-xl font-semibold text-primary">{formatBRL(totais.fundoReserva)}</p>
+          </div>
+          <div className="rounded-lg border p-4">
+            <p className="text-xs text-muted-foreground">Caixa operacional do mês (sem o fundo)</p>
+            <p className="text-xl font-semibold">{formatBRL(totais.saldo)}</p>
+          </div>
+          <p className="sm:col-span-3 text-xs text-muted-foreground">
+            O fundo de reserva é a parte do custo dos pontos que não é cobrada no mês e fica reservada para pagar as
+            viagens no fechamento da campanha — por isso é apresentada separada do caixa operacional.
+          </p>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">

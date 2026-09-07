@@ -67,7 +67,7 @@ const FinanceiroDashboard = () => {
           <TabsList className="flex flex-wrap h-auto bg-card/50">
             <TabsTrigger value="resumo">Resumo mensal</TabsTrigger>
             <TabsTrigger value="faturas">Faturas</TabsTrigger>
-            <TabsTrigger value="saldo">Saldo de campanha</TabsTrigger>
+            <TabsTrigger value="saldo">Lançamento pontos mensal</TabsTrigger>
             <TabsTrigger value="caixa">Fluxo de caixa</TabsTrigger>
             <TabsTrigger value="extras">Cobranças extras</TabsTrigger>
             <TabsTrigger value="bloqueios">Bloqueios</TabsTrigger>

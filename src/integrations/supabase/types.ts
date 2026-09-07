@@ -178,6 +178,9 @@ export type Database = {
           campanha_inicio: string
           created_at: string
           dia_vencimento: number
+          dia_vencimento_extras: number | null
+          dia_vencimento_mensalidade: number | null
+          dias_atraso_bloqueio: number
           id: string
           percentual_mensal: number
           salario_minimo: number
@@ -190,6 +193,9 @@ export type Database = {
           campanha_inicio?: string
           created_at?: string
           dia_vencimento?: number
+          dia_vencimento_extras?: number | null
+          dia_vencimento_mensalidade?: number | null
+          dias_atraso_bloqueio?: number
           id?: string
           percentual_mensal?: number
           salario_minimo?: number
@@ -202,6 +208,9 @@ export type Database = {
           campanha_inicio?: string
           created_at?: string
           dia_vencimento?: number
+          dia_vencimento_extras?: number | null
+          dia_vencimento_mensalidade?: number | null
+          dias_atraso_bloqueio?: number
           id?: string
           percentual_mensal?: number
           salario_minimo?: number
@@ -325,6 +334,8 @@ export type Database = {
           valor_pontos_mes: number
           valor_total: number
           vencimento: string
+          vencimento_extras: string | null
+          vencimento_mensalidade: string | null
         }
         Insert: {
           created_at?: string
@@ -343,6 +354,8 @@ export type Database = {
           valor_pontos_mes?: number
           valor_total?: number
           vencimento: string
+          vencimento_extras?: string | null
+          vencimento_mensalidade?: string | null
         }
         Update: {
           created_at?: string
@@ -361,6 +374,8 @@ export type Database = {
           valor_pontos_mes?: number
           valor_total?: number
           vencimento?: string
+          vencimento_extras?: string | null
+          vencimento_mensalidade?: string | null
         }
         Relationships: [
           {
@@ -442,6 +457,7 @@ export type Database = {
           nome: string
           ordem: number | null
           pontos_necessarios: number
+          valor_premio: number
         }
         Insert: {
           ativa?: boolean | null
@@ -452,6 +468,7 @@ export type Database = {
           nome: string
           ordem?: number | null
           pontos_necessarios: number
+          valor_premio?: number
         }
         Update: {
           ativa?: boolean | null
@@ -462,6 +479,7 @@ export type Database = {
           nome?: string
           ordem?: number | null
           pontos_necessarios?: number
+          valor_premio?: number
         }
         Relationships: []
       }
@@ -689,6 +707,8 @@ export type Database = {
       vendas: {
         Row: {
           arquiteto_id: string
+          cliente_nome: string | null
+          cliente_telefone: string | null
           created_at: string | null
           data_venda: string
           empresa_id: string
@@ -700,6 +720,8 @@ export type Database = {
         }
         Insert: {
           arquiteto_id: string
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
           created_at?: string | null
           data_venda?: string
           empresa_id: string
@@ -711,6 +733,8 @@ export type Database = {
         }
         Update: {
           arquiteto_id?: string
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
           created_at?: string | null
           data_venda?: string
           empresa_id?: string
@@ -782,6 +806,10 @@ export type Database = {
           nome: string
           total: number
         }[]
+      }
+      get_rateio_premiacao_empresa: {
+        Args: { _empresa_id: string }
+        Returns: Json
       }
       get_relatorio_financeiro_empresa: {
         Args: { _empresa_id: string; _mes: string }

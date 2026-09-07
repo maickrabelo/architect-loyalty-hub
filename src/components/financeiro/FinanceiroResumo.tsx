@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import {
-  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, LineChart, Line,
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, LineChart, Line, LabelList,
 } from "recharts";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
 
@@ -68,7 +68,13 @@ const FinanceiroResumo = ({ mes }: { mes: string }) => {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="text-base">Faturamento x Recebimento</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-base">Faturamento x Recebimento</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Total faturado: {formatBRL(porMes.reduce((s, m) => s + m.faturado, 0))} · Total recebido:{" "}
+              {formatBRL(porMes.reduce((s, m) => s + m.recebido, 0))}
+            </p>
+          </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={porMes.map((m) => ({ ...m, label: labelMes(m.mes) }))}>
@@ -77,14 +83,23 @@ const FinanceiroResumo = ({ mes }: { mes: string }) => {
                 <YAxis fontSize={11} />
                 <Tooltip formatter={(v: number) => formatBRL(v)} />
                 <Legend />
-                <Bar dataKey="faturado" name="Faturado" fill="hsl(var(--primary))" />
-                <Bar dataKey="recebido" name="Recebido" fill="hsl(var(--accent))" />
+                <Bar dataKey="faturado" name="Faturado" fill="hsl(var(--primary))">
+                  <LabelList dataKey="faturado" position="top" fontSize={9} formatter={(v: number) => (v ? formatBRL(Number(v)) : "")} />
+                </Bar>
+                <Bar dataKey="recebido" name="Recebido" fill="hsl(var(--accent))">
+                  <LabelList dataKey="recebido" position="top" fontSize={9} formatter={(v: number) => (v ? formatBRL(Number(v)) : "")} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-base">Pontos distribuídos por mês</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-base">Pontos distribuídos por mês</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Total: {porMes.reduce((s, m) => s + m.pontos, 0).toLocaleString("pt-BR")} pontos
+            </p>
+          </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={porMes.map((m) => ({ ...m, label: labelMes(m.mes) }))}>
@@ -92,7 +107,9 @@ const FinanceiroResumo = ({ mes }: { mes: string }) => {
                 <XAxis dataKey="label" fontSize={11} />
                 <YAxis fontSize={11} />
                 <Tooltip />
-                <Line type="monotone" dataKey="pontos" name="Pontos" stroke="hsl(var(--primary))" strokeWidth={2} />
+                <Line type="monotone" dataKey="pontos" name="Pontos" stroke="hsl(var(--primary))" strokeWidth={2}>
+                  <LabelList dataKey="pontos" position="top" fontSize={10} />
+                </Line>
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
