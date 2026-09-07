@@ -81,6 +81,7 @@ const EmpresaDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['vendas'] });
       toast.success("Venda lançada com sucesso!");
       setSelectedArquiteto("");
+      setBuscaProfissional("");
       setValorVenda("");
       setCliente("");
       setClienteTelefone("");
