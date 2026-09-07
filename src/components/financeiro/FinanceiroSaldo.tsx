@@ -20,7 +20,7 @@ const FinanceiroSaldo = () => {
       <CardHeader className="gap-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <CardTitle className="text-base">Saldo de campanha (50% diferidos)</CardTitle>
+            <CardTitle className="text-base">Lançamento pontos mensal (50% diferidos)</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               A receber no fechamento: <span className="font-semibold text-foreground">{formatBRL(total)}</span>
               {cfg?.vencimento_saldo && ` · vencimento ${new Date(cfg.vencimento_saldo + "T12:00:00").toLocaleDateString("pt-BR")}`}
@@ -31,11 +31,11 @@ const FinanceiroSaldo = () => {
             variant="outline"
             onClick={() =>
               exportarCSV(
-                "saldo-campanha",
+                "lancamento-pontos-mensal",
                 saldos.map((s: any) => ({
                   empresa: s.empresas?.nome,
                   ano: s.ano,
-                  acumulado: s.valor_acumulado,
+                  valor: s.valor_acumulado,
                   pago: s.valor_pago,
                   saldo: Number(s.valor_acumulado) - Number(s.valor_pago),
                 })),
@@ -52,7 +52,7 @@ const FinanceiroSaldo = () => {
             <TableRow>
               <TableHead>Empresa</TableHead>
               <TableHead>Ano</TableHead>
-              <TableHead className="text-right">Acumulado</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
               <TableHead className="text-right">Pago</TableHead>
               <TableHead className="text-right">A pagar no fim da campanha</TableHead>
               <TableHead>Situação</TableHead>

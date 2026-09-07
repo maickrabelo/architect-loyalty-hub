@@ -15,6 +15,8 @@ const statusCor = (status: string) =>
     vencida: "bg-destructive/15 text-destructive border-destructive/30",
   } as Record<string, string>)[status] ?? "bg-muted text-muted-foreground";
 
+const dataBR = (d?: string | null) => (d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR") : "—");
+
 const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
   const [mes, setMes] = useState(new Date().toISOString().slice(0, 7));
   const meses = listaMeses(24);
@@ -78,13 +80,15 @@ const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
                 <TableHead className="text-right">Pontos (mês)</TableHead>
                 <TableHead className="text-right">Extras</TableHead>
                 <TableHead className="text-right">Total</TableHead>
-                <TableHead>Vencimento</TableHead>
+                <TableHead>Venc. mensalidade</TableHead>
+                <TableHead>Venc. pontos (50%)</TableHead>
+                <TableHead>Venc. extras</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {faturas.length === 0 && (
-                <TableRow><TableCell colSpan={8} className="py-8 text-center text-muted-foreground">Nenhuma fatura emitida.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Nenhuma fatura emitida.</TableCell></TableRow>
               )}
               {faturas.map((f: any) => (
                 <TableRow key={f.id}>
@@ -94,7 +98,9 @@ const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
                   <TableCell className="text-right">{formatBRL(Number(f.valor_pontos_mes))}</TableCell>
                   <TableCell className="text-right">{formatBRL(Number(f.valor_extras))}</TableCell>
                   <TableCell className="text-right font-semibold">{formatBRL(Number(f.valor_total))}</TableCell>
-                  <TableCell>{new Date(f.vencimento + "T12:00:00").toLocaleDateString("pt-BR")}</TableCell>
+                  <TableCell>{dataBR(f.vencimento_mensalidade ?? f.vencimento)}</TableCell>
+                  <TableCell>{dataBR(f.vencimento)}</TableCell>
+                  <TableCell>{Number(f.valor_extras) > 0 ? dataBR(f.vencimento_extras ?? f.vencimento) : "—"}</TableCell>
                   <TableCell><Badge variant="outline" className={statusCor(f.status)}>{f.status}</Badge></TableCell>
                 </TableRow>
               ))}
@@ -105,9 +111,9 @@ const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
 
       {saldo && (
         <Card>
-          <CardHeader><CardTitle className="text-base">Saldo da campanha {saldo.ano}</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">Lançamento pontos mensal {saldo.ano}</CardTitle></CardHeader>
           <CardContent className="text-sm space-y-1">
-            <p>Acumulado (50% diferidos): <strong>{formatBRL(Number(saldo.valor_acumulado))}</strong></p>
+            <p>Valor (50% diferidos): <strong>{formatBRL(Number(saldo.valor_acumulado))}</strong></p>
             <p>Já pago: {formatBRL(Number(saldo.valor_pago))}</p>
             <p>
               A pagar no fim da campanha:{" "}

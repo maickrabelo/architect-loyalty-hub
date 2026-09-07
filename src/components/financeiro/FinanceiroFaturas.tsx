@@ -13,6 +13,8 @@ import { Download, RefreshCw, Loader2 } from "lucide-react";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
 import { statusBadge } from "./FinanceiroResumo";
 
+const dataBR = (d?: string | null) => (d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR") : "—");
+
 const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: boolean }) => {
   const { data: faturas = [], isLoading } = useFaturas(mes);
   const queryClient = useQueryClient();
@@ -113,7 +115,9 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                     mes: f.mes,
                     total: f.valor_total,
                     pago: f.valor_pago,
-                    vencimento: f.vencimento,
+                    vencimento_mensalidade: f.vencimento_mensalidade ?? f.vencimento,
+                    vencimento_pontos: f.vencimento,
+                    vencimento_extras: f.vencimento_extras ?? f.vencimento,
                     status: f.status,
                   })),
                 )
@@ -136,15 +140,17 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
               <TableHead className="text-right">Total</TableHead>
               <TableHead className="text-right">Pago</TableHead>
               <TableHead className="text-right">Saldo</TableHead>
-              <TableHead>Vencimento</TableHead>
+              <TableHead>Venc. mensalidade</TableHead>
+              <TableHead>Venc. pontos (50%)</TableHead>
+              <TableHead>Venc. extras</TableHead>
               <TableHead>Status</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading && <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">Carregando...</TableCell></TableRow>}
+            {isLoading && <TableRow><TableCell colSpan={9} className="py-8 text-center text-muted-foreground">Carregando...</TableCell></TableRow>}
             {!isLoading && filtradas.length === 0 && (
-              <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">Nenhuma fatura. Clique em "Gerar / atualizar faturas".</TableCell></TableRow>
+              <TableRow><TableCell colSpan={9} className="py-8 text-center text-muted-foreground">Nenhuma fatura. Clique em "Gerar / atualizar faturas".</TableCell></TableRow>
             )}
             {filtradas.map((f: any) => (
               <TableRow key={f.id}>
@@ -152,7 +158,9 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                 <TableCell className="text-right">{formatBRL(Number(f.valor_total))}</TableCell>
                 <TableCell className="text-right">{formatBRL(Number(f.valor_pago))}</TableCell>
                 <TableCell className="text-right">{formatBRL(Number(f.valor_total) - Number(f.valor_pago))}</TableCell>
-                <TableCell>{new Date(f.vencimento + "T12:00:00").toLocaleDateString("pt-BR")}</TableCell>
+                <TableCell>{dataBR(f.vencimento_mensalidade ?? f.vencimento)}</TableCell>
+                <TableCell>{dataBR(f.vencimento)}</TableCell>
+                <TableCell>{Number(f.valor_extras) > 0 ? dataBR(f.vencimento_extras ?? f.vencimento) : "—"}</TableCell>
                 <TableCell><Badge variant="outline" className={statusBadge(f.status)}>{f.status}</Badge></TableCell>
                 <TableCell className="text-right">
                   <Button
