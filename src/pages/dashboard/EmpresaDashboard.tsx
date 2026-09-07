@@ -25,6 +25,7 @@ import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
 import EmpresaRateio from "@/components/dashboard/EmpresaRateio";
 import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
