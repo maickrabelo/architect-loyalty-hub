@@ -29,6 +29,7 @@ import {
 import { DestinoCard } from "@/components/DestinoCard";
 import { RelatorioGestor } from "@/components/RelatorioGestor";
 import AdminOverview from "@/components/dashboard/AdminOverview";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
