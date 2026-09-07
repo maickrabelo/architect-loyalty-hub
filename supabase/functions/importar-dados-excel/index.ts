@@ -43,6 +43,35 @@ serve(async (req) => {
       .eq("user_id", userData.user.id).eq("role", "gestor").maybeSingle();
     if (!role) throw new Error("Apenas gestores podem importar");
 
+    // Reset total (quando ?reset=1): apaga dados operacionais e contas importadas
+    const url = new URL(req.url);
+    if (url.searchParams.get("reset") === "1") {
+      const all = "00000000-0000-0000-0000-000000000000";
+      await admin.from("fatura_itens").delete().neq("id", all);
+      await admin.from("movimentacoes_financeiras").delete().neq("id", all);
+      await admin.from("faturas").delete().neq("id", all);
+      await admin.from("saldo_campanha").delete().neq("id", all);
+      await admin.from("caixas_mensais").delete().neq("id", all);
+      await admin.from("cobrancas_extras_empresas").delete().neq("id", all);
+      await admin.from("cobrancas_extras").delete().neq("id", all);
+      await admin.from("bloqueios_empresa").delete().neq("id", all);
+      await admin.from("premiacoes_snapshot").delete().neq("id", all);
+      await admin.from("vendas").delete().neq("id", all);
+      await admin.from("empresas").delete().neq("id", all);
+
+      for (let page = 1; page <= 20; page++) {
+        const { data: pg } = await admin.auth.admin.listUsers({ page, perPage: 200 });
+        const users = pg?.users ?? [];
+        for (const u of users) {
+          const email = (u.email ?? "").toLowerCase();
+          if (email.endsWith("@lojista.conexao.com") || email.endsWith("@arq.conexao.com")) {
+            await admin.auth.admin.deleteUser(u.id);
+          }
+        }
+        if (users.length < 200) break;
+      }
+    }
+
     const empresasMap = dados.empresas_map as EmpresaMap[];
     const profsMap = dados.profissionais_map as ProfMap[];
     const vendas = dados.vendas_mensais as Venda[];
