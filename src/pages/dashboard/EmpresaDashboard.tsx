@@ -403,6 +403,7 @@ const EmpresaDashboard = () => {
                     </div>
                   </div>
                 ))}
+                <PaginacaoControles pagina={pagDesempenho.pagina} totalPaginas={pagDesempenho.totalPaginas} onChange={pagDesempenho.setPagina} />
               </div>
             )}
           </CardContent>
@@ -497,7 +498,7 @@ const EmpresaDashboard = () => {
             </div>
 
             <div className="space-y-3">
-              {arquitetos.map((arquiteto) => {
+              {pagInvestimento.paginados.map((arquiteto) => {
                 const investimento = investimentoPorArquiteto[arquiteto.id] || 0;
                 const percentual = totalInvestimento > 0 
                   ? ((investimento / totalInvestimento) * 100).toFixed(1)
