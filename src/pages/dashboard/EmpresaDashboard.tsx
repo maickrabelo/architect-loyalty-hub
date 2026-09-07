@@ -37,6 +37,8 @@ const EmpresaDashboard = () => {
   const [dataInicio, setDataInicio] = useState<Date>();
   const [dataFim, setDataFim] = useState<Date>();
   const [selectedArquiteto, setSelectedArquiteto] = useState("");
+  const [buscaProfissional, setBuscaProfissional] = useState("");
+  const [sugestoesAbertas, setSugestoesAbertas] = useState(false);
   const [valorVenda, setValorVenda] = useState("");
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
