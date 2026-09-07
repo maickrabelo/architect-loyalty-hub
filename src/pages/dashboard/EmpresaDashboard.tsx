@@ -150,6 +150,10 @@ const EmpresaDashboard = () => {
   const investimentoPorArquiteto = calcularInvestimentoPorArquiteto();
   const totalInvestimento = Object.values(investimentoPorArquiteto).reduce((sum, val) => sum + val, 0);
 
+  const arquitetosOrdenados = [...arquitetos].sort((a, b) => b.vendasTotal - a.vendasTotal);
+  const pagDesempenho = usePaginacao(arquitetosOrdenados);
+  const pagInvestimento = usePaginacao(arquitetos);
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center">
@@ -378,7 +382,7 @@ const EmpresaDashboard = () => {
               </p>
             ) : (
               <div className="space-y-4">
-                {[...arquitetos].sort((a, b) => b.vendasTotal - a.vendasTotal).map((arquiteto) => (
+                {pagDesempenho.paginados.map((arquiteto) => (
                   <div 
                     key={arquiteto.id}
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-secondary rounded-lg gap-4"
