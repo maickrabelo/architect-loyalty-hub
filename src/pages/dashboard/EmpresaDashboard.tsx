@@ -219,21 +219,53 @@ const EmpresaDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label>Profissional</Label>
-                <Select value={selectedArquiteto} onValueChange={setSelectedArquiteto}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o profissional" />
-
-                  </SelectTrigger>
-                  <SelectContent>
-                    {arquitetos.map((arq) => (
-                      <SelectItem key={arq.id} value={arq.id}>
-                        {arq.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  placeholder="Digite para buscar o profissional"
+                  value={buscaProfissional}
+                  onChange={(e) => {
+                    setBuscaProfissional(e.target.value);
+                    setSelectedArquiteto("");
+                    setSugestoesAbertas(true);
+                  }}
+                  onFocus={() => setSugestoesAbertas(true)}
+                  onBlur={() => setTimeout(() => setSugestoesAbertas(false), 150)}
+                  className="bg-secondary"
+                  disabled={lancarVendaMutation.isPending}
+                  autoComplete="off"
+                />
+                {sugestoesAbertas && (
+                  <div className="absolute z-20 top-full mt-1 w-full max-h-56 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
+                    {arquitetos
+                      .filter((a) =>
+                        a.nome.toLowerCase().includes(buscaProfissional.toLowerCase()),
+                      )
+                      .slice(0, 20)
+                      .map((arq) => (
+                        <button
+                          key={arq.id}
+                          type="button"
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setSelectedArquiteto(arq.id);
+                            setBuscaProfissional(arq.nome);
+                            setSugestoesAbertas(false);
+                          }}
+                        >
+                          {arq.nome}
+                        </button>
+                      ))}
+                    {arquitetos.filter((a) =>
+                      a.nome.toLowerCase().includes(buscaProfissional.toLowerCase()),
+                    ).length === 0 && (
+                      <p className="px-3 py-2 text-sm text-muted-foreground">
+                        Nenhum profissional encontrado.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
