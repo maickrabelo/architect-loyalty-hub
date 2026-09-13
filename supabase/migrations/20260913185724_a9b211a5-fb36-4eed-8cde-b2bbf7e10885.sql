@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS senha_alterada boolean NOT NULL DEFAULT true;
