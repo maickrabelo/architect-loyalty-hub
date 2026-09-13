@@ -15,6 +15,7 @@ import EmpresaDashboard from "./pages/dashboard/EmpresaDashboard";
 import GestorDashboard from "./pages/dashboard/GestorDashboard";
 import FinanceiroDashboard from "./pages/dashboard/FinanceiroDashboard";
 import NotFound from "./pages/NotFound";
+import { TrocaSenhaObrigatoria } from "./components/TrocaSenhaObrigatoria";
 
 const queryClient = new QueryClient();
 
