@@ -45,6 +45,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <PushRouteBridge />
+          <TrocaSenhaObrigatoria />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
