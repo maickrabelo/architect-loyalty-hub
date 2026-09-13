@@ -555,6 +555,7 @@ export type Database = {
           observacao: string | null
           profissao: string | null
           rg: string | null
+          senha_alterada: boolean
           sexo: Database["public"]["Enums"]["sexo_type"] | null
           telefone: string | null
           updated_at: string | null
@@ -582,6 +583,7 @@ export type Database = {
           observacao?: string | null
           profissao?: string | null
           rg?: string | null
+          senha_alterada?: boolean
           sexo?: Database["public"]["Enums"]["sexo_type"] | null
           telefone?: string | null
           updated_at?: string | null
@@ -609,6 +611,7 @@ export type Database = {
           observacao?: string | null
           profissao?: string | null
           rg?: string | null
+          senha_alterada?: boolean
           sexo?: Database["public"]["Enums"]["sexo_type"] | null
           telefone?: string | null
           updated_at?: string | null
