@@ -15,7 +15,9 @@ import EmpresaDashboard from "./pages/dashboard/EmpresaDashboard";
 import GestorDashboard from "./pages/dashboard/GestorDashboard";
 import FinanceiroDashboard from "./pages/dashboard/FinanceiroDashboard";
 import NotFound from "./pages/NotFound";
+import Privacidade from "./pages/Privacidade";
 import { TrocaSenhaObrigatoria } from "./components/TrocaSenhaObrigatoria";
+import { AvisoPrivacidade } from "./components/AvisoPrivacidade";
 
 const queryClient = new QueryClient();
 
@@ -46,11 +48,13 @@ const App = () => (
         <BrowserRouter>
           <PushRouteBridge />
           <TrocaSenhaObrigatoria />
+          <AvisoPrivacidade />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/privacidade" element={<Privacidade />} />
             <Route path="/dashboard/arquiteto" element={<ArquitetoDashboard />} />
             <Route path="/dashboard/arquiteto/pontuacao" element={<PontuacaoDetalhada />} />
             <Route path="/dashboard/empresa" element={<EmpresaDashboard />} />

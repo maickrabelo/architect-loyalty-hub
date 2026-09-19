@@ -159,8 +159,16 @@ const Cadastro = () => {
     }
   };
 
+  const [aceitePrivacidade, setAceitePrivacidade] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!aceitePrivacidade) {
+      toast.error("É necessário aceitar a Política de Privacidade para se cadastrar.");
+      return;
+    }
+
 
     // Check password confirmation
     if (formData.senha !== formData.confirmacaoSenha) {
@@ -785,6 +793,25 @@ const Cadastro = () => {
                     )}
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-start gap-3 pt-6 rounded-lg border border-border p-4">
+                <input
+                  id="aceite-privacidade"
+                  type="checkbox"
+                  checked={aceitePrivacidade}
+                  onChange={(e) => setAceitePrivacidade(e.target.checked)}
+                  className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]"
+                  disabled={isSubmitting}
+                />
+                <Label htmlFor="aceite-privacidade" className="text-sm font-normal leading-relaxed text-muted-foreground">
+                  Li e concordo com a{" "}
+                  <Link to="/privacidade" target="_blank" className="text-primary-deep underline">
+                    Política de Privacidade
+                  </Link>{" "}
+                  e autorizo o tratamento dos meus dados pessoais para participação no programa,
+                  conforme a LGPD. Declaro ter autorização das pessoas cujos dados eu informar.
+                </Label>
               </div>
 
               <div className="flex gap-4 pt-6">
