@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { WavePattern } from "@/components/brand/WavePattern";
 
@@ -8,9 +9,14 @@ export const Footer = () => {
         <WavePattern className="h-8 mb-8" opacity={0.35} />
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="sm" />
-          <p className="label-tag-muted">
-            © 2026 Grupo Conexão · Programa de fidelidade editorial
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
+            <Link to="/privacidade" className="label-tag-muted hover:text-foreground">
+              Política de Privacidade
+            </Link>
+            <p className="label-tag-muted">
+              © 2026 Grupo Conexão · Programa de fidelidade editorial
+            </p>
+          </div>
         </div>
       </div>
     </footer>
