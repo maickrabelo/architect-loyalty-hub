@@ -159,8 +159,16 @@ const Cadastro = () => {
     }
   };
 
+  const [aceitePrivacidade, setAceitePrivacidade] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!aceitePrivacidade) {
+      toast.error("É necessário aceitar a Política de Privacidade para se cadastrar.");
+      return;
+    }
+
 
     // Check password confirmation
     if (formData.senha !== formData.confirmacaoSenha) {
