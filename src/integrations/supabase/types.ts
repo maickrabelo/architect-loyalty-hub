@@ -834,7 +834,7 @@ export type Database = {
       reabrir_caixa: { Args: { _mes: string }; Returns: undefined }
     }
     Enums: {
-      app_role: "arquiteto" | "empresa" | "gestor" | "financeiro"
+      app_role: "arquiteto" | "empresa" | "gestor" | "financeiro" | "auditor"
       sexo_type: "masculino" | "feminino" | "outro" | "prefiro_nao_informar"
     }
     CompositeTypes: {
@@ -963,7 +963,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["arquiteto", "empresa", "gestor", "financeiro"],
+      app_role: ["arquiteto", "empresa", "gestor", "financeiro", "auditor"],
       sexo_type: ["masculino", "feminino", "outro", "prefiro_nao_informar"],
     },
   },

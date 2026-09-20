@@ -30,10 +30,13 @@ import { DestinoCard } from "@/components/DestinoCard";
 import { RelatorioGestor } from "@/components/RelatorioGestor";
 import AdminOverview from "@/components/dashboard/AdminOverview";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
+import { useAuth } from "@/contexts/AuthContext";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { userRole } = useAuth();
+  const somenteLeitura = userRole === "auditor";
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEmpresaDialogOpen, setIsEmpresaDialogOpen] = useState(false);
@@ -369,12 +372,16 @@ const GestorDashboard = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-4xl font-bold mb-2">Dashboard do Gestor</h1>
-            <p className="text-xl text-muted-foreground">Visão completa do sistema</p>
+            <p className="text-xl text-muted-foreground">
+              {somenteLeitura ? "Acesso somente leitura" : "Visão completa do sistema"}
+            </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => navigate("/dashboard/financeiro")}>
-              Módulo Financeiro
-            </Button>
+            {!somenteLeitura && (
+              <Button variant="secondary" onClick={() => navigate("/dashboard/financeiro")}>
+                Módulo Financeiro
+              </Button>
+            )}
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Sair
@@ -503,6 +510,7 @@ const GestorDashboard = () => {
                     <CardTitle>Empresas Cadastradas</CardTitle>
                     <CardDescription>Gerenciar empresas parceiras</CardDescription>
                   </div>
+                  {!somenteLeitura && (
                   <Dialog open={isEmpresaDialogOpen} onOpenChange={setIsEmpresaDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="premium">
@@ -623,6 +631,7 @@ const GestorDashboard = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
@@ -681,6 +690,7 @@ const GestorDashboard = () => {
                     </CardTitle>
                     <CardDescription>Crie e edite destinos exclusivos para os profissionais</CardDescription>
                   </div>
+                  {!somenteLeitura && (
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="premium" onClick={() => handleOpenDialog()}>
@@ -778,6 +788,7 @@ const GestorDashboard = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
@@ -790,6 +801,7 @@ const GestorDashboard = () => {
                         pontos={destino.pontos}
                         imagem={destino.imagem}
                       />
+                      {!somenteLeitura && (
                       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="icon"
@@ -808,6 +820,7 @@ const GestorDashboard = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
+                      )}
                     </div>
                   ))}
                 </div>
