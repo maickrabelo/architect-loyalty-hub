@@ -510,6 +510,7 @@ const GestorDashboard = () => {
                     <CardTitle>Empresas Cadastradas</CardTitle>
                     <CardDescription>Gerenciar empresas parceiras</CardDescription>
                   </div>
+                  {!somenteLeitura && (
                   <Dialog open={isEmpresaDialogOpen} onOpenChange={setIsEmpresaDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="premium">
@@ -630,6 +631,7 @@ const GestorDashboard = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
@@ -688,6 +690,7 @@ const GestorDashboard = () => {
                     </CardTitle>
                     <CardDescription>Crie e edite destinos exclusivos para os profissionais</CardDescription>
                   </div>
+                  {!somenteLeitura && (
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="premium" onClick={() => handleOpenDialog()}>
@@ -797,6 +800,7 @@ const GestorDashboard = () => {
                         pontos={destino.pontos}
                         imagem={destino.imagem}
                       />
+                      {!somenteLeitura && (
                       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="icon"
@@ -815,6 +819,7 @@ const GestorDashboard = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
+                      )}
                     </div>
                   ))}
                 </div>
