@@ -13,6 +13,9 @@ export const Footer = () => {
             <Link to="/privacidade" className="label-tag-muted hover:text-foreground">
               Política de Privacidade
             </Link>
+            <Link to="/excluir-conta" className="label-tag-muted hover:text-foreground">
+              Excluir conta e dados
+            </Link>
             <p className="label-tag-muted">
               © 2026 Grupo Conexão · Programa de fidelidade editorial
             </p>
