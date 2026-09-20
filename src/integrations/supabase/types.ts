@@ -689,6 +689,54 @@ export type Database = {
           },
         ]
       }
+      solicitacoes_exclusao: {
+        Row: {
+          cpf_cnpj: string | null
+          created_at: string
+          email: string
+          id: string
+          motivo: string | null
+          nome: string
+          observacao_interna: string | null
+          processado_em: string | null
+          processado_por: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          motivo?: string | null
+          nome: string
+          observacao_interna?: string | null
+          processado_em?: string | null
+          processado_por?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          motivo?: string | null
+          nome?: string
+          observacao_interna?: string | null
+          processado_em?: string | null
+          processado_por?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
