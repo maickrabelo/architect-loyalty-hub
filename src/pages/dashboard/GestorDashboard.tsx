@@ -788,6 +788,7 @@ const GestorDashboard = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
