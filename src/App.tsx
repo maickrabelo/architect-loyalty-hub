@@ -16,6 +16,7 @@ import GestorDashboard from "./pages/dashboard/GestorDashboard";
 import FinanceiroDashboard from "./pages/dashboard/FinanceiroDashboard";
 import NotFound from "./pages/NotFound";
 import Privacidade from "./pages/Privacidade";
+import ExcluirConta from "./pages/ExcluirConta";
 import { TrocaSenhaObrigatoria } from "./components/TrocaSenhaObrigatoria";
 import { AvisoPrivacidade } from "./components/AvisoPrivacidade";
 
