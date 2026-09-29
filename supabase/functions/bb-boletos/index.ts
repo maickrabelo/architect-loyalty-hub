@@ -7,7 +7,7 @@ const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
 const Body = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('emitir'), fatura_id: z.string().uuid(), tipo: z.enum(['mensalidade', 'pontos', 'extras']) }),
+  z.object({ action: z.literal('emitir'), fatura_id: z.string().uuid(), tipo: z.enum(['mensalidade', 'pontos', 'extras']), novo_vencimento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional() }),
   z.object({ action: z.literal('consultar'), boleto_id: z.string().uuid() }),
   z.object({ action: z.literal('baixar'), boleto_id: z.string().uuid() }),
   z.object({ action: z.literal('ping') }),
@@ -31,13 +31,20 @@ async function autorizar(req: Request, db: ReturnType<typeof admin>) {
   return ok ? user.id : null
 }
 
-async function emitir(db: any, userId: string, faturaId: string, tipo: string) {
+async function emitir(db: any, userId: string, faturaId: string, tipo: string, novoVencimento?: string) {
   const c = cfg()
   const { data: f, error } = await db.from('faturas').select('*, empresas(*)').eq('id', faturaId).single()
   if (error || !f) throw new Error('Fatura não encontrada')
   const valor = Number(tipo === 'mensalidade' ? f.valor_mensalidade : tipo === 'pontos' ? f.valor_pontos_mes : f.valor_extras)
-  const venc = tipo === 'mensalidade' ? (f.vencimento_mensalidade ?? f.vencimento) : tipo === 'extras' ? (f.vencimento_extras ?? f.vencimento) : f.vencimento
+  let venc = tipo === 'mensalidade' ? (f.vencimento_mensalidade ?? f.vencimento) : tipo === 'extras' ? (f.vencimento_extras ?? f.vencimento) : f.vencimento
   if (!(valor > 0)) throw new Error('Valor zerado para este vencimento')
+  const hoje = new Date().toISOString().slice(0, 10)
+  if (novoVencimento) {
+    if (novoVencimento < hoje) throw new Error('A nova data de vencimento não pode estar no passado')
+    venc = novoVencimento
+  } else if (venc < hoje) {
+    throw new Error('VENCIDO:Este pagamento está vencido. Defina uma nova data de vencimento para reemitir o boleto.')
+  }
   const e = f.empresas
   const doc = String(e?.cnpj ?? '').replace(/\D/g, '')
   if (doc.length !== 11 && doc.length !== 14) throw new Error(`Empresa ${e?.nome} sem CPF/CNPJ válido cadastrado`)
@@ -117,7 +124,7 @@ Deno.serve(async (req) => {
 
     if (body.action === 'ping') return json({ ok: true, token: (await token()).slice(0, 8) + '...' })
 
-    if (body.action === 'emitir') return json({ boleto: await emitir(db, who, body.fatura_id, body.tipo) })
+    if (body.action === 'emitir') return json({ boleto: await emitir(db, who, body.fatura_id, body.tipo, body.novo_vencimento) })
 
     if (body.action === 'consultar' || body.action === 'baixar') {
       const { data: b } = await db.from('boletos').select('*').eq('id', body.boleto_id).single()
