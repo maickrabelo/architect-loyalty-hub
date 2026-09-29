@@ -10,6 +10,7 @@ const Body = z.discriminatedUnion('action', [
   z.object({ action: z.literal('emitir'), fatura_id: z.string().uuid(), tipo: z.enum(['mensalidade', 'pontos', 'extras']) }),
   z.object({ action: z.literal('consultar'), boleto_id: z.string().uuid() }),
   z.object({ action: z.literal('baixar'), boleto_id: z.string().uuid() }),
+  z.object({ action: z.literal('ping') }),
   z.object({ action: z.literal('sincronizar') }),
 ])
 
@@ -111,6 +112,8 @@ Deno.serve(async (req) => {
     if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400)
     const body = parsed.data
     if (who === 'cron' && body.action !== 'sincronizar') return json({ error: 'Não autorizado' }, 401)
+
+    if (body.action === 'ping') return json({ ok: true, token: (await token()).slice(0, 8) + '...' })
 
     if (body.action === 'emitir') return json({ boleto: await emitir(db, who, body.fatura_id, body.tipo) })
 
