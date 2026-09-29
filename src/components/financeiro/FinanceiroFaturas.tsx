@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Download, RefreshCw, Loader2 } from "lucide-react";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
 import { statusBadge } from "./FinanceiroResumo";
+import BoletosFatura from "./BoletosFatura";
 
 const dataBR = (d?: string | null) => (d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR") : "—");
 
@@ -20,6 +21,7 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
   const queryClient = useQueryClient();
   const [busca, setBusca] = useState("");
   const [pagamento, setPagamento] = useState<any>(null);
+  const [boletosDe, setBoletosDe] = useState<any>(null);
   const [valorPago, setValorPago] = useState("");
 
   const invalidate = () => {
@@ -162,7 +164,9 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                 <TableCell>{dataBR(f.vencimento)}</TableCell>
                 <TableCell>{Number(f.valor_extras) > 0 ? dataBR(f.vencimento_extras ?? f.vencimento) : "—"}</TableCell>
                 <TableCell><Badge variant="outline" className={statusBadge(f.status)}>{f.status}</Badge></TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right space-x-2 whitespace-nowrap">
+                  <Button size="sm" variant="secondary" onClick={() => setBoletosDe(f)}>Boletos</Button>
+
                   <Button
                     size="sm"
                     variant="outline"
@@ -181,6 +185,7 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
         </Table>
       </CardContent>
 
+      <BoletosFatura fatura={boletosDe} onClose={() => setBoletosDe(null)} />
       <Dialog open={!!pagamento} onOpenChange={(o) => !o && setPagamento(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Registrar pagamento — {pagamento?.empresas?.nome}</DialogTitle></DialogHeader>

@@ -15,6 +15,7 @@ import FinanceiroCaixa from "@/components/financeiro/FinanceiroCaixa";
 import FinanceiroCobrancas from "@/components/financeiro/FinanceiroCobrancas";
 import FinanceiroBloqueios from "@/components/financeiro/FinanceiroBloqueios";
 import FinanceiroConfig from "@/components/financeiro/FinanceiroConfig";
+import IntegracaoBB from "@/components/financeiro/IntegracaoBB";
 
 const FinanceiroDashboard = () => {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const FinanceiroDashboard = () => {
           <TabsContent value="caixa"><FinanceiroCaixa mes={mes} /></TabsContent>
           <TabsContent value="extras"><FinanceiroCobrancas /></TabsContent>
           <TabsContent value="bloqueios"><FinanceiroBloqueios /></TabsContent>
-          <TabsContent value="config"><FinanceiroConfig /></TabsContent>
+          <TabsContent value="config" className="space-y-6"><IntegracaoBB /><FinanceiroConfig /></TabsContent>
         </Tabs>
       </main>
     </div>

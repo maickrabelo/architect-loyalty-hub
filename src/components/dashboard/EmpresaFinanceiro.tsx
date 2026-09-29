@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatBRL, labelMes, listaMeses } from "@/hooks/useFinanceiro";
+import { LinhaBoleto, statusBoleto } from "@/components/financeiro/BoletosFatura";
 
 const statusCor = (status: string) =>
   ({
@@ -29,6 +30,22 @@ const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
         .select("*, fatura_itens(tipo, descricao, valor)")
         .eq("empresa_id", empresaId)
         .order("mes", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!empresaId,
+  });
+
+  const { data: boletos = [] } = useQuery({
+    queryKey: ["empresa-boletos", empresaId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("boletos")
+        .select("*, faturas(mes)")
+        .eq("empresa_id", empresaId)
+        .in("status", ["emitido", "pago"])
+        .order("vencimento", { ascending: false })
+        .limit(24);
       if (error) throw error;
       return data || [];
     },
@@ -108,6 +125,24 @@ const EmpresaFinanceiro = ({ empresaId }: { empresaId: string }) => {
           </Table>
         </CardContent>
       </Card>
+
+      {boletos.length > 0 && (
+        <Card>
+          <CardHeader><CardTitle className="text-base">Meus boletos</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            {boletos.map((b: any) => (
+              <div key={b.id} className="rounded-lg border p-3 space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                  <span className="font-medium capitalize">{b.tipo} · {labelMes(b.faturas?.mes ?? "")}</span>
+                  <span>{formatBRL(Number(b.valor))} · vence {dataBR(b.vencimento)}</span>
+                  <Badge variant="outline" className={statusBoleto(b.status)}>{b.status}</Badge>
+                </div>
+                {b.status === "emitido" && <LinhaBoleto b={b} />}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {saldo && (
         <Card>
