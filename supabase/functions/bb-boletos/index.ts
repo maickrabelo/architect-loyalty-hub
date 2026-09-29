@@ -53,7 +53,11 @@ async function emitir(db: any, userId: string, faturaId: string, tipo: string, n
   if (existente) throw new Error('Já existe boleto ativo para este vencimento')
 
   const { data: seq } = await db.rpc('proximo_numero_boleto')
-  const numero = `000${c.BB_CONVENIO.padStart(7, '0')}${String(seq).padStart(10, '0')}`
+  // Em homologação o convênio é compartilhado: usa sufixo único baseado no tempo para evitar "Nosso Número já incluído"
+  const sufixo = HOMOLOG
+    ? String(Date.now()).slice(-8) + String(Math.floor(Math.random() * 100)).padStart(2, '0')
+    : String(seq).padStart(10, '0')
+  const numero = `000${c.BB_CONVENIO.padStart(7, '0')}${sufixo}`
   const { data: boleto, error: insErr } = await db.from('boletos').insert({
     fatura_id: faturaId, empresa_id: f.empresa_id, tipo, valor, vencimento: venc, numero, status: 'pendente', created_by: userId === 'cron' ? null : userId,
   }).select().single()
