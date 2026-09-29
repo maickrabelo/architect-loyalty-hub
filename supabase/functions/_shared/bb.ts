@@ -30,7 +30,7 @@ export async function token() {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: 'grant_type=client_credentials&scope=cobrancas.boletos-info cobrancas.boletos-requisicao',
-        signal: AbortSignal.timeout(20000),
+        signal: AbortSignal.timeout(10000),
       })
       const j = await r.json().catch(() => ({}))
       if (r.ok) {
