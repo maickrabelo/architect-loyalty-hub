@@ -19,18 +19,34 @@ let cached: { token: string; exp: number } | null = null
 export async function token() {
   if (cached && cached.exp > Date.now()) return cached.token
   const c = cfg()
-  const r = await fetch(OAUTH_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: 'Basic ' + btoa(`${c.BB_CLIENT_ID}:${c.BB_CLIENT_SECRET}`),
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials&scope=cobrancas.boletos-info cobrancas.boletos-requisicao',
-  })
-  const j = await r.json().catch(() => ({}))
-  if (!r.ok) throw new Error(`Falha de autenticação no BB (${r.status}): ${j.error_description ?? j.error ?? ''}`)
-  cached = { token: j.access_token, exp: Date.now() + (Number(j.expires_in ?? 600) - 60) * 1000 }
-  return cached.token
+  let lastErr = ''
+  // O sandbox do BB é instável (frequentes 502/504): tenta até 4 vezes com espera crescente
+  for (let tentativa = 1; tentativa <= 4; tentativa++) {
+    try {
+      const r = await fetch(OAUTH_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + btoa(`${c.BB_CLIENT_ID}:${c.BB_CLIENT_SECRET}`),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'grant_type=client_credentials&scope=cobrancas.boletos-info cobrancas.boletos-requisicao',
+        signal: AbortSignal.timeout(20000),
+      })
+      const j = await r.json().catch(() => ({}))
+      if (r.ok) {
+        cached = { token: j.access_token, exp: Date.now() + (Number(j.expires_in ?? 600) - 60) * 1000 }
+        return cached.token
+      }
+      lastErr = `Falha de autenticação no BB (${r.status}): ${j.error_description ?? j.error ?? 'sem detalhe'}`
+      // 401/403 = credencial errada, não adianta tentar de novo
+      if (r.status === 401 || r.status === 403) throw new Error(lastErr)
+    } catch (e) {
+      lastErr = e instanceof Error ? e.message : String(e)
+      if (lastErr.includes('(401)') || lastErr.includes('(403)')) throw e
+    }
+    if (tentativa < 4) await new Promise((res) => setTimeout(res, 1500 * tentativa))
+  }
+  throw new Error(`${lastErr} (após 4 tentativas — o ambiente de testes do BB pode estar fora do ar; tente novamente em alguns minutos)`)
 }
 
 export async function bb(path: string, init: RequestInit = {}, query: Record<string, string> = {}) {
