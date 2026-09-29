@@ -20,8 +20,8 @@ export async function token() {
   if (cached && cached.exp > Date.now()) return cached.token
   const c = cfg()
   let lastErr = ''
-  // O sandbox do BB é instável (frequentes 502/504): tenta até 4 vezes com espera crescente
-  for (let tentativa = 1; tentativa <= 4; tentativa++) {
+  // O sandbox do BB é instável (frequentes 502/504): tenta 2 vezes antes de desistir
+  for (let tentativa = 1; tentativa <= 2; tentativa++) {
     try {
       const r = await fetch(OAUTH_URL, {
         method: 'POST',
@@ -44,9 +44,9 @@ export async function token() {
       lastErr = e instanceof Error ? e.message : String(e)
       if (lastErr.includes('(401)') || lastErr.includes('(403)')) throw e
     }
-    if (tentativa < 4) await new Promise((res) => setTimeout(res, 1500 * tentativa))
+    if (tentativa < 2) await new Promise((res) => setTimeout(res, 2000))
   }
-  throw new Error(`${lastErr} (após 4 tentativas — o ambiente de testes do BB pode estar fora do ar; tente novamente em alguns minutos)`)
+  throw new Error(`${lastErr} — o ambiente de testes do Banco do Brasil está instável ou fora do ar no momento; tente novamente em alguns minutos`)
 }
 
 export async function bb(path: string, init: RequestInit = {}, query: Record<string, string> = {}) {
