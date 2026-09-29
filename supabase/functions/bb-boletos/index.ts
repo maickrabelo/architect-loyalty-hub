@@ -67,7 +67,8 @@ async function emitir(db: any, userId: string, faturaId: string, tipo: string) {
         codigoTipoTitulo: 2,
         descricaoTipoTitulo: 'DM',
         indicadorPermissaoRecebimentoParcial: 'N',
-        numeroTituloBeneficiario: `${f.mes}-${tipo.slice(0, 4)}`.slice(0, 15),
+        numeroTituloBeneficiario: `${String(f.mes)}${tipo.slice(0, 4)}`
+          .normalize('NFD').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 15),
         numeroTituloCliente: numero,
         mensagemBloquetoOcorrencia: `Programa Conexão - ${tipo} ${f.mes}`,
         pagador: {
