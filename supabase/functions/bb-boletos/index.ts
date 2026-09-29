@@ -72,8 +72,9 @@ async function emitir(db: any, userId: string, faturaId: string, tipo: string) {
         numeroTituloCliente: numero,
         mensagemBloquetoOcorrencia: `Programa Conexão - ${tipo} ${f.mes}`,
         pagador: {
-          tipoInscricao: doc.length === 11 ? 1 : 2,
-          numeroInscricao: doc,
+          // Homologação do BB só aceita CNPJs de teste cadastrados por eles
+          tipoInscricao: HOMOLOG ? 2 : (doc.length === 11 ? 1 : 2),
+          numeroInscricao: HOMOLOG ? '74910037000193' : doc,
           nome: (e.nome ?? '').slice(0, 60),
           endereco: (e.endereco ?? '').slice(0, 60),
           cidade: e.cidade ?? '',
