@@ -1,8 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-// Ambiente: sandbox (testes). Para produção troque as URLs e o nome do parâmetro de chave.
-const OAUTH_URL = 'https://oauth.sandbox.bb.com.br/oauth/token'
-const API_URL = 'https://api.sandbox.bb.com.br/cobrancas/v2'
+// Ambiente: homologação (testes). Para produção troque as URLs e o nome do parâmetro de chave.
+const OAUTH_URL = 'https://oauth.hm.bb.com.br/oauth/token'
+const API_URL = 'https://api.hm.bb.com.br/cobrancas/v2'
 const APP_KEY_PARAM = 'gw-dev-app-key'
 
 export const admin = () =>
