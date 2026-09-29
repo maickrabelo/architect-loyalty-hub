@@ -52,6 +52,87 @@ export type Database = {
           },
         ]
       }
+      boletos: {
+        Row: {
+          codigo_barras: string | null
+          codigo_estado: number | null
+          created_at: string
+          created_by: string | null
+          empresa_id: string
+          erro: string | null
+          fatura_id: string
+          id: string
+          linha_digitavel: string | null
+          numero: string | null
+          pago_em: string | null
+          qr_code: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          url_imagem: string | null
+          valor: number
+          valor_pago: number
+          vencimento: string
+        }
+        Insert: {
+          codigo_barras?: string | null
+          codigo_estado?: number | null
+          created_at?: string
+          created_by?: string | null
+          empresa_id: string
+          erro?: string | null
+          fatura_id: string
+          id?: string
+          linha_digitavel?: string | null
+          numero?: string | null
+          pago_em?: string | null
+          qr_code?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+          url_imagem?: string | null
+          valor: number
+          valor_pago?: number
+          vencimento: string
+        }
+        Update: {
+          codigo_barras?: string | null
+          codigo_estado?: number | null
+          created_at?: string
+          created_by?: string | null
+          empresa_id?: string
+          erro?: string | null
+          fatura_id?: string
+          id?: string
+          linha_digitavel?: string | null
+          numero?: string | null
+          pago_em?: string | null
+          qr_code?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          url_imagem?: string | null
+          valor?: number
+          valor_pago?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boletos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_fatura_id_fkey"
+            columns: ["fatura_id"]
+            isOneToOne: false
+            referencedRelation: "faturas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       caixas_mensais: {
         Row: {
           created_at: string
@@ -386,6 +467,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integracao_tokens: {
+        Row: {
+          nome: string
+          token: string
+        }
+        Insert: {
+          nome: string
+          token: string
+        }
+        Update: {
+          nome?: string
+          token?: string
+        }
+        Relationships: []
       }
       movimentacoes_financeiras: {
         Row: {
@@ -836,6 +932,7 @@ export type Database = {
       fechar_caixa: { Args: { _mes: string }; Returns: Json }
       gerar_faturas_mes: { Args: { _mes: string }; Returns: Json }
       get_admin_overview: { Args: never; Returns: Json }
+      get_bb_webhook_token: { Args: never; Returns: string }
       get_profissionais_publicos: {
         Args: never
         Returns: {
@@ -879,7 +976,17 @@ export type Database = {
       }
       is_financeiro: { Args: { _user_id: string }; Returns: boolean }
       marcar_faturas_vencidas: { Args: never; Returns: Json }
+      proximo_numero_boleto: { Args: never; Returns: number }
       reabrir_caixa: { Args: { _mes: string }; Returns: undefined }
+      registrar_pagamento_boleto: {
+        Args: {
+          _boleto_id: string
+          _codigo_estado: number
+          _data: string
+          _valor: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "arquiteto" | "empresa" | "gestor" | "financeiro" | "auditor"
