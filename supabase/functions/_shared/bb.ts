@@ -4,6 +4,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 const OAUTH_URL = 'https://oauth.hm.bb.com.br/oauth/token'
 const API_URL = 'https://api.hm.bb.com.br/cobrancas/v2'
 const APP_KEY_PARAM = 'gw-dev-app-key'
+// true enquanto estivermos no ambiente de testes (pagador de teste do BB)
+export const HOMOLOG = true
 
 export const admin = () =>
   createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
