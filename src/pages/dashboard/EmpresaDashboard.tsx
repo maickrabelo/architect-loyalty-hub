@@ -28,6 +28,7 @@ import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AniversariantesSemana } from "@/components/Aniversariantes";
 
 const EmpresaDashboard = () => {
   const navigate = useNavigate();
@@ -191,6 +192,9 @@ const EmpresaDashboard = () => {
             Sair
           </Button>
         </div>
+
+        <AniversariantesSemana />
+
 
         {/* Aviso de fatura em aberto */}
         {(empresa as any).bloqueada && (

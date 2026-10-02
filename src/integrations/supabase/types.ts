@@ -944,6 +944,19 @@ export type Database = {
       fechar_caixa: { Args: { _mes: string }; Returns: Json }
       gerar_faturas_mes: { Args: { _mes: string }; Returns: Json }
       get_admin_overview: { Args: never; Returns: Json }
+      get_aniversariantes: {
+        Args: never
+        Returns: {
+          celular: string
+          dia: number
+          id: string
+          imagem_profissional: string
+          instagram: string
+          mes: number
+          nome: string
+          profissao: string
+        }[]
+      }
       get_bb_webhook_token: { Args: never; Returns: string }
       get_profissionais_publicos: {
         Args: never
