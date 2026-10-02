@@ -24,7 +24,7 @@ import { useEmpresaData } from "@/hooks/useEmpresaData";
 import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
 import VendasDetalhe from "@/components/VendasDetalhe";
 import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
-import EmpresaRateio from "@/components/dashboard/EmpresaRateio";
+// import EmpresaRateio from "@/components/dashboard/EmpresaRateio"; // oculto temporariamente; reexibir depois
 import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
@@ -549,8 +549,8 @@ const EmpresaDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Rateio da premiação */}
-        <EmpresaRateio empresaId={empresa.id} />
+        {/* Rateio da premiação — oculto temporariamente; reexibir depois */}
+        {/* <EmpresaRateio empresaId={empresa.id} /> */}
 
         {/* Lançamentos e histórico por profissional */}
         <EmpresaLancamentos vendas={vendas as any} arquitetos={arquitetos} nomeEmpresa={empresa.nome} />
