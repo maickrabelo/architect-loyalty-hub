@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { DestinoCard } from "@/components/DestinoCard";
 import { Logo } from "@/components/brand/Logo";
 import { NovasConexoes } from "@/components/stories/NovasConexoes";
+import { BannersProfissionais } from "@/components/banners/BannersProfissionais";
 import { toast } from "sonner";
 
 const calcularPontos = (valorVendas: number) => Math.floor((valorVendas || 0) / 1000);
@@ -344,7 +345,7 @@ const ArquitetoDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* ============ NOVAS CONEXÕES (STORIES) ============ */}
+        {/* ============ STORIES CONEXÃO ============ */}
         <NovasConexoes />
 
         {/* ============ BADGES / MEDALHAS ============ */}
@@ -391,6 +392,8 @@ const ArquitetoDashboard = () => {
           <StatMini label="Pontos totais" valor={pontosTotais.toLocaleString("pt-BR")} icon={<Award className="h-4 w-4" />} />
           <StatMini label="Empresas parceiras" valor={empresas.length.toString()} icon={<Building2 className="h-4 w-4" />} />
         </div>
+
+        <BannersProfissionais />
 
         {/* ============ EMPRESAS ============ */}
         <Card>

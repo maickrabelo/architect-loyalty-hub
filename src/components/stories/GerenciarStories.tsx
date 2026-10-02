@@ -48,6 +48,8 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
   const [inicio, setInicio] = useState("");
   const [indefinido, setIndefinido] = useState(true);
   const [fim, setFim] = useState("");
+  const [botaoTexto, setBotaoTexto] = useState("");
+  const [botaoLink, setBotaoLink] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [enviandoLogo, setEnviandoLogo] = useState(false);
 
@@ -67,7 +69,10 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
   const { data: logoUrl } = useQuery({
     queryKey: ["logo-empresa", logoAtual],
     enabled: !!logoAtual,
-    queryFn: async () => (await assinar([logoAtual!]))[logoAtual!],
+    queryFn: async () => {
+      if (!logoAtual) return "";
+      return (await assinar([logoAtual]))[logoAtual];
+    },
   });
 
   const ativos = lista.filter((s: any) => !s.fim || new Date(s.fim).getTime() > Date.now()).length;
@@ -81,6 +86,15 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
   const enviar = async () => {
     if (!arquivo || !user) return toast.error("Escolha uma imagem ou vídeo.");
     if (!indefinido && !fim) return toast.error("Defina a data de fim ou marque como indefinido.");
+    if ((botaoTexto.trim() && !botaoLink.trim()) || (!botaoTexto.trim() && botaoLink.trim())) return toast.error("Informe o nome e o link do botão juntos.");
+    if (botaoLink.trim()) {
+      try {
+        const url = new URL(botaoLink.trim());
+        if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error();
+      } catch {
+        return toast.error("O link do botão deve começar com http:// ou https://.");
+      }
+    }
     setEnviando(true);
     try {
       const { w, h, tipo } = await lerDimensoes(arquivo);
@@ -99,13 +113,15 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
         inicio: inicio ? new Date(inicio).toISOString() : new Date().toISOString(),
         fim: indefinido ? null : new Date(fim).toISOString(),
         created_by: user.id,
+        botao_texto: botaoTexto.trim() || null,
+        botao_link: botaoLink.trim() || null,
       });
       if (error) {
         await supabase.storage.from("stories").remove([path]);
         throw error;
       }
       toast.success("Story publicado.");
-      setArquivo(null); setInicio(""); setFim(""); setIndefinido(true);
+      setArquivo(null); setInicio(""); setFim(""); setIndefinido(true); setDuracao(5); setBotaoTexto(""); setBotaoLink("");
       atualizar();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Não foi possível publicar.");
@@ -147,7 +163,7 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-serif">Novas conexões</CardTitle>
+        <CardTitle className="font-serif">Stories Conexão</CardTitle>
         <CardDescription>
           Stories exibidos no painel dos profissionais. Formato obrigatório 1080x1920 (vertical).
           {empresaId && ` Limite de ${LIMITE_EMPRESA} stories ativos ou programados por vez (${ativos}/${LIMITE_EMPRESA}).`}
@@ -187,6 +203,14 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
             <Label>Início (vazio = agora)</Label>
             <Input type="datetime-local" value={inicio} onChange={(e) => setInicio(e.target.value)} />
           </div>
+          <div>
+            <Label htmlFor="story-botao">Nome do botão (opcional)</Label>
+            <Input id="story-botao" maxLength={40} placeholder="Saiba mais" value={botaoTexto} onChange={(e) => setBotaoTexto(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="story-link">Link do botão (opcional)</Label>
+            <Input id="story-link" type="url" placeholder="https://..." value={botaoLink} onChange={(e) => setBotaoLink(e.target.value)} />
+          </div>
           <div className="flex items-center gap-3">
             <Switch checked={indefinido} onCheckedChange={setIndefinido} id="indef" />
             <Label htmlFor="indef">Sem data de fim (até remover)</Label>
@@ -222,6 +246,7 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
                     <Badge variant={st.v}>{st.t}</Badge>
                     <p className="text-muted-foreground">{s.duracao_segundos}s · desde {new Date(s.inicio).toLocaleDateString("pt-BR")}</p>
                     <p className="text-muted-foreground">até {s.fim ? new Date(s.fim).toLocaleDateString("pt-BR") : "indefinido"}</p>
+                    {s.botao_texto && <p className="truncate font-medium">Botão: {s.botao_texto}</p>}
                     <Button size="sm" variant="ghost" className="w-full text-destructive" onClick={() => remover(s)}>
                       <Trash2 className="h-3.5 w-3.5 mr-1" /> Remover
                     </Button>

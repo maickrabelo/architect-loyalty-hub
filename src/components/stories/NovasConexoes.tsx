@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { X, ChevronLeft, ChevronRight, Building2 } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Building2, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -42,7 +43,7 @@ export const NovasConexoes = () => {
 
   return (
     <div>
-      <h2 className="font-serif text-2xl font-bold mb-4">Novas conexões</h2>
+      <h2 className="font-serif text-2xl font-bold mb-4">Stories Conexão</h2>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
         {grupos.map((g, i) => (
           <Bolinha key={g.chave} grupo={g} onClick={() => abrir(i)} />
@@ -163,6 +164,14 @@ const StoryViewer = ({
           <video key={story.id} ref={videoRef} src={story.url} autoPlay playsInline className="h-full w-full object-cover" />
         ) : (
           <img key={story.id} src={story.url} alt="" className="h-full w-full object-cover" />
+        )}
+
+        {story.botao_texto && story.botao_link && (
+          <Button asChild variant="secondary" className="absolute bottom-8 left-1/2 z-30 max-w-[calc(100%-3rem)] -translate-x-1/2 shadow-lg">
+            <a href={story.botao_link} target="_blank" rel="noopener noreferrer" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
+              <span className="truncate">{story.botao_texto}</span><ExternalLink className="ml-2 h-4 w-4 shrink-0" />
+            </a>
+          </Button>
         )}
 
         {/* áreas de toque */}

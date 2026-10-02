@@ -64,6 +64,13 @@
       "when": 1790983525330,
       "tag": "0008_stories_novas_conexoes",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790984265392,
+      "tag": "0009_story_actions_and_professional_banners",
+      "breakpoints": true
     }
   ]
 }

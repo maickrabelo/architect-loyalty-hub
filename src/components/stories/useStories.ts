@@ -9,6 +9,8 @@ export interface StoryItem {
   duracao: number;
   visto: boolean;
   created_at: string;
+  botao_texto: string | null;
+  botao_link: string | null;
 }
 
 export interface StoryGrupo {
@@ -43,7 +45,7 @@ export const useStoriesAtivos = (userId?: string) =>
       const agora = new Date().toISOString();
       const { data, error } = await supabase
         .from("stories")
-        .select("id, empresa_id, media_path, media_tipo, duracao_segundos, created_at, empresas(nome, logo_url)")
+        .select("id, empresa_id, media_path, media_tipo, duracao_segundos, created_at, botao_texto, botao_link, empresas(nome, logo_url)")
         .lte("inicio", agora)
         .or(`fim.is.null,fim.gt.${agora}`)
         .order("created_at", { ascending: true });
@@ -84,6 +86,8 @@ export const useStoriesAtivos = (userId?: string) =>
           duracao: s.duracao_segundos || 5,
           visto,
           created_at: s.created_at,
+          botao_texto: s.botao_texto,
+          botao_link: s.botao_link,
         });
         if (!visto) g.todosVistos = false;
       }
