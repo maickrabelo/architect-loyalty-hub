@@ -115,19 +115,19 @@ export const GerenciarBanners = () => {
     <Card>
       <CardHeader>
         <CardTitle className="font-serif">Banners do painel profissional</CardTitle>
-        <CardDescription>Publique uma versão horizontal para desktop e uma versão vertical ou quadrada para celular.</CardDescription>
+        <CardDescription>Publique uma versão horizontal para desktop e uma versão vertical para celular.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid gap-4 rounded-lg border bg-secondary/30 p-4 md:grid-cols-2">
           <div>
-            <Label>Imagem desktop</Label>
+            <Label>Imagem desktop <span className="font-normal text-muted-foreground">— recomendado: 1920x640 px (3:1)</span></Label>
             <input ref={desktopRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => setDesktop(event.target.files?.[0] || null)} />
             <Button type="button" variant="outline" className="mt-1 w-full justify-start" onClick={() => desktopRef.current?.click()}>
               <Upload className="mr-2 h-4 w-4" />{desktop?.name || "Escolher imagem desktop"}
             </Button>
           </div>
           <div>
-            <Label>Imagem celular</Label>
+            <Label>Imagem celular <span className="font-normal text-muted-foreground">— recomendado: 1080x1350 px (4:5)</span></Label>
             <input ref={mobileRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => setMobile(event.target.files?.[0] || null)} />
             <Button type="button" variant="outline" className="mt-1 w-full justify-start" onClick={() => mobileRef.current?.click()}>
               <Upload className="mr-2 h-4 w-4" />{mobile?.name || "Escolher imagem celular"}
