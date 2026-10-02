@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AniversariantesSemana, AniversariantesModulo } from "@/components/Aniversariantes";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
+import { GerenciarBanners } from "@/components/banners/GerenciarBanners";
 import VendasDetalhe from "@/components/VendasDetalhe";
 import {
   Dialog,
@@ -452,7 +453,8 @@ const GestorDashboard = () => {
             <TabsTrigger value="relatorios">Relatórios</TabsTrigger>
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
             <TabsTrigger value="upgrades">Últimos Upgrades</TabsTrigger>
-            <TabsTrigger value="conexoes">Novas Conexões</TabsTrigger>
+            {!somenteLeitura && <TabsTrigger value="conexoes">Stories Conexão</TabsTrigger>}
+            {!somenteLeitura && <TabsTrigger value="banners">Banners</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="overview">
@@ -474,6 +476,10 @@ const GestorDashboard = () => {
 
           <TabsContent value="conexoes">
             <GerenciarStories />
+          </TabsContent>
+
+          <TabsContent value="banners">
+            <GerenciarBanners />
           </TabsContent>
 
           {/* Architects Tab */}
