@@ -130,7 +130,11 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value={TODOS}>Todos</SelectItem>
-                  {profsOpc.map(([id, n]) => <SelectItem key={id} value={id}>{n}</SelectItem>)}
+                  {profsOpc.map(([id, n]) => (
+                    <SelectItem key={id} value={id}>
+                      <ProfessionalName professionalId={id} name={n} imagePath={imagemProf.get(id)} />
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

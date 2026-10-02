@@ -123,9 +123,15 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
           {selecionado && (
             <>
               <div className="rounded-lg border border-border bg-secondary/50 p-4">
-                <p className="text-sm text-muted-foreground">
-                  {nomePorId[selecionado]} · {historico.length} lançamento(s)
-                </p>
+                <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
+                  {(() => {
+                    const profissional = arquitetos.find((a) => a.id === selecionado);
+                    return profissional ? (
+                      <ProfessionalName professionalId={profissional.id} name={profissional.nome} imagePath={profissional.imagem_profissional} />
+                    ) : nomePorId[selecionado];
+                  })()}
+                  <span>· {historico.length} lançamento(s)</span>
+                </div>
                 <p className="text-2xl font-bold text-primary">{formatBRL(totalHistorico)}</p>
               </div>
               <div className="overflow-x-auto">
