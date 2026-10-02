@@ -994,6 +994,18 @@ export type Database = {
         Args: { _empresa_id: string; _mes: string }
         Returns: Json
       }
+      get_ultimos_upgrades: {
+        Args: { _empresa_id?: string }
+        Returns: {
+          arquiteto_id: string
+          data_upgrade: string
+          de_nivel: string
+          imagem_profissional: string
+          nome: string
+          para_nivel: string
+          pontos_no_upgrade: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
