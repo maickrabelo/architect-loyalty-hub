@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { DestinoCard } from "@/components/DestinoCard";
 import { Logo } from "@/components/brand/Logo";
+import { NovasConexoes } from "@/components/stories/NovasConexoes";
 import { toast } from "sonner";
 
 const calcularPontos = (valorVendas: number) => Math.floor((valorVendas || 0) / 1000);
@@ -342,6 +343,9 @@ const ArquitetoDashboard = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* ============ NOVAS CONEXÕES (STORIES) ============ */}
+        <NovasConexoes />
 
         {/* ============ BADGES / MEDALHAS ============ */}
         <div>
