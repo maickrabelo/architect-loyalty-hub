@@ -33,6 +33,7 @@ import { RelatorioGestor } from "@/components/RelatorioGestor";
 import AdminOverview from "@/components/dashboard/AdminOverview";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { useAuth } from "@/contexts/AuthContext";
+import { ProfessionalName } from "@/components/ProfessionalAvatar";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
@@ -497,7 +498,9 @@ const GestorDashboard = () => {
                     {pagArquitetos.paginados.map((arquiteto, index) => (
                       <TableRow key={arquiteto.id}>
                         <TableCell className="font-medium">#{(pagArquitetos.pagina - 1) * 10 + index + 1}</TableCell>
-                        <TableCell className="font-semibold">{arquiteto.nome ?? '—'}</TableCell>
+                        <TableCell className="font-semibold">
+                          <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome ?? "Profissional"} />
+                        </TableCell>
                         <TableCell className="text-muted-foreground">{arquiteto.empresas}</TableCell>
                         <TableCell className="text-muted-foreground">
                           R$ {Number(arquiteto.vendas).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}

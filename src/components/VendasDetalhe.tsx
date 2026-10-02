@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { exportarCSV } from "@/hooks/useFinanceiro";
+import { ProfessionalName } from "@/components/ProfessionalAvatar";
 
 type Venda = {
   id: string; empresa_id: string; arquiteto_id: string; valor_venda: number; pontos_calculados: number;
@@ -50,12 +51,17 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
     queryFn: async () => {
       const { data, error } = await (supabase as any).rpc("get_profissionais_publicos");
       if (error) throw error;
-      return data as { id: string; nome: string | null; nome_divulgacao: string | null }[];
+      return data as { id: string; nome: string | null; nome_divulgacao: string | null; imagem_profissional: string | null }[];
     },
   });
   const nomeProf = useMemo(() => {
     const m = new Map<string, string>();
     profs.forEach(p => m.set(p.id, p.nome_divulgacao || p.nome || "Profissional"));
+    return m;
+  }, [profs]);
+  const imagemProf = useMemo(() => {
+    const m = new Map<string, string | null>();
+    profs.forEach(p => m.set(p.id, p.imagem_profissional));
     return m;
   }, [profs]);
 
@@ -80,9 +86,9 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
   const totalPontos = filtradas.reduce((s, v) => s + Number(v.pontos_calculados), 0);
 
   const composicao = useMemo(() => {
-    const m = new Map<string, { nome: string; vendas: number; valor: number; pontos: number }>();
+    const m = new Map<string, { id: string; nome: string; vendas: number; valor: number; pontos: number }>();
     filtradas.forEach(v => {
-      const r = m.get(v.arquiteto_id) ?? { nome: nomeProf.get(v.arquiteto_id) ?? "—", vendas: 0, valor: 0, pontos: 0 };
+      const r = m.get(v.arquiteto_id) ?? { id: v.arquiteto_id, nome: nomeProf.get(v.arquiteto_id) ?? "—", vendas: 0, valor: 0, pontos: 0 };
       r.vendas++; r.valor += Number(v.valor_venda); r.pontos += Number(v.pontos_calculados);
       m.set(v.arquiteto_id, r);
     });
@@ -124,7 +130,11 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value={TODOS}>Todos</SelectItem>
-                  {profsOpc.map(([id, n]) => <SelectItem key={id} value={id}>{n}</SelectItem>)}
+                  {profsOpc.map(([id, n]) => (
+                    <SelectItem key={id} value={id}>
+                      <ProfessionalName professionalId={id} name={n} imagePath={imagemProf.get(id)} />
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -162,7 +172,7 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
                     <TableRow key={v.id}>
                       <TableCell className="whitespace-nowrap">{dataBR(v.data_venda)}</TableCell>
                       {!empresaId && <TableCell>{v.empresas?.nome}</TableCell>}
-                      <TableCell>{nomeProf.get(v.arquiteto_id) ?? "—"}</TableCell>
+                      <TableCell><ProfessionalName professionalId={v.arquiteto_id} name={nomeProf.get(v.arquiteto_id) ?? "—"} imagePath={imagemProf.get(v.arquiteto_id)} /></TableCell>
                       <TableCell className="max-w-[180px] truncate">{v.cliente_nome ?? "—"}</TableCell>
                       <TableCell className="max-w-[160px] truncate">{v.descricao ?? "—"}</TableCell>
                       <TableCell>{v.nota_fiscal ?? "—"}</TableCell>
@@ -199,8 +209,8 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
               {pagComp.paginados.map(c => {
                 const pct = totalPontos ? (c.pontos / totalPontos) * 100 : 0;
                 return (
-                  <TableRow key={c.nome}>
-                    <TableCell>{c.nome}</TableCell>
+                  <TableRow key={c.id}>
+                    <TableCell><ProfessionalName professionalId={c.id} name={c.nome} imagePath={imagemProf.get(c.id)} /></TableCell>
                     <TableCell className="text-right">{c.vendas}</TableCell>
                     <TableCell className="text-right whitespace-nowrap">{brl(c.valor)}</TableCell>
                     <TableCell className="text-right font-semibold">{c.pontos.toLocaleString("pt-BR")}</TableCell>

@@ -13,6 +13,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import { Download, RefreshCw, Search, Building2, Users, Award, DollarSign, Target, PieChart as PieIcon } from "lucide-react";
+import { ProfessionalName } from "@/components/ProfessionalAvatar";
 
 type Overview = {
   kpis: {
@@ -316,7 +317,7 @@ export default function AdminOverview() {
                 {pagArqs.paginados.map((a, i) => (
                   <TableRow key={a.id}>
                     <TableCell>#{(pagArqs.pagina - 1) * 10 + i + 1}</TableCell>
-                    <TableCell className="font-medium">{a.nome}</TableCell>
+                    <TableCell className="font-medium"><ProfessionalName professionalId={a.id} name={a.nome} /></TableCell>
                     <TableCell className="text-right">{fmtBRL(Number(a.vendas))}</TableCell>
                     <TableCell className="text-right font-bold text-primary">{Number(a.pontos).toLocaleString("pt-BR")}</TableCell>
                     <TableCell className="text-right">{a.empresas}</TableCell>
@@ -359,7 +360,7 @@ function EmpresaDetalheDialog({ empresaId, onClose }: { empresaId: string | null
       const arqIds = ((prems as any[]) || []).map((p) => p.arquiteto_id);
       let profs: any[] = [];
       if (arqIds.length) {
-        const { data: p } = await supabase.from("profiles").select("id, nome, nome_divulgacao").in("id", arqIds);
+        const { data: p } = await supabase.from("profiles").select("id, nome, nome_divulgacao, imagem_profissional").in("id", arqIds);
         profs = p || [];
       }
       return { emp, prems: (prems as any[]) || [], profs };
@@ -369,7 +370,7 @@ function EmpresaDetalheDialog({ empresaId, onClose }: { empresaId: string | null
   if (!empresaId) return null;
   const linhas = (data?.prems || []).map((p: any) => {
     const prof = data?.profs.find((x: any) => x.id === p.arquiteto_id);
-    return { nome: prof?.nome_divulgacao || prof?.nome || p.arquiteto_id, ...p };
+    return { nome: prof?.nome_divulgacao || prof?.nome || p.arquiteto_id, imagem_profissional: prof?.imagem_profissional, ...p };
   }).sort((a: any, b: any) => Number(b.vendas) - Number(a.vendas));
   const totalVendas = linhas.reduce((s: number, l: any) => s + Number(l.vendas), 0);
   const totalCusto = linhas.reduce((s: number, l: any) => s + Number(l.custo), 0);
@@ -403,7 +404,7 @@ function EmpresaDetalheDialog({ empresaId, onClose }: { empresaId: string | null
           <TableBody>
             {linhas.map((l: any) => (
               <TableRow key={l.id}>
-                <TableCell>{l.nome}</TableCell>
+                <TableCell><ProfessionalName professionalId={l.arquiteto_id} name={l.nome} imagePath={l.imagem_profissional} /></TableCell>
                 <TableCell className="text-right">{fmtBRL(Number(l.vendas))}</TableCell>
                 <TableCell className="text-right">{Number(l.pontos).toLocaleString("pt-BR")}</TableCell>
                 <TableCell className="text-right">{fmtBRL(Number(l.categoria_premio))}</TableCell>

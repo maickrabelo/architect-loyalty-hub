@@ -30,6 +30,7 @@ import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AniversariantesSemana } from "@/components/Aniversariantes";
+import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
 
 const EmpresaDashboard = () => {
   const navigate = useNavigate();
@@ -257,7 +258,7 @@ const EmpresaDashboard = () => {
                         <button
                           key={arq.id}
                           type="button"
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
                           onMouseDown={(e) => {
                             e.preventDefault();
                             setSelectedArquiteto(arq.id);
@@ -265,7 +266,8 @@ const EmpresaDashboard = () => {
                             setSugestoesAbertas(false);
                           }}
                         >
-                          {arq.nome}
+                          <ProfessionalAvatar professionalId={arq.id} name={arq.nome} imagePath={arq.imagem_profissional} className="h-8 w-8" />
+                          <span className="truncate">{arq.nome}</span>
                         </button>
                       ))}
                     {arquitetos.filter((a) =>
@@ -394,9 +396,12 @@ const EmpresaDashboard = () => {
                     key={arquiteto.id}
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-secondary rounded-lg gap-4"
                   >
-                    <div className="flex-1">
-                      <p className="font-semibold text-lg">{arquiteto.nome}</p>
-                      <p className="text-sm text-muted-foreground">{arquiteto.ultimoCliente}</p>
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <ProfessionalAvatar professionalId={arquiteto.id} name={arquiteto.nome} imagePath={arquiteto.imagem_profissional} className="h-12 w-12" />
+                      <div className="min-w-0">
+                        <p className="truncate text-lg font-semibold">{arquiteto.nome}</p>
+                        <p className="truncate text-sm text-muted-foreground">{arquiteto.ultimoCliente}</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
@@ -518,7 +523,7 @@ const EmpresaDashboard = () => {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <p className="font-semibold">{arquiteto.nome}</p>
+                        <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome} imagePath={arquiteto.imagem_profissional} className="font-semibold" />
                         <p className="text-xs text-muted-foreground">
                           Premiação conquistada: {arquiteto.ultimaPremiacaoConquistada} pontos
                         </p>
@@ -599,7 +604,12 @@ const EmpresaDashboard = () => {
                           {format(new Date(venda.data_venda), "dd/MM/yyyy")}
                         </TableCell>
                         <TableCell>
-                          {arquitetos.find(a => a.id === venda.arquiteto_id)?.nome || 'N/A'}
+                          {(() => {
+                            const profissional = arquitetos.find(a => a.id === venda.arquiteto_id);
+                            return profissional ? (
+                              <ProfessionalName professionalId={profissional.id} name={profissional.nome} imagePath={profissional.imagem_profissional} />
+                            ) : "N/A";
+                          })()}
                         </TableCell>
                         <TableCell>{(venda as any).cliente_nome || venda.observacao}</TableCell>
                         <TableCell className="text-right font-semibold">
