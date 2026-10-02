@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Building2, Users, Award, TrendingUp, LogOut, Search, Plus, Pencil, Trash2, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Logo } from "@/components/brand/Logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -374,6 +375,7 @@ const GestorDashboard = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
+            <Logo size="sm" className="mb-2" />
             <h1 className="text-4xl font-bold mb-2">Dashboard do Gestor</h1>
             <p className="text-xl text-muted-foreground">
               {somenteLeitura ? "Acesso somente leitura" : "Visão completa do sistema"}

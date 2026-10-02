@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, Award, LogOut, Plus, Calendar as CalendarIcon, DollarSign, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Logo } from "@/components/brand/Logo";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -186,6 +187,7 @@ const EmpresaDashboard = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
+            <Logo size="sm" className="mb-2" />
             <h1 className="text-4xl font-bold mb-2">Dashboard da Empresa</h1>
             <p className="text-xl text-muted-foreground">{empresa.nome}</p>
           </div>
