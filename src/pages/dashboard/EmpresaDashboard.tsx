@@ -32,6 +32,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AniversariantesSemana } from "@/components/Aniversariantes";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
+import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
 
 const EmpresaDashboard = () => {
@@ -201,6 +202,8 @@ const EmpresaDashboard = () => {
         <AniversariantesSemana />
 
         <UpgradesRecentes />
+
+        <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
 
 
         {/* Aviso de fatura em aberto */}
