@@ -43,6 +43,13 @@
       "when": 1790906561658,
       "tag": "0005_aniversariantes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790907300089,
+      "tag": "0006_vendas_detalhe",
+      "breakpoints": true
     }
   ]
 }
