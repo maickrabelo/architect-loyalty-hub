@@ -50,6 +50,13 @@
       "when": 1790907300089,
       "tag": "0006_vendas_detalhe",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790909266739,
+      "tag": "0007_secure_professional_profile_photos",
+      "breakpoints": true
     }
   ]
 }
