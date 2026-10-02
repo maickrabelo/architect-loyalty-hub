@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AniversariantesSemana, AniversariantesModulo } from "@/components/Aniversariantes";
 import {
   Dialog,
   DialogContent,
@@ -436,16 +437,22 @@ const GestorDashboard = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full md:w-auto grid-cols-5 bg-card/50">
+          <TabsList className="flex flex-wrap h-auto w-full md:w-auto bg-card/50">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="arquitetos">Profissionais</TabsTrigger>
             <TabsTrigger value="empresas">Empresas</TabsTrigger>
             <TabsTrigger value="destinos">Destinos</TabsTrigger>
             <TabsTrigger value="relatorios">Relatórios</TabsTrigger>
+            <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
+            <AniversariantesSemana />
             <AdminOverview />
+          </TabsContent>
+
+          <TabsContent value="aniversariantes">
+            <AniversariantesModulo />
           </TabsContent>
 
           {/* Architects Tab */}
