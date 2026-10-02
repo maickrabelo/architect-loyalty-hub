@@ -1,0 +1,1 @@
+ALTER TABLE public.empresas ADD COLUMN IF NOT EXISTS contato text, ADD COLUMN IF NOT EXISTS telefone2 text, ADD COLUMN IF NOT EXISTS redes_sociais text, ADD COLUMN IF NOT EXISTS categoria text;

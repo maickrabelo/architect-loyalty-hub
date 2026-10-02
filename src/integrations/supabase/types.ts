@@ -305,8 +305,10 @@ export type Database = {
         Row: {
           ativa: boolean | null
           bloqueada: boolean
+          categoria: string | null
           cidade: string | null
           cnpj: string | null
+          contato: string | null
           created_at: string | null
           email: string | null
           endereco: string | null
@@ -314,15 +316,19 @@ export type Database = {
           id: string
           motivo_bloqueio: string | null
           nome: string
+          redes_sociais: string | null
           telefone: string | null
+          telefone2: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           ativa?: boolean | null
           bloqueada?: boolean
+          categoria?: string | null
           cidade?: string | null
           cnpj?: string | null
+          contato?: string | null
           created_at?: string | null
           email?: string | null
           endereco?: string | null
@@ -330,15 +336,19 @@ export type Database = {
           id?: string
           motivo_bloqueio?: string | null
           nome: string
+          redes_sociais?: string | null
           telefone?: string | null
+          telefone2?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           ativa?: boolean | null
           bloqueada?: boolean
+          categoria?: string | null
           cidade?: string | null
           cnpj?: string | null
+          contato?: string | null
           created_at?: string | null
           email?: string | null
           endereco?: string | null
@@ -346,7 +356,9 @@ export type Database = {
           id?: string
           motivo_bloqueio?: string | null
           nome?: string
+          redes_sociais?: string | null
           telefone?: string | null
+          telefone2?: string | null
           updated_at?: string | null
           user_id?: string
         }
