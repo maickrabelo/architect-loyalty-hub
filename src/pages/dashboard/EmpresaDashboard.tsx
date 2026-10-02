@@ -22,6 +22,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useEmpresaData } from "@/hooks/useEmpresaData";
 import EmpresaCharts from "@/components/dashboard/EmpresaCharts";
+import VendasDetalhe from "@/components/VendasDetalhe";
 import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
 import EmpresaRateio from "@/components/dashboard/EmpresaRateio";
 import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
@@ -366,6 +367,8 @@ const EmpresaDashboard = () => {
 
         {/* Gráficos */}
         <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
+
+        <VendasDetalhe empresaId={empresa.id} />
 
         {/* Área financeira */}
         <div className="mb-8">
