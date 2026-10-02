@@ -29,6 +29,13 @@
       "when": 1790648313615,
       "tag": "0003_boletos_bb",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790906196561,
+      "tag": "0004_empresas_contato",
+      "breakpoints": true
     }
   ]
 }
