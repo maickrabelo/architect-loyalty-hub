@@ -314,6 +314,7 @@ export type Database = {
           endereco: string | null
           estado: string | null
           id: string
+          logo_url: string | null
           motivo_bloqueio: string | null
           nome: string
           redes_sociais: string | null
@@ -334,6 +335,7 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id?: string
+          logo_url?: string | null
           motivo_bloqueio?: string | null
           nome: string
           redes_sociais?: string | null
@@ -354,6 +356,7 @@ export type Database = {
           endereco?: string | null
           estado?: string | null
           id?: string
+          logo_url?: string | null
           motivo_bloqueio?: string | null
           nome?: string
           redes_sociais?: string | null
@@ -844,6 +847,76 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      stories: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          duracao_segundos: number
+          empresa_id: string | null
+          fim: string | null
+          id: string
+          inicio: string
+          media_path: string
+          media_tipo: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          duracao_segundos?: number
+          empresa_id?: string | null
+          fim?: string | null
+          id?: string
+          inicio?: string
+          media_path: string
+          media_tipo?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          duracao_segundos?: number
+          empresa_id?: string | null
+          fim?: string | null
+          id?: string
+          inicio?: string
+          media_path?: string
+          media_tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stories_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_visualizacoes: {
+        Row: {
+          story_id: string
+          user_id: string
+          visto_em: string
+        }
+        Insert: {
+          story_id: string
+          user_id: string
+          visto_em?: string
+        }
+        Update: {
+          story_id?: string
+          user_id?: string
+          visto_em?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_visualizacoes_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
