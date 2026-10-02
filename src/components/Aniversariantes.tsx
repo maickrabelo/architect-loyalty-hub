@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Cake } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type Aniversariante = {
   id: string; nome: string; profissao: string | null; dia: number; mes: number;
@@ -20,8 +21,16 @@ export const useAniversariantes = () =>
     queryFn: async () => {
       const { data, error } = await (supabase as any).rpc("get_aniversariantes");
       if (error) throw error;
-      return (data || []) as Aniversariante[];
+      const aniversariantes = (data || []) as Aniversariante[];
+      return Promise.all(aniversariantes.map(async (a) => {
+        if (!a.imagem_profissional || /^https?:\/\//.test(a.imagem_profissional)) return a;
+        const { data: signed } = await supabase.storage
+          .from("fotos-profissionais")
+          .createSignedUrl(a.imagem_profissional, 3600);
+        return { ...a, imagem_profissional: signed?.signedUrl || null };
+      }));
     },
+    staleTime: 45 * 60 * 1000,
   });
 
 /** Aniversariantes de hoje até os próximos 6 dias, com a data deste ano. */
@@ -38,13 +47,16 @@ const daSemana = (lista: Aniversariante[]) => {
 const Linha = ({ a, destaque }: { a: Aniversariante; destaque?: string }) => (
   <div className="flex items-center justify-between gap-3 py-2 border-b border-border/50 last:border-0">
     <div className="flex items-center gap-3 min-w-0">
-      <div className="h-9 w-9 shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
-        {pad(a.dia)}/{pad(a.mes)}
-      </div>
+      <Avatar className="h-11 w-11 border border-border">
+        <AvatarImage src={a.imagem_profissional || undefined} alt={a.nome} className="object-cover" />
+        <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+          {a.nome.split(" ").map(nome => nome[0]).slice(0, 2).join("").toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
       <div className="min-w-0">
         <p className="font-medium truncate">{a.nome}</p>
         <p className="text-xs text-muted-foreground truncate">
-          {[a.profissao, a.celular, a.instagram].filter(Boolean).join(" · ")}
+          {[`${pad(a.dia)}/${pad(a.mes)}`, a.profissao, a.celular, a.instagram].filter(Boolean).join(" · ")}
         </p>
       </div>
     </div>

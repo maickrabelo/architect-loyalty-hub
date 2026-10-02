@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,16 +9,20 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Award, TrendingUp, Building2, LogOut, Star, FileText,
-  Trophy, Medal, Crown, Flame, Sparkles, Target, MapPin, Calendar
+  Trophy, Medal, Crown, Flame, Sparkles, Target, MapPin, Calendar, Camera, Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DestinoCard } from "@/components/DestinoCard";
+import { toast } from "sonner";
 
 const calcularPontos = (valorVendas: number) => Math.floor((valorVendas || 0) / 1000);
 
 const ArquitetoDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, signOut } = useAuth();
+  const fotoInputRef = useRef<HTMLInputElement>(null);
+  const [enviandoFoto, setEnviandoFoto] = useState(false);
 
   /* ----------- Perfil ----------- */
   const { data: profile } = useQuery({
@@ -30,7 +35,11 @@ const ArquitetoDashboard = () => {
         .eq("id", user!.id)
         .maybeSingle();
       if (error) throw error;
-      return data;
+      if (!data?.imagem_profissional || /^https?:\/\//.test(data.imagem_profissional)) return data;
+      const { data: signed } = await supabase.storage
+        .from("fotos-profissionais")
+        .createSignedUrl(data.imagem_profissional, 3600);
+      return { ...data, imagem_profissional: signed?.signedUrl || null };
     },
   });
 
@@ -152,13 +161,59 @@ const ArquitetoDashboard = () => {
     navigate("/");
   };
 
+  const handleFotoSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !user?.id) return;
+
+    const formatosAceitos = ["image/jpeg", "image/png", "image/webp"];
+    if (!formatosAceitos.includes(file.type)) {
+      toast.error("Escolha uma imagem JPG, PNG ou WebP.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("A foto deve ter no máximo 5 MB.");
+      return;
+    }
+
+    setEnviandoFoto(true);
+    try {
+      const extensao = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const caminho = `${user.id}/perfil.${extensao}`;
+      const { error: uploadError } = await supabase.storage
+        .from("fotos-profissionais")
+        .upload(caminho, file, { upsert: true, contentType: file.type });
+      if (uploadError) throw uploadError;
+
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ imagem_profissional: caminho })
+        .eq("id", user.id);
+      if (profileError) throw profileError;
+
+      await queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
+      await queryClient.invalidateQueries({ queryKey: ["aniversariantes"] });
+      toast.success("Foto de perfil atualizada.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível atualizar a foto.");
+    } finally {
+      setEnviandoFoto(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-dark">
       {/* ============ HERO / CAPA ============ */}
       <div className="relative">
-        <div className="h-48 md:h-64 bg-gradient-to-br from-primary/30 via-primary-deep/20 to-secondary overflow-hidden relative">
-          <div className="absolute inset-0 opacity-30"
-               style={{ backgroundImage: "radial-gradient(circle at 20% 30%, hsl(var(--primary)/0.4), transparent 50%), radial-gradient(circle at 80% 70%, hsl(var(--primary-deep)/0.3), transparent 50%)" }} />
+        <div className="h-48 md:h-64 bg-secondary overflow-hidden relative">
+          {ultimoConquistado?.imagem && (
+            <img
+              src={ultimoConquistado.imagem}
+              alt={`Destino conquistado: ${ultimoConquistado.nome}`}
+              className="absolute inset-0 h-full w-full object-cover opacity-25"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 to-secondary/80" />
           <div className="absolute top-4 right-4">
             <Button variant="outline" size="sm" onClick={handleLogout} className="backdrop-blur-sm bg-background/60">
               <LogOut className="mr-2 h-4 w-4" /> Sair
@@ -171,11 +226,31 @@ const ArquitetoDashboard = () => {
             {/* Foto grande */}
             <div className="relative">
               <Avatar className="h-36 w-36 md:h-44 md:w-44 border-4 border-card shadow-[var(--shadow-soft)] ring-4 ring-primary/20">
-                <AvatarImage src={profile?.imagem_profissional || undefined} alt={nomeExibicao} />
+                <AvatarImage src={profile?.imagem_profissional || undefined} alt={nomeExibicao} className="object-cover" />
                 <AvatarFallback className="text-4xl font-serif bg-gradient-terracotta text-primary-foreground">
                   {iniciais}
                 </AvatarFallback>
               </Avatar>
+              <input
+                ref={fotoInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                onChange={handleFotoSelecionada}
+                aria-label="Selecionar foto de perfil"
+              />
+              <Button
+                type="button"
+                size="icon"
+                variant="default"
+                className="absolute bottom-1 left-1 h-10 w-10 rounded-full shadow-lg"
+                onClick={() => fotoInputRef.current?.click()}
+                disabled={enviandoFoto}
+                aria-label="Alterar foto de perfil"
+                title="Alterar foto de perfil"
+              >
+                {enviandoFoto ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+              </Button>
               {minhaPosicao > 0 && minhaPosicao <= 3 && (
                 <div className="absolute -bottom-2 -right-2 bg-gradient-gold rounded-full p-3 shadow-lg">
                   <Crown className="h-6 w-6 text-primary-foreground" />
