@@ -50,7 +50,7 @@ const ArquitetoDashboard = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("vendas")
-        .select("valor_venda, data_venda, empresa_id, empresas(nome)")
+        .select("valor_venda, pontos_calculados, data_venda, empresa_id, empresas(nome)")
         .eq("arquiteto_id", user!.id);
       if (error) throw error;
       return data || [];
@@ -109,16 +109,21 @@ const ArquitetoDashboard = () => {
     .filter((v) => new Date(v.data_venda) >= inicioAno)
     .reduce((s, v) => s + (Number(v.valor_venda) || 0), 0);
 
-  const pontosTotais = calcularPontos(vendasTotais);
-  const pontosMes = calcularPontos(vendasMes);
-  const pontosAno = calcularPontos(vendasAno);
+  const pontosTotais = minhasVendas.reduce((s, v) => s + (Number(v.pontos_calculados) || 0), 0);
+  const pontosMes = minhasVendas
+    .filter((v) => new Date(v.data_venda) >= inicioMes)
+    .reduce((s, v) => s + (Number(v.pontos_calculados) || 0), 0);
+  const pontosAno = minhasVendas
+    .filter((v) => new Date(v.data_venda) >= inicioAno)
+    .reduce((s, v) => s + (Number(v.pontos_calculados) || 0), 0);
 
   // Empresas agregadas
-  const empresasMap = new Map<string, { nome: string; vendas: number }>();
+  const empresasMap = new Map<string, { nome: string; vendas: number; pontos: number }>();
   for (const v of minhasVendas) {
     const nome = (v as any).empresas?.nome || "Empresa";
-    const e = empresasMap.get(v.empresa_id) || { nome, vendas: 0 };
+    const e = empresasMap.get(v.empresa_id) || { nome, vendas: 0, pontos: 0 };
     e.vendas += Number(v.valor_venda) || 0;
+    e.pontos += Number(v.pontos_calculados) || 0;
     empresasMap.set(v.empresa_id, e);
   }
   const empresas = Array.from(empresasMap.values()).sort((a, b) => b.vendas - a.vendas);
@@ -406,7 +411,7 @@ const ArquitetoDashboard = () => {
                       R$ {empresa.vendas.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
                     <p className="text-2xl font-bold text-primary mt-2 font-serif">
-                      {calcularPontos(empresa.vendas).toLocaleString("pt-BR")} pts
+                      {empresa.pontos.toLocaleString("pt-BR")} pts
                     </p>
                   </div>
                 ))}
