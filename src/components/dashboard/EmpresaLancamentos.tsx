@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 import { formatBRL } from "@/hooks/useFinanceiro";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
+import { ProfessionalName } from "@/components/ProfessionalAvatar";
 
 type Venda = {
   id: string;
@@ -16,7 +17,7 @@ type Venda = {
   cliente_telefone?: string | null;
 };
 
-type Profissional = { id: string; nome: string; vendasTotal: number };
+type Profissional = { id: string; nome: string; vendasTotal: number; imagem_profissional?: string | null };
 
 interface Props {
   vendas: Venda[];
@@ -86,7 +87,7 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
                   .sort((a, b) => (a.data_venda < b.data_venda ? 1 : -1))
                   .map((v) => (
                     <TableRow key={v.id}>
-                      <TableCell className="font-medium">{p.nome}</TableCell>
+                      <TableCell className="font-medium"><ProfessionalName professionalId={p.id} name={p.nome} imagePath={p.imagem_profissional} /></TableCell>
                       <TableCell>{nomeEmpresa}</TableCell>
                       <TableCell>{nomeCliente(v)}</TableCell>
                       <TableCell>{v.cliente_telefone || "—"}</TableCell>
@@ -113,7 +114,7 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
             <SelectContent>
               {pontuados.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
-                  {p.nome}
+                  <ProfessionalName professionalId={p.id} name={p.nome} imagePath={p.imagem_profissional} />
                 </SelectItem>
               ))}
             </SelectContent>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/hooks/useFinanceiro";
+import { ProfessionalName } from "@/components/ProfessionalAvatar";
 
 type Linha = {
   arquiteto_id: string;
@@ -90,7 +91,7 @@ const EmpresaRateio = ({ empresaId }: { empresaId: string }) => {
               )}
               {linhas.map((l) => (
                 <TableRow key={l.arquiteto_id}>
-                  <TableCell className="font-medium">{l.nome}</TableCell>
+                  <TableCell className="font-medium"><ProfessionalName professionalId={l.arquiteto_id} name={l.nome} /></TableCell>
                   <TableCell className="text-right">{Number(l.pontos_empresa).toLocaleString("pt-BR")}</TableCell>
                   <TableCell className="text-right">{Number(l.pontos_totais).toLocaleString("pt-BR")}</TableCell>
                   <TableCell className="text-right font-semibold">
