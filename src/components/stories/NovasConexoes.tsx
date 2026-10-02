@@ -64,11 +64,17 @@ const StoryViewer = ({
   const [pos, setPos] = useState(inicio);
   const [progresso, setProgresso] = useState(0);
   const [pausado, setPausado] = useState(false);
+  const [midiaCarregada, setMidiaCarregada] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const vistosRef = useRef(new Set<string>());
 
   const grupo = grupos[pos.g];
   const story = grupo?.stories[pos.s];
+
+  useEffect(() => {
+    setMidiaCarregada(false);
+    setProgresso(0);
+  }, [story?.id]);
 
   const fechar = useCallback(() => {
     if (vistosRef.current.size) qc.invalidateQueries({ queryKey: ["stories-ativos"] });
@@ -96,14 +102,14 @@ const StoryViewer = ({
 
   // marcar visto
   useEffect(() => {
-    if (!story || !user || vistosRef.current.has(story.id)) return;
+    if (!story || !user || !midiaCarregada || vistosRef.current.has(story.id)) return;
     vistosRef.current.add(story.id);
     supabase.from("story_visualizacoes").upsert({ story_id: story.id, user_id: user.id }).then(() => {});
-  }, [story, user]);
+  }, [story, user, midiaCarregada]);
 
   // temporizador (imagens; vídeos usam a duração definida também)
   useEffect(() => {
-    if (!story || pausado) return;
+    if (!story || pausado || !midiaCarregada) return;
     const total = story.duracao * 1000;
     const passo = 50;
     const t = setInterval(() => {
@@ -118,7 +124,7 @@ const StoryViewer = ({
       });
     }, passo);
     return () => clearInterval(t);
-  }, [story, pausado, proximo]);
+  }, [story, pausado, midiaCarregada, proximo]);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -161,9 +167,15 @@ const StoryViewer = ({
         </div>
 
         {story.tipo === "video" ? (
-          <video key={story.id} ref={videoRef} src={story.url} autoPlay playsInline className="h-full w-full object-cover" />
+          <video key={story.id} ref={videoRef} src={story.url} autoPlay playsInline onCanPlay={() => setMidiaCarregada(true)} className="h-full w-full object-cover" />
         ) : (
-          <img key={story.id} src={story.url} alt="" className="h-full w-full object-cover" />
+          <img key={story.id} src={story.url} alt="" onLoad={() => setMidiaCarregada(true)} className="h-full w-full object-cover" />
+        )}
+
+        {!midiaCarregada && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-foreground">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-background/30 border-t-background" aria-label="Carregando story" />
+          </div>
         )}
 
         {story.botao_texto && story.botao_link && (

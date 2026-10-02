@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { assinar } from "./useStories";
 
 const LIMITE_EMPRESA = 3;
+const STORY_LARGURA = 1080;
+const STORY_ALTURA = 1920;
 
 const lerDimensoes = (file: File): Promise<{ w: number; h: number; tipo: "imagem" | "video" }> =>
   new Promise((resolve, reject) => {
@@ -29,6 +31,38 @@ const lerDimensoes = (file: File): Promise<{ w: number; h: number; tipo: "imagem
       img.onerror = () => reject(new Error("Imagem inválida"));
       img.src = url;
     }
+  });
+
+const otimizarImagemStory = (arquivo: File): Promise<File> =>
+  new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(arquivo);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = STORY_LARGURA;
+      canvas.height = STORY_ALTURA;
+      const contexto = canvas.getContext("2d", { alpha: false });
+      if (!contexto) {
+        URL.revokeObjectURL(url);
+        reject(new Error("Não foi possível otimizar esta imagem."));
+        return;
+      }
+      contexto.drawImage(img, 0, 0, STORY_LARGURA, STORY_ALTURA);
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(url);
+        if (!blob) {
+          reject(new Error("Não foi possível otimizar esta imagem."));
+          return;
+        }
+        const nomeBase = arquivo.name.replace(/\.[^.]+$/, "") || "story";
+        resolve(new File([blob], `${nomeBase}.webp`, { type: "image/webp", lastModified: Date.now() }));
+      }, "image/webp", 0.92);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Imagem inválida"));
+    };
+    img.src = url;
   });
 
 const status = (s: any) => {
@@ -101,9 +135,10 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
       if (Math.abs(w / h - 9 / 16) > 0.02) {
         throw new Error(`O arquivo precisa estar no formato 1080x1920 (vertical 9:16). Enviado: ${w}x${h}.`);
       }
-      const ext = arquivo.name.split(".").pop()?.toLowerCase() || (tipo === "video" ? "mp4" : "jpg");
+      const arquivoEnvio = tipo === "imagem" ? await otimizarImagemStory(arquivo) : arquivo;
+      const ext = arquivoEnvio.name.split(".").pop()?.toLowerCase() || (tipo === "video" ? "mp4" : "webp");
       const path = `${empresaId || "gestor"}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("stories").upload(path, arquivo, { contentType: arquivo.type });
+      const { error: upErr } = await supabase.storage.from("stories").upload(path, arquivoEnvio, { contentType: arquivoEnvio.type });
       if (upErr) throw upErr;
       const { error } = await supabase.from("stories").insert({
         empresa_id: empresaId || null,
@@ -165,7 +200,7 @@ export const GerenciarStories = ({ empresaId, logoAtual }: { empresaId?: string;
       <CardHeader>
         <CardTitle className="font-serif">Stories Conexão</CardTitle>
         <CardDescription>
-          Stories exibidos no painel dos profissionais. Formato obrigatório 1080x1920 (vertical).
+          Stories exibidos no painel dos profissionais. Formato obrigatório 1080x1920 (vertical). Imagens são otimizadas automaticamente antes da publicação.
           {empresaId && ` Limite de ${LIMITE_EMPRESA} stories ativos ou programados por vez (${ativos}/${LIMITE_EMPRESA}).`}
         </CardDescription>
       </CardHeader>
