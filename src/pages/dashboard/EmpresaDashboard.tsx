@@ -200,7 +200,7 @@ const EmpresaDashboard = () => {
 
         <AniversariantesSemana />
 
-        <UpgradesRecentes empresaId={empresa.id} />
+        <UpgradesRecentes />
 
 
         {/* Aviso de fatura em aberto */}

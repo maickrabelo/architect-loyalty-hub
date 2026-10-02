@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight, TrendingUp } from "lucide-react";
+import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 
 export type Upgrade = {
   arquiteto_id: string;
@@ -66,8 +67,9 @@ const LinhaUpgrade = ({ u }: { u: Upgrade }) => (
   </div>
 );
 
-export const UpgradesRecentes = ({ empresaId }: { empresaId?: string }) => {
-  const { data = [], isLoading } = useUltimosUpgrades(empresaId);
+export const UpgradesRecentes = () => {
+  const { data = [], isLoading } = useUltimosUpgrades();
+  const { pagina, setPagina, totalPaginas, paginados } = usePaginacao(data, 5);
   if (isLoading) return null;
   return (
     <Card>
@@ -90,7 +92,16 @@ export const UpgradesRecentes = ({ empresaId }: { empresaId?: string }) => {
             Nenhum upgrade de nível nos últimos 60 dias.
           </p>
         ) : (
-          <div>{data.map((u, i) => <LinhaUpgrade key={`${u.arquiteto_id}-${u.data_upgrade}-${i}`} u={u} />)}</div>
+          <div>
+            {paginados.map((u, i) => (
+              <LinhaUpgrade key={`${u.arquiteto_id}-${u.data_upgrade}-${i}`} u={u} />
+            ))}
+            <PaginacaoControles
+              pagina={pagina}
+              totalPaginas={totalPaginas}
+              onChange={setPagina}
+            />
+          </div>
         )}
       </CardContent>
     </Card>
