@@ -1,0 +1,1 @@
+ALTER TABLE public.vendas ADD COLUMN IF NOT EXISTS nota_fiscal text, ADD COLUMN IF NOT EXISTS descricao text;

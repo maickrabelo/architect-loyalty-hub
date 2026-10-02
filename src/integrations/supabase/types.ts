@@ -870,8 +870,10 @@ export type Database = {
           cliente_telefone: string | null
           created_at: string | null
           data_venda: string
+          descricao: string | null
           empresa_id: string
           id: string
+          nota_fiscal: string | null
           observacao: string | null
           pontos_calculados: number
           updated_at: string | null
@@ -883,8 +885,10 @@ export type Database = {
           cliente_telefone?: string | null
           created_at?: string | null
           data_venda?: string
+          descricao?: string | null
           empresa_id: string
           id?: string
+          nota_fiscal?: string | null
           observacao?: string | null
           pontos_calculados: number
           updated_at?: string | null
@@ -896,8 +900,10 @@ export type Database = {
           cliente_telefone?: string | null
           created_at?: string | null
           data_venda?: string
+          descricao?: string | null
           empresa_id?: string
           id?: string
+          nota_fiscal?: string | null
           observacao?: string | null
           pontos_calculados?: number
           updated_at?: string | null
