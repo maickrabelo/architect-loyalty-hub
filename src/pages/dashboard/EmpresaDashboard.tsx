@@ -31,6 +31,7 @@ import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AniversariantesSemana } from "@/components/Aniversariantes";
+import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
 
 const EmpresaDashboard = () => {
@@ -198,6 +199,8 @@ const EmpresaDashboard = () => {
         </div>
 
         <AniversariantesSemana />
+
+        <UpgradesRecentes empresaId={empresa.id} />
 
 
         {/* Aviso de fatura em aberto */}
