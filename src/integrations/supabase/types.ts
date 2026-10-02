@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      banners_profissionais: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string
+          id: string
+          imagem_desktop_path: string
+          imagem_mobile_path: string
+          link: string | null
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by: string
+          id?: string
+          imagem_desktop_path: string
+          imagem_mobile_path: string
+          link?: string | null
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string
+          id?: string
+          imagem_desktop_path?: string
+          imagem_mobile_path?: string
+          link?: string | null
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bloqueios_empresa: {
         Row: {
           acao: string
@@ -850,6 +886,8 @@ export type Database = {
       }
       stories: {
         Row: {
+          botao_link: string | null
+          botao_texto: string | null
           created_at: string
           created_by: string | null
           duracao_segundos: number
@@ -861,6 +899,8 @@ export type Database = {
           media_tipo: string
         }
         Insert: {
+          botao_link?: string | null
+          botao_texto?: string | null
           created_at?: string
           created_by?: string | null
           duracao_segundos?: number
@@ -872,6 +912,8 @@ export type Database = {
           media_tipo?: string
         }
         Update: {
+          botao_link?: string | null
+          botao_texto?: string | null
           created_at?: string
           created_by?: string | null
           duracao_segundos?: number
