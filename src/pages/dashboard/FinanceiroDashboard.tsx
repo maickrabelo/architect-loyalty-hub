@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LogOut, Wallet } from "lucide-react";
+import { LogOut } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/contexts/AuthContext";
 import { listaMeses, labelMes, mesAtual, useCaixa } from "@/hooks/useFinanceiro";
 import FinanceiroResumo from "@/components/financeiro/FinanceiroResumo";
@@ -43,7 +44,7 @@ const FinanceiroDashboard = () => {
       <header className="border-b bg-card/60 backdrop-blur">
         <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Wallet className="h-5 w-5 text-primary" />
+            <Logo size="sm" />
             <div>
               <h1 className="font-serif text-xl">Gestão Financeira</h1>
               <p className="text-xs text-muted-foreground">Faturamento, caixa e inadimplência do programa</p>

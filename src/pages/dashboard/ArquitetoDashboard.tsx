@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DestinoCard } from "@/components/DestinoCard";
+import { Logo } from "@/components/brand/Logo";
 import { toast } from "sonner";
 
 const calcularPontos = (valorVendas: number) => Math.floor((valorVendas || 0) / 1000);
@@ -219,6 +220,9 @@ const ArquitetoDashboard = () => {
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-background/20 to-secondary/80" />
+          <div className="absolute top-4 left-4 md:left-8">
+            <Logo size="sm" className="rounded-lg bg-background/70 backdrop-blur-sm px-3 py-2" />
+          </div>
           <div className="absolute top-4 right-4">
             <Button variant="outline" size="sm" onClick={handleLogout} className="backdrop-blur-sm bg-background/60">
               <LogOut className="mr-2 h-4 w-4" /> Sair
