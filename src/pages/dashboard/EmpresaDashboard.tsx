@@ -30,10 +30,11 @@ import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AniversariantesSemana } from "@/components/Aniversariantes";
+import { AniversariantesModulo, AniversariantesSemana } from "@/components/Aniversariantes";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const EmpresaDashboard = () => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const EmpresaDashboard = () => {
   const [valorVenda, setValorVenda] = useState("");
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
+  const [abaAtiva, setAbaAtiva] = useState("overview");
 
   // Redirect if not empresa
   useEffect(() => {
@@ -199,11 +201,30 @@ const EmpresaDashboard = () => {
           </Button>
         </div>
 
-        <AniversariantesSemana />
+        <Tabs value={abaAtiva} onValueChange={setAbaAtiva} className="mb-6">
+          <TabsList className="flex h-auto w-full flex-wrap justify-start bg-card/50">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="lancamento">Lançar Venda</TabsTrigger>
+            <TabsTrigger value="vendas">Vendas</TabsTrigger>
+            <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
+            <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
+            <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-        <UpgradesRecentes />
+        {abaAtiva === "overview" && (
+          <div className="space-y-8">
+            <AniversariantesSemana onVerTodos={() => setAbaAtiva("aniversariantes")} />
+            <UpgradesRecentes />
+          </div>
+        )}
 
-        <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
+        {abaAtiva === "aniversariantes" && <AniversariantesModulo />}
+
+        {abaAtiva === "stories" && (
+          <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
+        )}
 
 
         {/* Aviso de fatura em aberto */}
@@ -220,7 +241,7 @@ const EmpresaDashboard = () => {
 
 
         {/* Launch Sales */}
-        <Card className="mb-8 bg-gradient-premium border-primary/20">
+        {abaAtiva === "lancamento" && <Card className="mb-8 bg-gradient-premium border-primary/20">
           {(empresa as any).bloqueada && (
             <div className="px-6 pt-6">
               <p className="text-sm font-medium text-destructive">
@@ -340,9 +361,10 @@ const EmpresaDashboard = () => {
               {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
             </Button>
           </CardContent>
-        </Card>
+        </Card>}
 
         {/* Stats Overview */}
+        {abaAtiva === "overview" && <>
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-card border-border">
             <CardHeader>
@@ -377,15 +399,17 @@ const EmpresaDashboard = () => {
 
         {/* Gráficos */}
         <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
+        </>}
 
-        <VendasDetalhe empresaId={empresa.id} />
+        {abaAtiva === "vendas" && <VendasDetalhe empresaId={empresa.id} />}
 
         {/* Área financeira */}
-        <div className="mb-8">
+        {abaAtiva === "financeiro" && <div className="mb-8">
           <EmpresaFinanceiro empresaId={empresa.id} />
-        </div>
+        </div>}
 
         {/* Architects List */}
+        {abaAtiva === "profissionais" && <>
         <Card className="bg-card border-border mb-8">
           <CardHeader>
             <CardTitle>Profissionais Cadastrados</CardTitle>
@@ -428,9 +452,10 @@ const EmpresaDashboard = () => {
             )}
           </CardContent>
         </Card>
+        </>}
 
         {/* Investimento por Arquiteto */}
-        <Card className="mb-8 bg-gradient-premium border-primary/20">
+        {abaAtiva === "profissionais" && <Card className="mb-8 bg-gradient-premium border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
@@ -555,12 +580,13 @@ const EmpresaDashboard = () => {
               <PaginacaoControles pagina={pagInvestimento.pagina} totalPaginas={pagInvestimento.totalPaginas} onChange={pagInvestimento.setPagina} />
             </div>
           </CardContent>
-        </Card>
+        </Card>}
 
         {/* Rateio da premiação — oculto temporariamente; reexibir depois */}
         {/* <EmpresaRateio empresaId={empresa.id} /> */}
 
         {/* Lançamentos e histórico por profissional */}
+        {abaAtiva === "vendas" && <>
         <EmpresaLancamentos vendas={vendas as any} arquitetos={arquitetos} nomeEmpresa={empresa.nome} />
 
         {/* Histórico de Vendas */}
@@ -636,6 +662,7 @@ const EmpresaDashboard = () => {
             </div>
           </CardContent>
         </Card>
+        </>}
       </div>
     </div>
   );
