@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { enviarEmailSeguro, layout, esc, brl, dataBr, SITE_URL } from './email.ts'
 
 // Ambiente: homologação (testes). Para produção troque as URLs e o nome do parâmetro de chave.
 const OAUTH_URL = 'https://oauth.hm.bb.com.br/oauth/token'
