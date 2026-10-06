@@ -51,6 +51,8 @@ const EmpresaDashboard = () => {
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("overview");
+  // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
+  const mostrarFinanceiro = false;
 
   // Redirect if not empresa
   useEffect(() => {
