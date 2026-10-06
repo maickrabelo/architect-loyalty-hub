@@ -322,7 +322,38 @@ const EmpresaDashboard = () => {
               {lancarVendaMutation.isPending ? "Lançando..." : "Lançar Venda"}
             </Button>
           </CardContent>
-        </Card>}
+        </Card>
+
+        <Tabs value={abaAtiva} onValueChange={setAbaAtiva} className="mb-6">
+          <TabsList className="flex h-auto w-full flex-wrap justify-start bg-card/50">
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="vendas">Vendas</TabsTrigger>
+            <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
+            <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
+            <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {abaAtiva === "aniversariantes" && <AniversariantesModulo />}
+
+        {abaAtiva === "stories" && (
+          <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
+        )}
+
+
+        {/* Aviso de fatura em aberto */}
+        {(empresa as any).bloqueada && (
+          <div className="mb-8 rounded-lg border-2 border-destructive bg-destructive/10 p-4">
+            <p className="font-semibold text-destructive">
+              Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação.
+            </p>
+            {(empresa as any).motivo_bloqueio && (
+              <p className="text-sm text-destructive/80 mt-1">{(empresa as any).motivo_bloqueio}</p>
+            )}
+          </div>
+        )}
+
 
         {/* Stats Overview */}
         {abaAtiva === "overview" && <>
