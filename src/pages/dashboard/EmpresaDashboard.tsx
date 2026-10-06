@@ -51,6 +51,8 @@ const EmpresaDashboard = () => {
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("overview");
+  // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
+  const mostrarFinanceiro = false;
 
   // Redirect if not empresa
   useEffect(() => {
@@ -203,7 +205,7 @@ const EmpresaDashboard = () => {
 
         {/* Lançar Venda — fixo entre o nome da empresa e o menu */}
         <Card className="mb-8 bg-gradient-premium border-primary/20">
-          {(empresa as any).bloqueada && (
+          {mostrarFinanceiro && (empresa as any).bloqueada && (
             <div className="px-6 pt-6">
               <p className="text-sm font-medium text-destructive">
                 Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
@@ -329,7 +331,7 @@ const EmpresaDashboard = () => {
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="vendas">Vendas</TabsTrigger>
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
-            <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            {mostrarFinanceiro && <TabsTrigger value="financeiro">Financeiro</TabsTrigger>}
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
             <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
           </TabsList>
@@ -343,7 +345,7 @@ const EmpresaDashboard = () => {
 
 
         {/* Aviso de fatura em aberto */}
-        {(empresa as any).bloqueada && (
+        {mostrarFinanceiro && (empresa as any).bloqueada && (
           <div className="mb-8 rounded-lg border-2 border-destructive bg-destructive/10 p-4">
             <p className="font-semibold text-destructive">
               Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação.
@@ -396,7 +398,7 @@ const EmpresaDashboard = () => {
         {abaAtiva === "vendas" && <VendasDetalhe empresaId={empresa.id} />}
 
         {/* Área financeira */}
-        {abaAtiva === "financeiro" && <div className="mb-8">
+        {mostrarFinanceiro && abaAtiva === "financeiro" && <div className="mb-8">
           <EmpresaFinanceiro empresaId={empresa.id} />
         </div>}
 
@@ -447,7 +449,7 @@ const EmpresaDashboard = () => {
         </>}
 
         {/* Investimento por Arquiteto */}
-        {abaAtiva === "profissionais" && <Card className="mb-8 bg-gradient-premium border-primary/20">
+        {mostrarFinanceiro && abaAtiva === "profissionais" && <Card className="mb-8 bg-gradient-premium border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
