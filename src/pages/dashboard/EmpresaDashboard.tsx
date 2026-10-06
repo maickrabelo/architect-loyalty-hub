@@ -345,7 +345,7 @@ const EmpresaDashboard = () => {
 
 
         {/* Aviso de fatura em aberto */}
-        {(empresa as any).bloqueada && (
+        {mostrarFinanceiro && (empresa as any).bloqueada && (
           <div className="mb-8 rounded-lg border-2 border-destructive bg-destructive/10 p-4">
             <p className="font-semibold text-destructive">
               Você possui uma fatura em aberto, entre em contato com o gestor financeiro para regularizar sua situação.
