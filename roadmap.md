@@ -8,3 +8,6 @@
 - [x] Informar tamanhos recomendados para banners desktop e celular.
 - [x] Otimizar imagens dos stories antes do envio.
 - [x] Iniciar os 5 segundos somente após a mídia carregar completamente.
+- [ ] Exibir upgrades gerais para todos os lojistas.
+- [ ] Adicionar acesso à lista completa de aniversariantes no painel lojista.
+- [ ] Dividir o painel lojista em menus.

@@ -64,7 +64,7 @@ const Linha = ({ a, destaque }: { a: Aniversariante; destaque?: string }) => (
   </div>
 );
 
-export const AniversariantesSemana = () => {
+export const AniversariantesSemana = ({ onVerTodos }: { onVerTodos?: () => void }) => {
   const { data = [], isLoading } = useAniversariantes();
   const semana = useMemo(() => daSemana(data), [data]);
   if (isLoading) return null;
@@ -82,6 +82,11 @@ export const AniversariantesSemana = () => {
           semana.map(a => (
             <Linha key={a.id} a={a} destaque={a.data.toDateString() === hoje ? "Hoje! 🎉" : a.data.toLocaleDateString("pt-BR", { weekday: "short" })} />
           ))
+        )}
+        {onVerTodos && (
+          <Button type="button" variant="outline" className="mt-4 w-full sm:w-auto" onClick={onVerTodos}>
+            Ver todos os aniversariantes
+          </Button>
         )}
       </CardContent>
     </Card>
