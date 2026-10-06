@@ -201,10 +201,16 @@ const EmpresaDashboard = () => {
           </Button>
         </div>
 
-        <Tabs value={abaAtiva} onValueChange={setAbaAtiva} className="mb-6">
-          <TabsList className="flex h-auto w-full flex-wrap justify-start bg-card/50">
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="lancamento">Lançar Venda</TabsTrigger>
+        {/* Launch Sales — fixo entre o cabeçalho (nome da empresa) e o menu */}
+        <Card className="mb-8 bg-gradient-premium border-primary/20">
+          {(empresa as any).bloqueada && (
+            <div className="px-6 pt-6">
+              <p className="text-sm font-medium text-destructive">
+                Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
+              </p>
+            </div>
+          )}
+          <CardHeader>
             <TabsTrigger value="vendas">Vendas</TabsTrigger>
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
             <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
