@@ -331,7 +331,7 @@ const EmpresaDashboard = () => {
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="vendas">Vendas</TabsTrigger>
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
-            <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            {mostrarFinanceiro && <TabsTrigger value="financeiro">Financeiro</TabsTrigger>}
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
             <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
           </TabsList>
