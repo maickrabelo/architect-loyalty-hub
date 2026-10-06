@@ -2,6 +2,7 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { z } from 'npm:zod@3'
 import { admin, bb, cfg, token, aplicarEstado, HOMOLOG } from '../_shared/bb.ts'
+import { enviarEmailSeguro, layout, esc, brl, dataBr, SITE_URL } from '../_shared/email.ts'
 
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
@@ -99,6 +100,12 @@ async function emitir(db: any, userId: string, faturaId: string, tipo: string, n
       status: 'emitido', linha_digitavel: r.linhaDigitavel, codigo_barras: r.codigoBarraNumerico,
       qr_code: r.qrCode?.emv ?? null, url_imagem: r.urlImagemBoleto ?? null, erro: null,
     }).eq('id', boleto.id).select().single()
+    await enviarEmailSeguro(e?.email, `Boleto disponível — ${tipo} ${f.mes}`, layout('Seu boleto está disponível',
+      `<p>Olá, ${esc(e?.nome)}.</p><p>O boleto de <strong>${esc(tipo)}</strong> referente a <strong>${esc(f.mes)}</strong> foi emitido.</p>
+       <p>Valor: <strong>${brl(valor)}</strong><br/>Vencimento: <strong>${dataBr(venc)}</strong></p>
+       ${r.linhaDigitavel ? `<p>Linha digitável:<br/><code style="font-size:14px">${esc(r.linhaDigitavel)}</code></p>` : ''}
+       ${r.qrCode?.emv ? `<p>Pix copia e cola:<br/><code style="font-size:12px;word-break:break-all">${esc(r.qrCode.emv)}</code></p>` : ''}`,
+      { texto: 'Ver no painel', link: `${SITE_URL}/login` }))
     return upd
   } catch (err) {
     await db.from('boletos').update({ status: 'erro', erro: (err as Error).message }).eq('id', boleto.id)

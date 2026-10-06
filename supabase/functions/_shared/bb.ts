@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { enviarEmailSeguro, layout, esc, brl, dataBr, SITE_URL } from './email.ts'
 
 // Ambiente: homologação (testes). Para produção troque as URLs e o nome do parâmetro de chave.
 const OAUTH_URL = 'https://oauth.hm.bb.com.br/oauth/token'
@@ -81,6 +82,11 @@ export async function aplicarEstado(db: ReturnType<typeof admin>, boleto: any, e
       _boleto_id: boleto.id, _valor: valorPago || Number(boleto.valor), _data: dataPg ?? new Date().toISOString().slice(0, 10), _codigo_estado: estado,
     })
     if (error) throw error
+    const { data: emp } = await db.from('empresas').select('nome,email').eq('id', boleto.empresa_id).maybeSingle()
+    const valor = valorPago || Number(boleto.valor)
+    await enviarEmailSeguro(emp?.email, 'Pagamento confirmado — Grupo Conexão', layout('Pagamento confirmado',
+      `<p>Olá, ${esc(emp?.nome)}.</p><p>Recebemos o pagamento do boleto de <strong>${esc(boleto.tipo)}</strong> no valor de <strong>${brl(valor)}</strong>${dataPg ? ` em ${dataBr(dataPg)}` : ''}.</p><p>Obrigado!</p>`,
+      { texto: 'Ver no painel', link: `${SITE_URL}/login` }))
     return 'pago'
   }
   if ((estado === 7 || estado === 5) && boleto.status === 'emitido') {
