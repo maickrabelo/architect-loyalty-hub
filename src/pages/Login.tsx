@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SectionLabel } from "@/components/brand/SectionLabel";
 import { Logo } from "@/components/brand/Logo";
 import { WavePattern } from "@/components/brand/WavePattern";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -93,6 +94,20 @@ const Login = () => {
                   className="bg-background border-border h-11"
                   disabled={isSubmitting}
                 />
+              </div>
+              <div className="text-right -mt-2">
+                <button
+                  type="button"
+                  className="text-sm text-primary-deep hover:underline"
+                  onClick={async () => {
+                    if (!email) { toast.error("Digite seu e-mail acima para recuperar a senha"); return; }
+                    const { error } = await supabase.functions.invoke("recuperar-senha", { body: { email, origem: window.location.origin } });
+                    if (error) toast.error("Não foi possível enviar o e-mail agora");
+                    else toast.success("Se o e-mail estiver cadastrado, você receberá um link para criar nova senha.");
+                  }}
+                >
+                  Esqueci minha senha
+                </button>
               </div>
 
               <Button
