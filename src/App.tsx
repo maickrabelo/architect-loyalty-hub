@@ -17,6 +17,7 @@ import FinanceiroDashboard from "./pages/dashboard/FinanceiroDashboard";
 import NotFound from "./pages/NotFound";
 import Privacidade from "./pages/Privacidade";
 import ExcluirConta from "./pages/ExcluirConta";
+import RedefinirSenha from "./pages/RedefinirSenha";
 import { TrocaSenhaObrigatoria } from "./components/TrocaSenhaObrigatoria";
 import { AvisoPrivacidade } from "./components/AvisoPrivacidade";
 
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/privacidade" element={<Privacidade />} />
             <Route path="/excluir-conta" element={<ExcluirConta />} />
+            <Route path="/redefinir-senha" element={<RedefinirSenha />} />
             <Route path="/dashboard/arquiteto" element={<ArquitetoDashboard />} />
             <Route path="/dashboard/arquiteto/pontuacao" element={<PontuacaoDetalhada />} />
             <Route path="/dashboard/empresa" element={<EmpresaDashboard />} />
