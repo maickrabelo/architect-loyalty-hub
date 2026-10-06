@@ -398,7 +398,7 @@ const EmpresaDashboard = () => {
         {abaAtiva === "vendas" && <VendasDetalhe empresaId={empresa.id} />}
 
         {/* Área financeira */}
-        {abaAtiva === "financeiro" && <div className="mb-8">
+        {mostrarFinanceiro && abaAtiva === "financeiro" && <div className="mb-8">
           <EmpresaFinanceiro empresaId={empresa.id} />
         </div>}
 
