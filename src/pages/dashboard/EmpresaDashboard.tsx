@@ -205,7 +205,7 @@ const EmpresaDashboard = () => {
 
         {/* Lançar Venda — fixo entre o nome da empresa e o menu */}
         <Card className="mb-8 bg-gradient-premium border-primary/20">
-          {(empresa as any).bloqueada && (
+          {mostrarFinanceiro && (empresa as any).bloqueada && (
             <div className="px-6 pt-6">
               <p className="text-sm font-medium text-destructive">
                 Lançamento bloqueado por pendência financeira. Regularize sua fatura para voltar a pontuar.
