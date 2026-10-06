@@ -449,7 +449,7 @@ const EmpresaDashboard = () => {
         </>}
 
         {/* Investimento por Arquiteto */}
-        {abaAtiva === "profissionais" && <Card className="mb-8 bg-gradient-premium border-primary/20">
+        {mostrarFinanceiro && abaAtiva === "profissionais" && <Card className="mb-8 bg-gradient-premium border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
