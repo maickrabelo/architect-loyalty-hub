@@ -85,6 +85,13 @@
       "when": 1791301846782,
       "tag": "0011_permitir_service_role_aniversariantes_upgrades",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791490824810,
+      "tag": "0012_migration",
+      "breakpoints": true
     }
   ]
 }

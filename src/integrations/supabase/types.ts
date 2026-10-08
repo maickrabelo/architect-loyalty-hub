@@ -1101,6 +1101,16 @@ export type Database = {
           total: number
         }[]
       }
+      get_ranking_geral: {
+        Args: never
+        Returns: {
+          empresas: number
+          id: string
+          nome: string
+          pontos: number
+          vendas: number
+        }[]
+      }
       get_rateio_premiacao_empresa: {
         Args: { _empresa_id: string }
         Returns: Json
