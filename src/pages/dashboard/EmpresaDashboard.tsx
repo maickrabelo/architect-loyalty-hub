@@ -47,12 +47,23 @@ const EmpresaDashboard = () => {
   const [selectedArquiteto, setSelectedArquiteto] = useState("");
   const [buscaProfissional, setBuscaProfissional] = useState("");
   const [sugestoesAbertas, setSugestoesAbertas] = useState(false);
-  const [valorVenda, setValorVenda] = useState("");
+  const [valorVenda, setValorVenda] = useState(""); // guardado em centavos (só dígitos)
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("overview");
   // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
   const mostrarFinanceiro = false;
+
+  // Máscara monetária: o campo guarda apenas dígitos (centavos) e exibe R$ 1.234,56
+  const formatarMoeda = (centavos: string) => {
+    const n = Number(centavos || "0");
+    return (n / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  const valorVendaNumero = Number(valorVenda || "0") / 100;
+  const handleValorVendaChange = (bruto: string) => {
+    const digitos = bruto.replace(/\D/g, "").slice(0, 10);
+    setValorVenda(digitos);
+  };
 
   // Redirect if not empresa
   useEffect(() => {
@@ -103,12 +114,12 @@ const EmpresaDashboard = () => {
   });
 
   const handleLancarVenda = () => {
-    if (!selectedArquiteto || !valorVenda || !cliente.trim() || !clienteTelefone.trim()) {
+    if (!selectedArquiteto || !Number(valorVenda) || !cliente.trim() || !clienteTelefone.trim()) {
       toast.error("Informe o profissional, o valor e o nome e telefone do cliente");
       return;
     }
 
-    const valor = parseFloat(valorVenda);
+    const valor = valorVendaNumero;
     if (isNaN(valor) || valor <= 0) {
       toast.error("Valor inválido");
       return;
@@ -274,18 +285,20 @@ const EmpresaDashboard = () => {
               </div>
               
               <div className="space-y-2">
-                <Label>Valor da Venda (R$)</Label>
+                <Label>Valor da Venda</Label>
                 <Input
-                  type="number"
-                  placeholder="Ex: 50000"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="R$ 0,00"
+                  value={`R$ ${formatarMoeda(valorVenda)}`}
+                  onChange={(e) => handleValorVendaChange(e.target.value)}
+                  onFocus={() => { if (!valorVenda) setValorVenda("0"); }}
                   className="bg-secondary"
                   disabled={lancarVendaMutation.isPending}
                 />
-                {valorVenda && (
+                {Number(valorVenda) > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    = {calcularPontos(parseFloat(valorVenda) || 0)} pontos
+                    = {calcularPontos(valorVendaNumero)} pontos
                   </p>
                 )}
               </div>
