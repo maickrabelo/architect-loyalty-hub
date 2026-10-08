@@ -54,6 +54,17 @@ const EmpresaDashboard = () => {
   // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
   const mostrarFinanceiro = false;
 
+  // Máscara monetária: o campo guarda apenas dígitos (centavos) e exibe R$ 1.234,56
+  const formatarMoeda = (centavos: string) => {
+    const n = Number(centavos || "0");
+    return (n / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  const valorVendaNumero = Number(valorVenda || "0") / 100;
+  const handleValorVendaChange = (bruto: string) => {
+    const digitos = bruto.replace(/\D/g, "").slice(0, 10);
+    setValorVenda(digitos);
+  };
+
   // Redirect if not empresa
   useEffect(() => {
     if (!authLoading && (!user || userRole !== 'empresa')) {
