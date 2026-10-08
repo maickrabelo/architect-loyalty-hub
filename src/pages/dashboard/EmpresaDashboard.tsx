@@ -285,18 +285,20 @@ const EmpresaDashboard = () => {
               </div>
               
               <div className="space-y-2">
-                <Label>Valor da Venda (R$)</Label>
+                <Label>Valor da Venda</Label>
                 <Input
-                  type="number"
-                  placeholder="Ex: 50000"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="R$ 0,00"
+                  value={`R$ ${formatarMoeda(valorVenda)}`}
+                  onChange={(e) => handleValorVendaChange(e.target.value)}
+                  onFocus={() => { if (!valorVenda) setValorVenda("0"); }}
                   className="bg-secondary"
                   disabled={lancarVendaMutation.isPending}
                 />
-                {valorVenda && (
+                {Number(valorVenda) > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    = {calcularPontos(parseFloat(valorVenda) || 0)} pontos
+                    = {calcularPontos(valorVendaNumero)} pontos
                   </p>
                 )}
               </div>
