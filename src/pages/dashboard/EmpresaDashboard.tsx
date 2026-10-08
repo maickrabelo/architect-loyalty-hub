@@ -47,7 +47,7 @@ const EmpresaDashboard = () => {
   const [selectedArquiteto, setSelectedArquiteto] = useState("");
   const [buscaProfissional, setBuscaProfissional] = useState("");
   const [sugestoesAbertas, setSugestoesAbertas] = useState(false);
-  const [valorVenda, setValorVenda] = useState("");
+  const [valorVenda, setValorVenda] = useState(""); // guardado em centavos (só dígitos)
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("overview");
