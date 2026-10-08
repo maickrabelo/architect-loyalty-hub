@@ -346,11 +346,14 @@ const EmpresaDashboard = () => {
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
             {mostrarFinanceiro && <TabsTrigger value="financeiro">Financeiro</TabsTrigger>}
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
+            <TabsTrigger value="ranking">Ranking Geral</TabsTrigger>
             <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
           </TabsList>
         </Tabs>
 
         {abaAtiva === "aniversariantes" && <AniversariantesModulo />}
+
+        {abaAtiva === "ranking" && <RankingGeral />}
 
         {abaAtiva === "stories" && (
           <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
