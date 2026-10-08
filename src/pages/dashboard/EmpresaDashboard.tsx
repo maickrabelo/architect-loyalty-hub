@@ -114,12 +114,12 @@ const EmpresaDashboard = () => {
   });
 
   const handleLancarVenda = () => {
-    if (!selectedArquiteto || !valorVenda || !cliente.trim() || !clienteTelefone.trim()) {
+    if (!selectedArquiteto || !Number(valorVenda) || !cliente.trim() || !clienteTelefone.trim()) {
       toast.error("Informe o profissional, o valor e o nome e telefone do cliente");
       return;
     }
 
-    const valor = parseFloat(valorVenda);
+    const valor = valorVendaNumero;
     if (isNaN(valor) || valor <= 0) {
       toast.error("Valor inválido");
       return;
