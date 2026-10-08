@@ -31,6 +31,7 @@ import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AniversariantesModulo, AniversariantesSemana } from "@/components/Aniversariantes";
+import RankingGeral from "@/components/dashboard/RankingGeral";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
@@ -346,11 +347,14 @@ const EmpresaDashboard = () => {
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
             {mostrarFinanceiro && <TabsTrigger value="financeiro">Financeiro</TabsTrigger>}
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
+            <TabsTrigger value="ranking">Ranking Geral</TabsTrigger>
             <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
           </TabsList>
         </Tabs>
 
         {abaAtiva === "aniversariantes" && <AniversariantesModulo />}
+
+        {abaAtiva === "ranking" && <RankingGeral />}
 
         {abaAtiva === "stories" && (
           <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
