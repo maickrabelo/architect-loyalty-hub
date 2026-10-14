@@ -58,8 +58,7 @@ export function LogosEmpresas() {
             {faixa.map((logo, i) => (
               <div
                 key={`${logo.nome}-${i}`}
-                className="flex-shrink-0 px-4 sm:px-6"
-                style={{ width: "20%" }}
+                className="flex-shrink-0 px-3 sm:px-6 w-[33.333vw] sm:w-[20vw]"
               >
                 <div className="flex h-20 sm:h-24 items-center justify-center rounded-2xl border border-border bg-card/60 px-6">
                   <img
