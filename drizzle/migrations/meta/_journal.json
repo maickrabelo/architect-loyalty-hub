@@ -92,6 +92,13 @@
       "when": 1791490824810,
       "tag": "0012_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791973690488,
+      "tag": "0013_contas_bancarias",
+      "breakpoints": true
     }
   ]
 }

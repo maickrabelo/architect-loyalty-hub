@@ -337,6 +337,39 @@ export type Database = {
         }
         Relationships: []
       }
+      contas_bancarias: {
+        Row: {
+          atualizado_em: string
+          atualizado_por: string | null
+          banco: string
+          conta: string
+          created_at: string
+          id: string
+          saldo_aplicado: number
+          saldo_conta: number
+        }
+        Insert: {
+          atualizado_em?: string
+          atualizado_por?: string | null
+          banco?: string
+          conta: string
+          created_at?: string
+          id?: string
+          saldo_aplicado?: number
+          saldo_conta?: number
+        }
+        Update: {
+          atualizado_em?: string
+          atualizado_por?: string | null
+          banco?: string
+          conta?: string
+          created_at?: string
+          id?: string
+          saldo_aplicado?: number
+          saldo_conta?: number
+        }
+        Relationships: []
+      }
       empresas: {
         Row: {
           ativa: boolean | null
