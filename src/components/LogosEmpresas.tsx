@@ -1,26 +1,26 @@
-import anjosColchoes from "@/assets/logos-empresas/ANJOS_COLCHOES_copiar.png.asset.json";
-import antonelli from "@/assets/logos-empresas/ANTONELLI.png.asset.json";
-import carreMarmoraria from "@/assets/logos-empresas/CARRÉ_MARMORARIA_copiar.png.asset.json";
-import casaDecor from "@/assets/logos-empresas/CASA_DECOR.png.asset.json";
-import designCenter from "@/assets/logos-empresas/DESIGN_CENTER.png.asset.json";
-import hidraulicaUberaba from "@/assets/logos-empresas/HIDRÁULICA_UBERABA_copiar.png.asset.json";
-import lojaSaoGeraldo from "@/assets/logos-empresas/LOJA_SAO_GERALDO_copiar.png.asset.json";
-import pindorama from "@/assets/logos-empresas/PINDORAMA_copiar.png.asset.json";
-import poolHouse from "@/assets/logos-empresas/Pool_House.png.asset.json";
-import reginez from "@/assets/logos-empresas/REGINEZ_copiar.png.asset.json";
+import anjosColchoes from "@/assets/logos-empresas/ANJOS_COLCHOES_copiar.png";
+import antonelli from "@/assets/logos-empresas/ANTONELLI.png";
+import carreMarmoraria from "@/assets/logos-empresas/CARRÉ_MARMORARIA_copiar.png";
+import casaDecor from "@/assets/logos-empresas/CASA_DECOR.png";
+import designCenter from "@/assets/logos-empresas/DESIGN_CENTER.png";
+import hidraulicaUberaba from "@/assets/logos-empresas/HIDRÁULICA_UBERABA_copiar.png";
+import lojaSaoGeraldo from "@/assets/logos-empresas/LOJA_SAO_GERALDO_copiar.png";
+import pindorama from "@/assets/logos-empresas/PINDORAMA_copiar.png";
+import poolHouse from "@/assets/logos-empresas/Pool_House.png";
+import reginez from "@/assets/logos-empresas/REGINEZ_copiar.png";
 
 // Ordem alfabética. Novas logos: adicionar aqui e reordenar.
 const logos = [
-  { nome: "Anjos Colchões", url: anjosColchoes.url },
-  { nome: "Antonelli", url: antonelli.url },
-  { nome: "Carré Marmoraria", url: carreMarmoraria.url },
-  { nome: "Casa Decor", url: casaDecor.url },
-  { nome: "Design Center", url: designCenter.url },
-  { nome: "Hidráulica Uberaba", url: hidraulicaUberaba.url },
-  { nome: "Loja São Geraldo", url: lojaSaoGeraldo.url },
-  { nome: "Pindorama", url: pindorama.url },
-  { nome: "Pool House", url: poolHouse.url },
-  { nome: "Reginez", url: reginez.url },
+  { nome: "Anjos Colchões", url: anjosColchoes },
+  { nome: "Antonelli", url: antonelli },
+  { nome: "Carré Marmoraria", url: carreMarmoraria },
+  { nome: "Casa Decor", url: casaDecor },
+  { nome: "Design Center", url: designCenter },
+  { nome: "Hidráulica Uberaba", url: hidraulicaUberaba },
+  { nome: "Loja São Geraldo", url: lojaSaoGeraldo },
+  { nome: "Pindorama", url: pindorama },
+  { nome: "Pool House", url: poolHouse },
+  { nome: "Reginez", url: reginez },
 ];
 
 export function LogosEmpresas() {
