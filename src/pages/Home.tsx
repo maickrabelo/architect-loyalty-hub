@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HomeBanners } from "@/components/banners/HomeBanners";
+import { LogosEmpresas } from "@/components/LogosEmpresas";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
@@ -169,6 +170,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Empresas participantes — slider rotativo de logos */}
+      <LogosEmpresas />
 
       {/* Editorial split — Arquiteto */}
       <section className="py-28 relative overflow-hidden">
