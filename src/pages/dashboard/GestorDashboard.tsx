@@ -23,6 +23,7 @@ import { AniversariantesSemana, AniversariantesModulo } from "@/components/Anive
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { GerenciarBanners } from "@/components/banners/GerenciarBanners";
+import { GerenciarBannersHome } from "@/components/banners/GerenciarBannersHome";
 import VendasDetalhe from "@/components/VendasDetalhe";
 import {
   Dialog,
@@ -455,6 +456,7 @@ const GestorDashboard = () => {
             <TabsTrigger value="upgrades">Últimos Upgrades</TabsTrigger>
             {!somenteLeitura && <TabsTrigger value="conexoes">Stories Conexão</TabsTrigger>}
             {!somenteLeitura && <TabsTrigger value="banners">Banners</TabsTrigger>}
+            {userRole === "gestor" && <TabsTrigger value="banners-home">Banners da página inicial</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="overview">
@@ -481,6 +483,9 @@ const GestorDashboard = () => {
           <TabsContent value="banners">
             <GerenciarBanners />
           </TabsContent>
+          {userRole === "gestor" && <TabsContent value="banners-home">
+            <GerenciarBannersHome />
+          </TabsContent>}
 
           {/* Architects Tab */}
           <TabsContent value="arquitetos">
