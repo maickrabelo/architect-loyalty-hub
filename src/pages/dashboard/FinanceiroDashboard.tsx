@@ -17,6 +17,7 @@ import FinanceiroCobrancas from "@/components/financeiro/FinanceiroCobrancas";
 import FinanceiroBloqueios from "@/components/financeiro/FinanceiroBloqueios";
 import FinanceiroConfig from "@/components/financeiro/FinanceiroConfig";
 import IntegracaoBB from "@/components/financeiro/IntegracaoBB";
+import SaldosBancarios from "@/components/financeiro/SaldosBancarios";
 
 const FinanceiroDashboard = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const FinanceiroDashboard = () => {
             <TabsTrigger value="config">Configurações</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="resumo"><FinanceiroResumo mes={mes} /></TabsContent>
+          <TabsContent value="resumo" className="space-y-6"><SaldosBancarios /><FinanceiroResumo mes={mes} /></TabsContent>
           <TabsContent value="faturas"><FinanceiroFaturas mes={mes} caixaFechado={caixa?.status === "fechado"} /></TabsContent>
           <TabsContent value="saldo"><FinanceiroSaldo /></TabsContent>
           <TabsContent value="caixa"><FinanceiroCaixa mes={mes} /></TabsContent>
