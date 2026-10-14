@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      banners_home: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          imagem_path: string | null
+          imagem_url: string | null
+          link: string | null
+          ordem: number
+          titulo: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_path?: string | null
+          imagem_url?: string | null
+          link?: string | null
+          ordem?: number
+          titulo: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_path?: string | null
+          imagem_url?: string | null
+          link?: string | null
+          ordem?: number
+          titulo?: string
+        }
+        Relationships: []
+      }
       banners_profissionais: {
         Row: {
           ativo: boolean

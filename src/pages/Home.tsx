@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { HomeBanners } from "@/components/banners/HomeBanners";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
@@ -32,67 +32,14 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
-const heroSlides = [
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-CLUBMED.png", alt: "Club Med" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-BUENOS.png", alt: "Buenos Aires" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-FASANO.png", alt: "Fasano" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-AMZONIA.png", alt: "Amazônia" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-FERNANDO.png", alt: "Fernando de Noronha" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-ATACAMA.png", alt: "Atacama" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-PORTUGAL.png", alt: "Portugal" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-EGITO.png", alt: "Egito" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-AFRICA.png", alt: "África" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-TAILANDIA.png", alt: "Tailândia" },
-  { src: "https://conexao.arq.br/content/images/campanha2026/BANNER-CONEX%C3%83O-2026-JAPAO.png", alt: "Japão" },
-];
-
-
 const Home = () => {
-  const [slideIdx, setSlideIdx] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setSlideIdx((i) => (i + 1) % heroSlides.length), 5000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
       {/* Hero slider — full width images, no overlay text */}
       <section className="relative w-full">
-        <div className="relative h-[32vh] sm:h-[50vh] md:h-[78vh] w-full overflow-hidden">
-          <AnimatePresence mode="sync">
-            <motion.img
-              key={slideIdx}
-              src={heroSlides[slideIdx].src}
-              alt={heroSlides[slideIdx].alt}
-
-              initial={{ opacity: 0, scale: 1.08 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 h-full w-full object-contain bg-background"
-            />
-          </AnimatePresence>
-
-          {/* Soft bottom fade into background */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-
-          {/* Dots */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {heroSlides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setSlideIdx(i)}
-                aria-label={`Slide ${i + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i === slideIdx ? "w-8 bg-primary-foreground" : "w-1.5 bg-primary-foreground/50"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+        <HomeBanners />
 
         {/* Text content below slider */}
         <div className="container mx-auto px-4 pt-8 md:pt-16 pb-20">

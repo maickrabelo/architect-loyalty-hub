@@ -99,6 +99,13 @@
       "when": 1791973690488,
       "tag": "0013_contas_bancarias",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1791976777841,
+      "tag": "0014_banners_home",
+      "breakpoints": true
     }
   ]
 }
