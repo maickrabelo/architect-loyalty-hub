@@ -12,3 +12,6 @@
 - [x] Adicionar acesso à lista completa de aniversariantes no painel lojista.
 - [x] Dividir o painel lojista em menus.
 - [x] Bloco "Lançar Venda" fixo entre o nome da empresa e o menu (fora das abas).
+- [ ] Publicar o banner do Japão na página inicial.
+- [ ] Criar gestão de banners da página inicial com envio, ordem, ativação e remoção.
+- [ ] Validar página pública e gestão autenticada dos banners.
