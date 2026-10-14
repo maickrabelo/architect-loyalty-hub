@@ -60,7 +60,7 @@ export function LogosEmpresas() {
                 key={`${logo.nome}-${i}`}
                 className="flex-shrink-0 px-3 sm:px-6 w-[33.333vw] sm:w-[20vw]"
               >
-                <div className="flex h-20 sm:h-24 items-center justify-center rounded-2xl border border-border bg-card/60 px-6">
+                <div className="flex h-20 sm:h-24 items-center justify-center rounded-2xl border border-border bg-primary-deep px-6">
                   <img
                     src={logo.url}
                     alt={logo.nome}
