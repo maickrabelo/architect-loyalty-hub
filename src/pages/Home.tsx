@@ -34,7 +34,7 @@ const fadeUp = {
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden pt-24">
       <Navbar />
 
       {/* Hero slider — full width images, no overlay text */}
