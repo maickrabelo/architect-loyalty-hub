@@ -53,7 +53,7 @@ const EmpresaDashboard = () => {
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [abaAtiva, setAbaAtiva] = useState("overview");
   // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
-  const mostrarFinanceiro = false;
+  const mostrarFinanceiro = true;
 
   // Máscara monetária: o campo guarda apenas dígitos (centavos) e exibe R$ 1.234,56
   const formatarMoeda = (centavos: string) => {
