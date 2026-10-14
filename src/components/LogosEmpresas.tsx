@@ -1,3 +1,9 @@
+import eletroFonte from "@/assets/logos-empresas/LOGO_HORIZONTAL_ELETRO_NOVA.png";
+import rogerioMarzola from "@/assets/logos-empresas/ROGERIO_MARZOLA_copiar.png";
+import shoppingPedras from "@/assets/logos-empresas/SHOPPING_DAS_PEDRAS_copiar.png";
+import suaCasaSmart from "@/assets/logos-empresas/SUA_CASA_SMART.png";
+import todeschini from "@/assets/logos-empresas/TODESCHINI_copiar.png";
+import tomazini from "@/assets/logos-empresas/TOMAZINI_TINTAS.png";
 import anjosColchoes from "@/assets/logos-empresas/ANJOS_COLCHOES_copiar.png";
 import antonelli from "@/assets/logos-empresas/ANTONELLI.png";
 import carreMarmoraria from "@/assets/logos-empresas/CARRÉ_MARMORARIA_copiar.png";
@@ -16,11 +22,17 @@ const logos = [
   { nome: "Carré Marmoraria", url: carreMarmoraria },
   { nome: "Casa Decor", url: casaDecor },
   { nome: "Design Center", url: designCenter },
+  { nome: "Eletro Fonte", url: eletroFonte },
   { nome: "Hidráulica Uberaba", url: hidraulicaUberaba },
   { nome: "Loja São Geraldo", url: lojaSaoGeraldo },
   { nome: "Pindorama", url: pindorama },
   { nome: "Pool House", url: poolHouse },
   { nome: "Reginez", url: reginez },
+  { nome: "Rogério Marzola", url: rogerioMarzola },
+  { nome: "Shopping das Pedras", url: shoppingPedras },
+  { nome: "Sua Casa Smart", url: suaCasaSmart },
+  { nome: "Todeschini", url: todeschini },
+  { nome: "Tomazini Tintas", url: tomazini },
 ];
 
 export function LogosEmpresas() {
