@@ -1026,6 +1026,91 @@ export type Database = {
           },
         ]
       }
+      upgrade_email_estado: {
+        Row: {
+          arquiteto_id: string
+          maior_limite: number
+        }
+        Insert: {
+          arquiteto_id: string
+          maior_limite?: number
+        }
+        Update: {
+          arquiteto_id?: string
+          maior_limite?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upgrade_email_estado_arquiteto_id_fkey"
+            columns: ["arquiteto_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      upgrade_email_outbox: {
+        Row: {
+          arquiteto_id: string
+          bloqueado_ate: string | null
+          created_at: string
+          data_upgrade: string
+          de_nivel: string
+          email: string
+          enviado_em: string | null
+          id: string
+          limite: number
+          nome: string
+          para_nivel: string
+          pontos: number
+          proxima_tentativa: string
+          tentativas: number
+          ultimo_erro: string | null
+        }
+        Insert: {
+          arquiteto_id: string
+          bloqueado_ate?: string | null
+          created_at?: string
+          data_upgrade: string
+          de_nivel: string
+          email: string
+          enviado_em?: string | null
+          id?: string
+          limite: number
+          nome: string
+          para_nivel: string
+          pontos: number
+          proxima_tentativa?: string
+          tentativas?: number
+          ultimo_erro?: string | null
+        }
+        Update: {
+          arquiteto_id?: string
+          bloqueado_ate?: string | null
+          created_at?: string
+          data_upgrade?: string
+          de_nivel?: string
+          email?: string
+          enviado_em?: string | null
+          id?: string
+          limite?: number
+          nome?: string
+          para_nivel?: string
+          pontos?: number
+          proxima_tentativa?: string
+          tentativas?: number
+          ultimo_erro?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upgrade_email_outbox_arquiteto_id_fkey"
+            columns: ["arquiteto_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -1116,6 +1201,32 @@ export type Database = {
         Args: { _empresa_id: string; _user_id: string }
         Returns: boolean
       }
+      claim_upgrade_emails: {
+        Args: never
+        Returns: {
+          arquiteto_id: string
+          bloqueado_ate: string | null
+          created_at: string
+          data_upgrade: string
+          de_nivel: string
+          email: string
+          enviado_em: string | null
+          id: string
+          limite: number
+          nome: string
+          para_nivel: string
+          pontos: number
+          proxima_tentativa: string
+          tentativas: number
+          ultimo_erro: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "upgrade_email_outbox"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       definir_bloqueio_empresa: {
         Args: {
           _bloquear: boolean
@@ -1127,6 +1238,10 @@ export type Database = {
       empresa_esta_bloqueada: {
         Args: { _empresa_id: string }
         Returns: boolean
+      }
+      enfileirar_upgrade_email: {
+        Args: { _arquiteto_id: string; _data: string }
+        Returns: undefined
       }
       fechar_caixa: { Args: { _mes: string }; Returns: Json }
       gerar_faturas_mes: { Args: { _mes: string }; Returns: Json }
@@ -1221,6 +1336,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      upgrade_email_nivel: {
+        Args: { _pontos: number }
+        Returns: {
+          limite: number
+          nome: string
+        }[]
+      }
+      wake_upgrade_emails: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "arquiteto" | "empresa" | "gestor" | "financeiro" | "auditor"
