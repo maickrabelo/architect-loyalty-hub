@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Avisar todos os lojistas por e-mail a cada novo upgrade, sem reenviar conquistas anteriores.
+
 - [x] Manter stories com duração padrão de 5 segundos.
 - [x] Adicionar botão de ação opcional aos stories.
 - [x] Renomear a área para Stories Conexão.
