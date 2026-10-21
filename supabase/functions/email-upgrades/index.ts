@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
   if (!url || !key) return json({ error: 'Serviço não configurado' }, 500);
   const db = createClient(url, key);
   try {
-    const { data: config, error: configError } = await db.from('upgrade_email_config').select('token').eq('id', 1).single();
+    const { data: config, error: configError } = await db.from('integracao_tokens').select('token').eq('nome', 'bb').single();
     if (configError) throw configError;
     const cronToken = req.headers.get('x-cron-token');
     if (!cronToken || cronToken !== config?.token) {
