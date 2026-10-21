@@ -60,6 +60,10 @@ Deno.serve(async (req) => {
       }
       await new Promise((resolve) => setTimeout(resolve, 600));
     }
+    if (enviados > 0) {
+      const { error: wakeError } = await db.rpc('wake_upgrade_emails');
+      if (wakeError) throw wakeError;
+    }
     return json({ enviados, falhas });
   } catch (err) {
     console.error('email-upgrades:', err);
