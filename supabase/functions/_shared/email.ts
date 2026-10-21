@@ -17,12 +17,12 @@ ${botao ? `<p style="margin:28px 0"><a href="${esc(botao.link)}" style="backgrou
 </div></body></html>`
 }
 
-export async function enviarEmail(to: string | string[], subject: string, html: string) {
+export async function enviarEmail(to: string | string[], subject: string, html: string, idempotencyKey?: string) {
   const key = Deno.env.get('RESEND_API_KEY_CONEXAO')
   if (!key) throw new Error('RESEND_API_KEY_CONEXAO não configurada')
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
     body: JSON.stringify({ from: EMAIL_FROM, to: Array.isArray(to) ? to : [to], subject, html }),
   })
   const txt = await r.text()

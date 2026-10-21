@@ -4,3 +4,4 @@
 - Store professional dashboard banners in the private `banners-profissionais` bucket and expose them through signed URLs; only managers may manage them.
 - Normalize story images client-side to 1080x1920 WebP before private storage upload to reduce transfer size while preserving visual quality.
 - Keep homepage banners separate from professional banners: managers manage `banners_home` and private `banners-home` uploads; the public read-only `banners-home` function exposes only active artwork through signed URLs (or seeded Lovable Assets URLs) so anonymous visitors can see the homepage without public buckets.
+- Detect global destination upgrades transactionally from sales using a seeded high-water mark; deliver per-recipient emails from a private outbox with cron retries and provider idempotency so old achievements and successful deliveries are not repeated.
