@@ -1336,6 +1336,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      test_upgrade_email_rules: { Args: never; Returns: Json }
       upgrade_email_nivel: {
         Args: { _pontos: number }
         Returns: {

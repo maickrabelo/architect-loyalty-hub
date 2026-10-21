@@ -113,6 +113,13 @@
       "when": 1792611436823,
       "tag": "0015_avisos_email_novos_upgrades",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792611506942,
+      "tag": "0016_testar_fila_upgrades",
+      "breakpoints": true
     }
   ]
 }
