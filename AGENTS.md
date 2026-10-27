@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Export professional contact data through a field-allowlisted, parameterless RPC restricted to gestor and empresa roles; use one shared CSV/download control so both dashboards export all registered professionals without widening profile RLS or exposing identity documents and internal notes.
+
 - Store professional profile photos in the private `fotos-profissionais` bucket under each user's ID and render them through short-lived signed URLs, because workspace policy disallows public buckets and profile images should remain authenticated-only.
 - Store professional dashboard banners in the private `banners-profissionais` bucket and expose them through signed URLs; only managers may manage them.
 - Normalize story images client-side to 1080x1920 WebP before private storage upload to reduce transfer size while preserving visual quality.

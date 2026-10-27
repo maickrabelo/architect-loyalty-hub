@@ -1243,6 +1243,26 @@ export type Database = {
         Args: { _arquiteto_id: string; _data: string }
         Returns: undefined
       }
+      exportar_contatos_profissionais: {
+        Args: never
+        Returns: {
+          bairro: string
+          celular: string
+          cep: string
+          cidade: string
+          complemento: string
+          email: string
+          endereco: string
+          estado: string
+          facebook: string
+          instagram: string
+          nome: string
+          nome_divulgacao: string
+          numero: string
+          profissao: string
+          telefone: string
+        }[]
+      }
       fechar_caixa: { Args: { _mes: string }; Returns: Json }
       gerar_faturas_mes: { Args: { _mes: string }; Returns: Json }
       get_admin_overview: { Args: never; Returns: Json }
