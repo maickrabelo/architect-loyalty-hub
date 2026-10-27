@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Serialize ranking exports separately from the view with Brazilian numeric formatting, semicolon-separated UTF-8 CSV and the shared file-delivery helper so spreadsheet columns, accents and mobile downloads remain consistent.
+
 - Export professional contact data through a field-allowlisted, parameterless RPC restricted to gestor and empresa roles; use one shared CSV/download control so both dashboards export all registered professionals without widening profile RLS or exposing identity documents and internal notes.
 
 - Store professional profile photos in the private `fotos-profissionais` bucket under each user's ID and render them through short-lived signed URLs, because workspace policy disallows public buckets and profile images should remain authenticated-only.
