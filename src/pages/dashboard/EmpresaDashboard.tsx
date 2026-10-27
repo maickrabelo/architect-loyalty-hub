@@ -36,6 +36,7 @@ import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExportarProfissionais } from "@/components/ExportarProfissionais";
 
 const EmpresaDashboard = () => {
   const navigate = useNavigate();
@@ -423,8 +424,13 @@ const EmpresaDashboard = () => {
         {abaAtiva === "profissionais" && <>
         <Card className="bg-card border-border mb-8">
           <CardHeader>
-            <CardTitle>Profissionais Cadastrados</CardTitle>
-            <CardDescription>Desempenho e pontuação dos profissionais</CardDescription>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <CardTitle>Profissionais Cadastrados</CardTitle>
+                <CardDescription>Desempenho e pontuação dos profissionais</CardDescription>
+              </div>
+              <ExportarProfissionais />
+            </div>
           </CardHeader>
           <CardContent>
             {arquitetos.length === 0 ? (

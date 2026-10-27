@@ -39,6 +39,7 @@ import AdminOverview from "@/components/dashboard/AdminOverview";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
+import { ExportarProfissionais } from "@/components/ExportarProfissionais";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
@@ -496,6 +497,7 @@ const GestorDashboard = () => {
                     <CardTitle>Todos os Profissionais</CardTitle>
                     <CardDescription>Ranking geral de pontuação</CardDescription>
                   </div>
+                  <ExportarProfissionais />
                   <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
