@@ -7,14 +7,9 @@ import { Search, Download, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
-
-type RankingLinha = {
-  id: string;
-  nome: string;
-  vendas: number | string;
-  pontos: number | string;
-  empresas: number | string;
-};
+import { gerarRankingCsv, type RankingLinha } from "@/lib/rankingCsv";
+import { deliverFile } from "@/lib/download";
+import { toast } from "sonner";
 
 const fmtBRL = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -45,15 +40,10 @@ const RankingGeral = () => {
 
   const exportCSV = (rows: RankingLinha[]) => {
     if (rows.length === 0) return;
-    const headers = ["Posicao", "Profissional", "Vendas", "Pontos", "Lojistas"];
-    const csv = [headers.join(","), ...rows.map((r, i) =>
-      [String(i + 1), `"${r.nome}"`, String(r.vendas), String(r.pontos), String(r.empresas)].join(",")
-    )].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "ranking-geral-profissionais.csv"; a.click();
-    URL.revokeObjectURL(url);
+    const blob = new Blob([gerarRankingCsv(rows)], { type: "text/csv;charset=utf-8" });
+    void deliverFile(blob, "ranking-geral-profissionais.csv").catch(() => {
+      toast.error("Não foi possível exportar o ranking. Tente novamente.");
+    });
   };
 
   if (carregando) {
@@ -65,25 +55,25 @@ const RankingGeral = () => {
   return (
     <Card className="bg-card border-border mb-8">
       <CardHeader>
-        <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
-          <div>
+        <div className="flex flex-col xl:flex-row gap-3 xl:items-center justify-between">
+          <div className="min-w-0">
             <CardTitle>Ranking Geral de Profissionais</CardTitle>
             <CardDescription>Pontuação de todo o grupo Conexão, somando as vendas em todas as lojas parceiras</CardDescription>
           </div>
-          <div className="flex gap-2">
-            <div className="relative">
+          <div className="flex flex-wrap gap-2 shrink-0">
+            <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar profissional..."
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
-                className="pl-9 w-64"
+                className="pl-9 w-full"
               />
             </div>
             <Button variant="outline" size="sm" onClick={() => carregar(true)} disabled={atualizando}>
               <RefreshCw className={`mr-2 h-4 w-4 ${atualizando ? "animate-spin" : ""}`} /> Atualizar
             </Button>
-            <Button variant="outline" size="sm" onClick={() => exportCSV(filtradas)}>
+            <Button variant="outline" size="sm" disabled={filtradas.length === 0} onClick={() => exportCSV(filtradas)}>
               <Download className="mr-2 h-4 w-4" /> CSV
             </Button>
           </div>
