@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+/// <reference types="bun" />
+import { describe, it, expect } from "bun:test";
 import { dataVendaPermitida, periodoPermitidoVenda } from "./periodoVenda";
 
 describe("período de lançamento de vendas", () => {
