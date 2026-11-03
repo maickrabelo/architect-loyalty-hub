@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Generate personal points statements from the authenticated professional's existing filtered sales, preserving recorded points and exporting all matching rows plus totals through the shared CSV file-delivery helper; never fetch other professionals for this download.
+
 - Serialize ranking exports separately from the view with Brazilian numeric formatting, semicolon-separated UTF-8 CSV and the shared file-delivery helper so spreadsheet columns, accents and mobile downloads remain consistent.
 
 - Export professional contact data through a field-allowlisted, parameterless RPC restricted to gestor and empresa roles; use one shared CSV/download control so both dashboards export all registered professionals without widening profile RLS or exposing identity documents and internal notes.

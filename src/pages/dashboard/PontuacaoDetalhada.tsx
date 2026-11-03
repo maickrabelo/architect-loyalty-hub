@@ -4,7 +4,8 @@ import { ArrowLeft, Building2, Download, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { exportarCSV } from "@/hooks/useFinanceiro";
+import { gerarExtratoPontuacaoCsv } from "@/lib/extratoPontuacaoCsv";
+import { deliverFile } from "@/lib/download";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -70,15 +71,11 @@ const PontuacaoDetalhada = () => {
   const totalVendido = vendasFiltradas.reduce((soma, venda) => soma + (Number(venda.valor_venda) || 0), 0);
   const paginacao = usePaginacao(vendasFiltradas, 15);
 
-  const handleExportar = () => exportarCSV("minha-pontuacao", vendasFiltradas.map((venda) => ({
-    Data: dataBR(venda.data_venda),
-    Empresa: venda.empresas?.nome || "",
-    Cliente: venda.cliente_nome || "",
-    Descricao: venda.descricao || "",
-    NotaFiscal: venda.nota_fiscal || "",
-    Valor: Number(venda.valor_venda).toFixed(2).replace(".", ","),
-    Pontos: Number(venda.pontos_calculados) || 0,
-  })));
+  const handleExportar = () => {
+    if (isLoading || isError || !vendasFiltradas.length) return;
+    const csv = gerarExtratoPontuacaoCsv(vendasFiltradas);
+    void deliverFile(new Blob([csv], { type: "text/csv;charset=utf-8" }), "meu-extrato-pontuacao.csv");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-dark p-4 md:p-8">
@@ -92,8 +89,8 @@ const PontuacaoDetalhada = () => {
               <h1 className="text-4xl font-bold mb-2">Pontuação Detalhada</h1>
               <p className="text-muted-foreground">Vendas reais registradas pelas empresas parceiras</p>
             </div>
-            <Button onClick={handleExportar} variant="outline" disabled={!vendasFiltradas.length}>
-              <Download className="mr-2 h-4 w-4" /> Exportar
+            <Button onClick={handleExportar} variant="outline" disabled={isLoading || isError || !vendasFiltradas.length}>
+              <Download className="mr-2 h-4 w-4" /> Baixar extrato
             </Button>
           </div>
         </div>
