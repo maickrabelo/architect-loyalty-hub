@@ -52,6 +52,7 @@ const EmpresaDashboard = () => {
   const [valorVenda, setValorVenda] = useState(""); // guardado em centavos (só dígitos)
   const [cliente, setCliente] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
+  const [dataVenda, setDataVenda] = useState(() => periodoPermitidoVenda().max);
   const [abaAtiva, setAbaAtiva] = useState("overview");
   // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
   const mostrarFinanceiro = true;
@@ -81,7 +82,7 @@ const EmpresaDashboard = () => {
 
   // Mutation para lançar venda
   const lancarVendaMutation = useMutation({
-    mutationFn: async (data: { arquiteto_id: string; valor_venda: number; observacao: string; cliente_telefone: string }) => {
+    mutationFn: async (data: { arquiteto_id: string; valor_venda: number; observacao: string; cliente_telefone: string; data_venda: string }) => {
       if (!empresa) throw new Error("Empresa não encontrada");
 
       const pontos = calcularPontos(data.valor_venda);
@@ -96,7 +97,7 @@ const EmpresaDashboard = () => {
           observacao: data.observacao,
           cliente_nome: data.observacao,
           cliente_telefone: data.cliente_telefone,
-          data_venda: new Date().toISOString().split('T')[0],
+          data_venda: data.data_venda,
         });
 
       if (error) throw error;
@@ -109,6 +110,7 @@ const EmpresaDashboard = () => {
       setValorVenda("");
       setCliente("");
       setClienteTelefone("");
+      setDataVenda(periodoPermitidoVenda().max);
     },
     onError: (error: any) => {
       toast.error("Erro ao lançar venda: " + error.message);
@@ -126,12 +128,17 @@ const EmpresaDashboard = () => {
       toast.error("Valor inválido");
       return;
     }
+    if (!dataVendaPermitida(dataVenda)) {
+      toast.error("Data fora do período permitido: até o dia 05 vale o mês anterior; depois, só o mês atual.");
+      return;
+    }
 
     lancarVendaMutation.mutate({
       arquiteto_id: selectedArquiteto,
       valor_venda: valor,
       observacao: cliente.trim(),
       cliente_telefone: clienteTelefone.trim(),
+      data_venda: dataVenda,
     });
   };
 
@@ -286,6 +293,22 @@ const EmpresaDashboard = () => {
                 )}
               </div>
               
+              <div className="space-y-2">
+                <Label>Data da venda *</Label>
+                <Input
+                  type="date"
+                  value={dataVenda}
+                  min={periodoPermitidoVenda().min}
+                  max={periodoPermitidoVenda().max}
+                  onChange={(e) => setDataVenda(e.target.value)}
+                  className="bg-secondary"
+                  disabled={lancarVendaMutation.isPending}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Até o dia 05 é possível lançar vendas do mês anterior; depois, só do mês atual.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label>Valor da Venda</Label>
                 <Input
