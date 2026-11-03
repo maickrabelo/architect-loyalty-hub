@@ -444,6 +444,7 @@ export type Database = {
           cnpj: string | null
           contato: string | null
           created_at: string | null
+          demo: boolean
           email: string | null
           endereco: string | null
           estado: string | null
@@ -465,6 +466,7 @@ export type Database = {
           cnpj?: string | null
           contato?: string | null
           created_at?: string | null
+          demo?: boolean
           email?: string | null
           endereco?: string | null
           estado?: string | null
@@ -486,6 +488,7 @@ export type Database = {
           cnpj?: string | null
           contato?: string | null
           created_at?: string | null
+          demo?: boolean
           email?: string | null
           endereco?: string | null
           estado?: string | null
