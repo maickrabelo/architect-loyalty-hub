@@ -19,9 +19,19 @@ const RedefinirSenha = () => {
     if (senha.length < 6) return toast.error("A senha precisa ter ao menos 6 caracteres");
     if (senha !== confirma) return toast.error("As senhas não conferem");
     setSalvando(true);
+    const { data: sess } = await supabase.auth.getSession();
+    if (!sess.session) {
+      setSalvando(false);
+      return toast.error("Link expirado ou inválido. Peça um novo na tela de login.");
+    }
     const { error } = await supabase.auth.updateUser({ password: senha });
     setSalvando(false);
-    if (error) return toast.error("Link expirado ou inválido. Peça um novo na tela de login.");
+    if (error) {
+      const m = (error.message || "").toLowerCase();
+      if (m.includes("weak") || m.includes("pwned") || m.includes("known")) return toast.error("Essa senha é muito comum ou fraca. Escolha outra, com letras e números.");
+      if (m.includes("different") || m.includes("same")) return toast.error("A nova senha precisa ser diferente da atual.");
+      return toast.error("Não foi possível salvar a senha: " + error.message);
+    }
     toast.success("Senha alterada com sucesso!");
     navigate("/login");
   };
