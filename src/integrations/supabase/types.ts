@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      aniversarios_pessoas: {
+        Row: {
+          created_at: string
+          id: string
+          nascimento: string
+          pessoa: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nascimento: string
+          pessoa: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nascimento?: string
+          pessoa?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aniversarios_pessoas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       banners_home: {
         Row: {
           ativo: boolean
@@ -746,6 +778,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          aniversariante_nome: string | null
           apresentacao: string | null
           bairro: string | null
           celular: string | null
@@ -774,6 +807,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          aniversariante_nome?: string | null
           apresentacao?: string | null
           bairro?: string | null
           celular?: string | null
@@ -802,6 +836,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          aniversariante_nome?: string | null
           apresentacao?: string | null
           bairro?: string | null
           celular?: string | null

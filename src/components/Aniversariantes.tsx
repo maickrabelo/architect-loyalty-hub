@@ -80,7 +80,7 @@ export const AniversariantesSemana = ({ onVerTodos }: { onVerTodos?: () => void 
           <p className="text-sm text-muted-foreground">Nenhum aniversariante nesta semana.</p>
         ) : (
           semana.map(a => (
-            <Linha key={a.id} a={a} destaque={a.data.toDateString() === hoje ? "Hoje! 🎉" : a.data.toLocaleDateString("pt-BR", { weekday: "short" })} />
+            <Linha key={`${a.id}-${a.mes}-${a.dia}-${a.nome}`} a={a} destaque={a.data.toDateString() === hoje ? "Hoje! 🎉" : a.data.toLocaleDateString("pt-BR", { weekday: "short" })} />
           ))
         )}
         {onVerTodos && (
@@ -120,7 +120,7 @@ export const AniversariantesModulo = () => {
           )}
           {isLoading ? <p className="text-sm text-muted-foreground">Carregando...</p> :
             lista.length === 0 ? <p className="text-sm text-muted-foreground">Nenhum aniversariante encontrado.</p> :
-            <div>{lista.map(a => <Linha key={a.id} a={a} />)}</div>}
+            <div>{lista.map(a => <Linha key={`${a.id}-${a.mes}-${a.dia}-${a.nome}`} a={a} />)}</div>}
         </CardContent>
       </Card>
     </div>
