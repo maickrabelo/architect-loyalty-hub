@@ -29,7 +29,21 @@ export const useEmpresaData = () => {
         .maybeSingle();
       
       if (error) throw error;
-      return data;
+      if (data) return data;
+      const { data: vinculo } = await (supabase as any)
+        .from('empresa_usuarios')
+        .select('empresa_id')
+        .eq('user_id', user.id)
+        .limit(1)
+        .maybeSingle();
+      if (!vinculo) return null;
+      const { data: emp, error: e2 } = await supabase
+        .from('empresas')
+        .select('*')
+        .eq('id', vinculo.empresa_id)
+        .maybeSingle();
+      if (e2) throw e2;
+      return emp;
     },
     enabled: !!user,
   });
