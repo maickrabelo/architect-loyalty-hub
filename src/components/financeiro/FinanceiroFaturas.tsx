@@ -166,6 +166,7 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                 <TableCell><Badge variant="outline" className={statusBadge(f.status)}>{f.status}</Badge></TableCell>
                 <TableCell className="text-right space-x-2 whitespace-nowrap">
                   <Button size="sm" variant="secondary" onClick={() => setBoletosDe(f)}>Boletos</Button>
+                  <Button size="sm" variant="outline" onClick={() => setBoletosDe(f)}>Editar valores</Button>
 
                   <Button
                     size="sm"
