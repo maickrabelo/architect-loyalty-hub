@@ -10,6 +10,14 @@ export type MovimentoRelatorio = {
 export type ContaRelatorio = {
   banco: string; conta: string; saldo_conta: number; saldo_aplicado: number; atualizado_em: string;
 };
+// Remove every company identity, including free text, before PDF serialization.
+// Applying this to all rows prevents cross-table identification of debtors.
+export function anonimizarRelatorio(faturas: FaturaRelatorio[], movimentos: MovimentoRelatorio[]) {
+  return {
+    faturas: faturas.map(f => ({ ...f, empresas: f.empresas ? { ...f.empresas, nome: 'Empresa não identificada' } : null })),
+    movimentos: movimentos.map(m => ({ ...m, descricao: 'Movimentação financeira', empresas: m.empresas ? { ...m.empresas, nome: 'Empresa não identificada' } : null })),
+  };
+}
 export function calcularRelatorio(mes: string, faturas: FaturaRelatorio[], movimentos: MovimentoRelatorio[], contas: ContaRelatorio[]) {
   const oficiais = faturas.filter(f => f.empresas && !f.empresas.demo);
   const doMes = oficiais.filter(f => f.mes === mes);

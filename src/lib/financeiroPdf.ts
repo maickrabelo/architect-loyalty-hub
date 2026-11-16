@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/integrations/supabase/client';
 import { deliverFile } from '@/lib/download';
-import { calcularRelatorio, type FaturaRelatorio, type MovimentoRelatorio, type ContaRelatorio } from './financeiroRelatorioDados';
+import { anonimizarRelatorio, calcularRelatorio, type FaturaRelatorio, type MovimentoRelatorio, type ContaRelatorio } from './financeiroRelatorioDados';
 import logo from '@/assets/logo-conexao.png';
 import regularUrl from '@/assets/fonts/inter-regular.ttf?url';
 import boldUrl from '@/assets/fonts/inter-semibold.ttf?url';
@@ -24,7 +24,7 @@ async function base64(url: string) {
 export async function gerarFinanceiroPdf(mes: string) {
   // Fresh reads on every click: never export the dashboard's cached snapshot.
   const [faturasResult, movimentosResult, contasResult, caixaResult, fonts, artwork] = await Promise.all([
-    supabase.from('faturas').select('mes,pontos,custo_pontos_total,valor_pontos_mes,valor_mensalidade,valor_extras,valor_total,valor_pago,vencimento,status,empresas!inner(nome,demo)').lte('mes', mes).order('nome', { referencedTable: 'empresas' }),
+    supabase.from('faturas').select('mes,pontos,custo_pontos_total,valor_pontos_mes,valor_mensalidade,valor_extras,valor_total,valor_pago,vencimento,status,empresas!inner(nome,demo)').lte('mes', mes).order('vencimento'),
     supabase.from('movimentacoes_financeiras').select('mes,data,tipo,descricao,valor,empresas(nome,demo)').eq('mes', mes).order('data'),
     supabase.from('contas_bancarias').select('banco,conta,saldo_conta,saldo_aplicado,atualizado_em').order('conta'),
     supabase.from('caixas_mensais').select('status,fechado_em').eq('mes', mes).maybeSingle(),
@@ -33,8 +33,8 @@ export async function gerarFinanceiroPdf(mes: string) {
   for (const result of [faturasResult, movimentosResult, contasResult, caixaResult]) if (result.error) throw result.error;
   const generated = new Date();
   const contas = (contasResult.data ?? []) as ContaRelatorio[];
-  const values = calcularRelatorio(mes, (faturasResult.data ?? []) as FaturaRelatorio[], (movimentosResult.data ?? []) as MovimentoRelatorio[], contas);
-  values.doMes.sort((a, b) => (a.empresas?.nome ?? '').localeCompare(b.empresas?.nome ?? '', 'pt-BR'));
+  const anonimos = anonimizarRelatorio((faturasResult.data ?? []) as FaturaRelatorio[], (movimentosResult.data ?? []) as MovimentoRelatorio[]);
+  const values = calcularRelatorio(mes, anonimos.faturas, anonimos.movimentos, contas);
   const css = getComputedStyle(document.documentElement);
   const token = (name: string) => {
     const [h, s, l] = css.getPropertyValue(name).trim().split(/\s+/).map(parseFloat);
@@ -77,7 +77,7 @@ export async function gerarFinanceiroPdf(mes: string) {
   note(`Saldos bancários separados do resultado mensal; não foram somados novamente como recebimentos. ${contas.map(c => `Conta ${c.conta}: atualização ${stamp(new Date(c.atualizado_em))}.`).join(' ')}`);
   section('03 | Faturamento e valores a receber');
   table(['Indicador', 'Valor'], [['Faturas do mês — total emitido', brl(values.faturado)], ['Recebido nas faturas do mês', brl(values.recebidoFaturas)], ['Em aberto nas faturas do mês', brl(values.aberto)]]);
-  note('Valores faturados e ainda não pagos não são dinheiro disponível. Faturas antigas zeradas e quitadas não são contabilizadas novamente como entradas. Contas de demonstração são excluídas.');
+  note('Valores faturados e ainda não pagos não são dinheiro disponível. Faturas antigas zeradas e quitadas não são contabilizadas novamente como entradas. Contas de demonstração são excluídas. Todas as empresas e descrições são anonimizadas para preservar o sigilo da inadimplência.');
   section('04 | Pendências de competências anteriores');
   table(['Empresa / competência', 'Vencimento', 'Status', 'Em aberto'], values.anteriores.length ? values.anteriores.map(f => [`${f.empresas?.nome} • ${f.mes}`, date(f.vencimento), f.status, brl(Number(f.valor_total) - Number(f.valor_pago))]) : [['Nenhuma pendência anterior', '—', '—', brl(0)]]);
   section('05 | Demonstrativo por empresa');

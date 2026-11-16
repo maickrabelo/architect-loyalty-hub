@@ -1,6 +1,13 @@
 import { expect, test } from 'bun:test';
-import { calcularRelatorio, type FaturaRelatorio } from './financeiroRelatorioDados';
+import { anonimizarRelatorio, calcularRelatorio, type FaturaRelatorio } from './financeiroRelatorioDados';
 const fatura: FaturaRelatorio = { mes: '2026-10', pontos: 268, custo_pontos_total: 2680, valor_pontos_mes: 1340, valor_mensalidade: 1621, valor_extras: 0, valor_total: 2961, valor_pago: 0, vencimento: '2026-11-20', status: 'aberta', empresas: { nome: 'Antonelli', demo: false } };
+test('não expõe nomes de inadimplentes em nenhuma tabela nem descrição livre', () => {
+  const rows = anonimizarRelatorio([fatura, { ...fatura, status: 'vencida', empresas: { nome: 'Casa Decor', demo: false } }], [{ mes: '2026-10', data: '2026-10-01', tipo: 'recebimento', descricao: 'Quitação Casa Decor', valor: 100, empresas: { nome: 'Casa Decor', demo: false } }]);
+  expect(JSON.stringify(rows)).not.toContain('Casa Decor');
+  expect(JSON.stringify(rows)).not.toContain('Antonelli');
+  expect(rows.faturas[1].valor_total).toBe(2961);
+  expect(rows.movimentos[0].valor).toBe(100);
+});
 test('relatório mantém valores bancários separados do caixa mensal', () => {
   const r = calcularRelatorio('2026-10', [fatura], [], [{ banco: 'BB', conta: '1642-X', saldo_conta: 4372.30, saldo_aplicado: 204618.02, atualizado_em: '2026-10-14' }]);
   expect(r.totalBanco).toBeCloseTo(208990.32, 2); expect(r.saldo).toBe(0); expect(r.faturado).toBe(2961);
