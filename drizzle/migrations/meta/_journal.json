@@ -162,6 +162,13 @@
       "when": 1793888691394,
       "tag": "0022_empresa_usuarios_extras",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1794788519452,
+      "tag": "0023_restringir_leitura_config_financeira",
+      "breakpoints": true
     }
   ]
 }
