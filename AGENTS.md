@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Generate financial PDFs client-side from fresh authenticated reads on each click, excluding demo data and separating bank balances, invoice receipts and cash movements; use bundled Unicode fonts and the shared file-delivery helper without closing the cash register.
+
 - Generate personal points statements from the authenticated professional's existing filtered sales, preserving recorded points and exporting all matching rows plus totals through the shared CSV file-delivery helper; never fetch other professionals for this download.
 
 - Serialize ranking exports separately from the view with Brazilian numeric formatting, semicolon-separated UTF-8 CSV and the shared file-delivery helper so spreadsheet columns, accents and mobile downloads remain consistent.

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Adicionar e validar geração de PDF financeiro com valores atuais no clique, por mês selecionado, sem fechar o caixa.
+
 - [x] Corrigir a formatação da exportação do ranking dos lojistas; download real validado com 257 registros, cinco colunas e acentos preservados, sem transbordamento no celular.
 
 - [x] Exportar os contatos e endereços de todos os profissionais na área do gestor e dos lojistas; downloads reais validados com 257 registros em ambos os painéis.

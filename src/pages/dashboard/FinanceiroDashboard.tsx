@@ -18,6 +18,7 @@ import FinanceiroBloqueios from "@/components/financeiro/FinanceiroBloqueios";
 import FinanceiroConfig from "@/components/financeiro/FinanceiroConfig";
 import IntegracaoBB from "@/components/financeiro/IntegracaoBB";
 import SaldosBancarios from "@/components/financeiro/SaldosBancarios";
+import ExportarFinanceiroPdf from "@/components/financeiro/ExportarFinanceiroPdf";
 
 const FinanceiroDashboard = () => {
   const navigate = useNavigate();
@@ -51,13 +52,14 @@ const FinanceiroDashboard = () => {
               <p className="text-xs text-muted-foreground">Faturamento, caixa e inadimplência do programa</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Select value={mes} onValueChange={setMes}>
               <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {meses.map((m) => <SelectItem key={m} value={m}>{labelMes(m)}</SelectItem>)}
               </SelectContent>
             </Select>
+            <ExportarFinanceiroPdf mes={mes} />
             <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/login"); }}>
               <LogOut className="h-4 w-4 mr-2" /> Sair
             </Button>
