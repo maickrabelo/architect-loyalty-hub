@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Disponibilizar e validar consulta de pontos por empresa e mês no financeiro, igual ao gestor; conferido com a conta financeira e vendas reais de outubro e novembro.
+
 - [x] Adicionar e validar geração de PDF financeiro com valores atuais no clique, por mês selecionado, sem fechar o caixa.
 
 - [x] Corrigir a formatação da exportação do ranking dos lojistas; download real validado com 257 registros, cinco colunas e acentos preservados, sem transbordamento no celular.

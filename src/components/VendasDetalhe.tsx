@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { exportarCSV } from "@/hooks/useFinanceiro";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
+import { vendaNoMes } from "@/lib/filtroVendasMes";
 
 type Venda = {
   id: string; empresa_id: string; arquiteto_id: string; valor_venda: number; pontos_calculados: number;
@@ -22,13 +23,13 @@ const dataBR = (d: string) => d.split("-").reverse().join("/");
 const TODOS = "__todos";
 
 /** Detalhamento de vendas com filtros. Se empresaId for informado, mostra só essa empresa. */
-export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
+export default function VendasDetalhe({ empresaId, mes }: { empresaId?: string; mes?: string }) {
   const [fEmpresa, setFEmpresa] = useState(TODOS);
   const [fProf, setFProf] = useState(TODOS);
   const [inicio, setInicio] = useState("");
   const [fim, setFim] = useState("");
 
-  const { data: vendas = [], isLoading } = useQuery({
+  const { data: vendas = [], isLoading, isError } = useQuery({
     queryKey: ["vendas-detalhe", empresaId ?? "todas"],
     queryFn: async () => {
       const all: Venda[] = [];
@@ -76,11 +77,12 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
   }, [vendas, nomeProf]);
 
   const filtradas = useMemo(() => vendas.filter(v =>
+    vendaNoMes(v.data_venda, mes) &&
     (fEmpresa === TODOS || v.empresa_id === fEmpresa) &&
     (fProf === TODOS || v.arquiteto_id === fProf) &&
     (!inicio || v.data_venda >= inicio) &&
     (!fim || v.data_venda <= fim)
-  ), [vendas, fEmpresa, fProf, inicio, fim]);
+  ), [vendas, mes, fEmpresa, fProf, inicio, fim]);
 
   const totalValor = filtradas.reduce((s, v) => s + Number(v.valor_venda), 0);
   const totalPontos = filtradas.reduce((s, v) => s + Number(v.pontos_calculados), 0);
@@ -146,13 +148,13 @@ export default function VendasDetalhe({ empresaId }: { empresaId?: string }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg border p-3"><p className="text-xs text-muted-foreground">Vendas</p><p className="text-2xl font-semibold">{filtradas.length.toLocaleString("pt-BR")}</p></div>
             <div className="rounded-lg border p-3"><p className="text-xs text-muted-foreground">Valor total</p><p className="text-2xl font-semibold">{brl(totalValor)}</p></div>
             <div className="rounded-lg border p-3"><p className="text-xs text-muted-foreground">Pontos gerados</p><p className="text-2xl font-semibold">{totalPontos.toLocaleString("pt-BR")}</p></div>
           </div>
 
-          {isLoading ? <p className="text-sm text-muted-foreground">Carregando vendas...</p> : (
+          {isError ? <p role="alert" className="text-sm text-destructive">Não foi possível carregar os lançamentos. Tente novamente.</p> : isLoading ? <p className="text-sm text-muted-foreground">Carregando vendas...</p> : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

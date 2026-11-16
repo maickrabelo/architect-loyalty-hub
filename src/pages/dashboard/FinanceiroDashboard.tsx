@@ -19,6 +19,7 @@ import FinanceiroConfig from "@/components/financeiro/FinanceiroConfig";
 import IntegracaoBB from "@/components/financeiro/IntegracaoBB";
 import SaldosBancarios from "@/components/financeiro/SaldosBancarios";
 import ExportarFinanceiroPdf from "@/components/financeiro/ExportarFinanceiroPdf";
+import VendasDetalhe from "@/components/VendasDetalhe";
 
 const FinanceiroDashboard = () => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ const FinanceiroDashboard = () => {
           <TabsList className="flex flex-wrap h-auto bg-card/50">
             <TabsTrigger value="resumo">Resumo mensal</TabsTrigger>
             <TabsTrigger value="faturas">Faturas</TabsTrigger>
+            <TabsTrigger value="vendas">Consulta de pontos</TabsTrigger>
             <TabsTrigger value="saldo">Lançamento pontos mensal</TabsTrigger>
             <TabsTrigger value="caixa">Fluxo de caixa</TabsTrigger>
             <TabsTrigger value="extras">Cobranças extras</TabsTrigger>
@@ -81,6 +83,7 @@ const FinanceiroDashboard = () => {
 
           <TabsContent value="resumo" className="space-y-6"><SaldosBancarios /><FinanceiroResumo mes={mes} /></TabsContent>
           <TabsContent value="faturas"><FinanceiroFaturas mes={mes} caixaFechado={caixa?.status === "fechado"} /></TabsContent>
+          <TabsContent value="vendas"><VendasDetalhe key={mes} mes={mes} /></TabsContent>
           <TabsContent value="saldo"><FinanceiroSaldo /></TabsContent>
           <TabsContent value="caixa"><FinanceiroCaixa mes={mes} /></TabsContent>
           <TabsContent value="extras"><FinanceiroCobrancas /></TabsContent>
