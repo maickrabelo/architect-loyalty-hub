@@ -1299,6 +1299,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      editar_valor_fatura: {
+        Args: { _fatura_id: string; _tipo: string; _valor: number }
+        Returns: undefined
+      }
       empresa_esta_bloqueada: {
         Args: { _empresa_id: string }
         Returns: boolean

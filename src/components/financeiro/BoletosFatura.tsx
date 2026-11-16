@@ -66,6 +66,32 @@ const BoletosFatura = ({ fatura, onClose }: { fatura: any | null; onClose: () =>
   const qc = useQueryClient();
   const [reemitir, setReemitir] = useState<{ tipo: string; label: string } | null>(null);
   const [novaData, setNovaData] = useState("");
+  const [edit, setEdit] = useState<{ tipo: string; label: string; valor: string; ativo: any } | null>(null);
+  const [salvando, setSalvando] = useState(false);
+
+  const salvarValor = async () => {
+    if (!edit) return;
+    const v = Number(edit.valor.replace(/\./g, "").replace(",", "."));
+    if (!Number.isFinite(v) || v < 0) { toast.error("Valor inválido"); return; }
+    setSalvando(true);
+    try {
+      const { error } = await supabase.rpc("editar_valor_fatura" as any, { _fatura_id: fatura.id, _tipo: edit.tipo, _valor: v });
+      if (error) throw error;
+      if (edit.ativo && ["emitido", "pendente"].includes(edit.ativo.status)) {
+        if (edit.ativo.status === "emitido") await invokeBB({ action: "baixar", boleto_id: edit.ativo.id });
+        if (v > 0) await invokeBB({ action: "emitir", fatura_id: fatura.id, tipo: edit.tipo });
+        toast.success("Valor alterado e boleto reemitido com o novo valor");
+      } else toast.success("Valor alterado");
+      fatura[edit.tipo === "mensalidade" ? "valor_mensalidade" : edit.tipo === "pontos" ? "valor_pontos_mes" : "valor_extras"] = v;
+      setEdit(null);
+    } catch (e: any) {
+      toast.error(e.message?.startsWith("VENCIDO:") ? e.message.slice(8) + " Valor salvo; emita o boleto com nova data." : e.message ?? "Erro ao salvar");
+    } finally {
+      setSalvando(false);
+      qc.invalidateQueries({ queryKey: ["boletos"] });
+      qc.invalidateQueries({ queryKey: ["faturas"] });
+    }
+  };
   const { data: boletos = [] } = useQuery({
     queryKey: ["boletos", fatura?.id],
     queryFn: async () => {
@@ -131,6 +157,12 @@ const BoletosFatura = ({ fatura, onClose }: { fatura: any | null; onClose: () =>
                   </div>
                   <div className="flex items-center gap-2">
                     {ultimo && <Badge variant="outline" className={statusBoleto(ultimo.status)}>{ultimo.status}</Badge>}
+                    {ativo?.status !== "pago" && (
+                      <Button size="sm" variant="outline" disabled={acao.isPending || salvando}
+                        onClick={() => setEdit({ tipo: t.tipo, label: t.label, valor: valor.toFixed(2).replace(".", ","), ativo })}>
+                        Editar valor
+                      </Button>
+                    )}
                     {!ativo && (
                       <Button size="sm" disabled={!(valor > 0) || acao.isPending}
                         onClick={() => emitir(t.tipo, t.label, t.venc(fatura))}>
@@ -152,6 +184,28 @@ const BoletosFatura = ({ fatura, onClose }: { fatura: any | null; onClose: () =>
           })}
         </div>
       </DialogContent>
+
+      <Dialog open={!!edit} onOpenChange={(o) => !o && !salvando && setEdit(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Editar valor — {edit?.label}</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="novo-valor">Novo valor (R$)</Label>
+              <Input id="novo-valor" inputMode="decimal" value={edit?.valor ?? ""}
+                onChange={(e) => edit && setEdit({ ...edit, valor: e.target.value })} />
+            </div>
+            {edit?.ativo?.status === "emitido" && (
+              <p className="text-xs text-muted-foreground">O boleto atual será cancelado no banco e um novo será emitido com este valor.</p>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" disabled={salvando} onClick={() => setEdit(null)}>Cancelar</Button>
+              <Button disabled={salvando} onClick={salvarValor}>
+                {salvando && <Loader2 className="h-4 w-4 mr-1 animate-spin" />} Salvar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!reemitir} onOpenChange={(o) => !o && setReemitir(null)}>
         <DialogContent className="max-w-md">

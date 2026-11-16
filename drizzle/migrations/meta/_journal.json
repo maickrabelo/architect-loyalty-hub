@@ -183,6 +183,13 @@
       "when": 1794788693392,
       "tag": "0025_restringir_banners_e_solicitacoes_exclusao",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1794860464082,
+      "tag": "0026_editar_valor_fatura",
+      "breakpoints": true
     }
   ]
 }
