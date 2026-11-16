@@ -176,6 +176,13 @@
       "when": 1794788606567,
       "tag": "0024_restringir_leitura_stories_caixas_arquivos",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1794788693392,
+      "tag": "0025_restringir_banners_e_solicitacoes_exclusao",
+      "breakpoints": true
     }
   ]
 }
