@@ -169,6 +169,13 @@
       "when": 1794788519452,
       "tag": "0023_restringir_leitura_config_financeira",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1794788606567,
+      "tag": "0024_restringir_leitura_stories_caixas_arquivos",
+      "breakpoints": true
     }
   ]
 }
