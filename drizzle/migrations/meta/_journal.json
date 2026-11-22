@@ -190,6 +190,13 @@
       "when": 1794860464082,
       "tag": "0026_editar_valor_fatura",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1795382383319,
+      "tag": "0027_historico_campanhas_isolado",
+      "breakpoints": true
     }
   ]
 }

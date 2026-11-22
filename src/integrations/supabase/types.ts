@@ -279,6 +279,53 @@ export type Database = {
         }
         Relationships: []
       }
+      campanha_historico_mensal: {
+        Row: {
+          ano: number
+          mes: number
+          valor_vendido: number
+        }
+        Insert: {
+          ano: number
+          mes: number
+          valor_vendido: number
+        }
+        Update: {
+          ano?: number
+          mes?: number
+          valor_vendido?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanha_historico_mensal_ano_fkey"
+            columns: ["ano"]
+            isOneToOne: false
+            referencedRelation: "campanhas_historicas"
+            referencedColumns: ["ano"]
+          },
+        ]
+      }
+      campanhas_historicas: {
+        Row: {
+          ano: number
+          created_at: string
+          fonte: string
+          resumo: Json
+        }
+        Insert: {
+          ano: number
+          created_at?: string
+          fonte: string
+          resumo?: Json
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          fonte?: string
+          resumo?: Json
+        }
+        Relationships: []
+      }
       cobrancas_extras: {
         Row: {
           ativa: boolean

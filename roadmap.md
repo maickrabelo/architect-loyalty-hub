@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Importar 24 meses, indicadores, curvas ABC e os 35 profissionais históricos do PDF; totais e divergências preservados, vendas/pontos atuais inalterados.
+- [x] Disponibilizar comparação mensal por campanha no gestor e financeiro; validar com login financeiro, download CSV e celular, sem misturar anos; remover o relatório legado que rotulava agregados atuais como 2025.
+
 - [x] Disponibilizar e validar consulta de pontos por empresa e mês no financeiro, igual ao gestor; conferido com a conta financeira e vendas reais de outubro e novembro.
 
 - [x] Adicionar e validar geração de PDF financeiro com valores atuais no clique, por mês selecionado, sem fechar o caixa.

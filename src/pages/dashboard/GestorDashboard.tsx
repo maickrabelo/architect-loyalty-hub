@@ -34,12 +34,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DestinoCard } from "@/components/DestinoCard";
-import { RelatorioGestor } from "@/components/RelatorioGestor";
 import AdminOverview from "@/components/dashboard/AdminOverview";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
 import { ExportarProfissionais } from "@/components/ExportarProfissionais";
+import ComparativoCampanhas from "@/components/ComparativoCampanhas";
 
 const GestorDashboard = () => {
   const navigate = useNavigate();
@@ -50,7 +50,6 @@ const GestorDashboard = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEmpresaDialogOpen, setIsEmpresaDialogOpen] = useState(false);
   const [editingDestino, setEditingDestino] = useState<any>(null);
-  const [mesRelatorio, setMesRelatorio] = useState("2025-01");
   
   // Form state
   const [formData, setFormData] = useState({
@@ -872,19 +871,8 @@ const GestorDashboard = () => {
           </TabsContent>
 
           {/* Reports Tab */}
-          <TabsContent value="relatorios">
-            <RelatorioGestor
-              mes={mesRelatorio}
-              onMesChange={setMesRelatorio}
-              dataArquitetos={rankingArquitetos.slice(0, 5).map(arq => ({
-                nome: (arq.nome ?? '—').split(' ')[0],
-                pontos: Number(arq.pontos),
-              }))}
-              dataEmpresas={rankingEmpresas.slice(0, 5).map(emp => ({
-                nome: emp.nome,
-                pontos: Number(emp.pontos),
-              }))}
-            />
+          <TabsContent value="relatorios" className="space-y-8">
+            <ComparativoCampanhas />
           </TabsContent>
         </Tabs>
       </div>
