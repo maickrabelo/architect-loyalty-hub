@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ordenarPorNome, porNome } from "@/lib/ordenar";
 
 export const mesAtual = () => new Date().toISOString().slice(0, 7);
 
@@ -48,7 +49,7 @@ export const useEmpresasFinanceiro = () =>
         .select("id, nome, bloqueada, motivo_bloqueio, email")
         .order("nome");
       if (error) throw error;
-      return data || [];
+      return ordenarPorNome(data || [], (e) => e.nome);
     },
   });
 
@@ -63,7 +64,11 @@ export const useFaturas = (mes?: string) =>
       if (mes) q = q.eq("mes", mes);
       const { data, error } = await q;
       if (error) throw error;
-      return data || [];
+      const linhas = data || [];
+      return [...linhas].sort(
+        (a, b) =>
+          (b.mes ?? "").localeCompare(a.mes ?? "") || porNome(a.empresas?.nome, b.empresas?.nome),
+      );
     },
   });
 
@@ -104,7 +109,10 @@ export const useSaldoCampanha = () =>
         .select("*, empresas(nome)")
         .order("ano", { ascending: false });
       if (error) throw error;
-      return data || [];
+      const linhas = data || [];
+      return [...linhas].sort(
+        (a, b) => Number(b.ano) - Number(a.ano) || porNome(a.empresas?.nome, b.empresas?.nome),
+      );
     },
   });
 
@@ -117,7 +125,13 @@ export const useCobrancasExtras = () =>
         .select("*, cobrancas_extras_empresas(id, empresa_id, valor_mensal, empresas(nome))")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data || [];
+      return (data || []).map((c: any) => ({
+        ...c,
+        cobrancas_extras_empresas: ordenarPorNome(
+          c.cobrancas_extras_empresas ?? [],
+          (v: any) => v.empresas?.nome,
+        ),
+      }));
     },
   });
 

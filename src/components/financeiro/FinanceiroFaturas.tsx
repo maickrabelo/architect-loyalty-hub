@@ -13,6 +13,7 @@ import { Download, RefreshCw, Loader2 } from "lucide-react";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
 import { statusBadge } from "./FinanceiroResumo";
 import BoletosFatura from "./BoletosFatura";
+import { ordenarPorNome } from "@/lib/ordenar";
 
 const dataBR = (d?: string | null) => (d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR") : "—");
 
@@ -92,8 +93,11 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
     onError: (e: any) => toast.error(e.message),
   });
 
-  const filtradas = faturas.filter((f: any) =>
-    (f.empresas?.nome ?? "").toLowerCase().includes(busca.toLowerCase()),
+  const filtradas = ordenarPorNome(
+    faturas.filter((f: any) =>
+      (f.empresas?.nome ?? "").toLowerCase().includes(busca.toLowerCase()),
+    ),
+    (f: any) => f.empresas?.nome,
   );
 
   return (

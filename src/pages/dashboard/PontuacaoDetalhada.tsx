@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { gerarExtratoPontuacaoCsv } from "@/lib/extratoPontuacaoCsv";
+import { ordenarPorNome } from "@/lib/ordenar";
 import { deliverFile } from "@/lib/download";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,7 +65,7 @@ const PontuacaoDetalhada = () => {
       atual.pontos += Number(venda.pontos_calculados) || 0;
       totais.set(venda.empresa_id, atual);
     });
-    return [...totais.values()].sort((a, b) => b.pontos - a.pontos);
+    return ordenarPorNome([...totais.values()], (t) => t.nome);
   }, [vendasFiltradas]);
 
   const totalPontos = vendasFiltradas.reduce((soma, venda) => soma + (Number(venda.pontos_calculados) || 0), 0);

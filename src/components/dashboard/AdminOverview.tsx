@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { Download, RefreshCw, Search, Building2, Users, Award, DollarSign, Target, PieChart as PieIcon } from "lucide-react";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
+import { ordenarPorNome } from "@/lib/ordenar";
 
 type Overview = {
   kpis: {
@@ -79,7 +80,7 @@ export default function AdminOverview() {
   // Prepara dados para gráfico de barras empilhadas por empresa/mes
   const stackData = useMemo(() => {
     if (!data) return { rows: [], empresas: [] as string[] };
-    const empresas = Array.from(new Set(data.pontos_por_empresa_mes.map(r => r.empresa)));
+    const empresas = ordenarPorNome(Array.from(new Set(data.pontos_por_empresa_mes.map(r => r.empresa))), (e) => e);
     const mesesSet = Array.from(new Set(data.pontos_por_empresa_mes.map(r => r.mes))).sort();
     const rows = mesesSet.map(mes => {
       const row: any = { mes };
@@ -92,7 +93,10 @@ export default function AdminOverview() {
 
   const pizzaEmpresas = useMemo(() => {
     if (!data) return [];
-    return data.ranking_empresas.filter(e => e.pontos > 0).map(e => ({ nome: e.nome, pontos: Number(e.pontos) }));
+    return ordenarPorNome(
+      data.ranking_empresas.filter(e => e.pontos > 0).map(e => ({ nome: e.nome, pontos: Number(e.pontos) })),
+      (e) => e.nome,
+    );
   }, [data]);
 
   const topArqs = useMemo(() => {
@@ -102,7 +106,10 @@ export default function AdminOverview() {
 
   const empresasFiltradas = useMemo(() => {
     if (!data) return [];
-    return data.ranking_empresas.filter(e => e.nome.toLowerCase().includes(buscaEmpresa.toLowerCase()));
+    return ordenarPorNome(
+      data.ranking_empresas.filter(e => e.nome.toLowerCase().includes(buscaEmpresa.toLowerCase())),
+      (e) => e.nome,
+    );
   }, [data, buscaEmpresa]);
 
   const arqsFiltrados = useMemo(() => {

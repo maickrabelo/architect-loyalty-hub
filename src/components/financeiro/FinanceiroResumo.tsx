@@ -8,6 +8,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, LineChart, Line, LabelList,
 } from "recharts";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
+import { ordenarPorNome } from "@/lib/ordenar";
 
 export const statusBadge = (status: string) => {
   const map: Record<string, string> = {
@@ -22,7 +23,10 @@ export const statusBadge = (status: string) => {
 
 const FinanceiroResumo = ({ mes }: { mes: string }) => {
   const { data: todas = [] } = useFaturas();
-  const doMes = useMemo(() => todas.filter((f: any) => f.mes === mes), [todas, mes]);
+  const doMes = useMemo(
+    () => ordenarPorNome(todas.filter((f: any) => f.mes === mes), (f: any) => f.empresas?.nome),
+    [todas, mes],
+  );
 
   const kpis = useMemo(() => {
     const faturado = doMes.reduce((s: number, f: any) => s + Number(f.valor_total), 0);

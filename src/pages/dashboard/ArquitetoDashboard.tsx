@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { DestinoCard } from "@/components/DestinoCard";
 import { Logo } from "@/components/brand/Logo";
 import { NovasConexoes } from "@/components/stories/NovasConexoes";
+import { ordenarPorNome } from "@/lib/ordenar";
 import { BannersProfissionais } from "@/components/banners/BannersProfissionais";
 import { toast } from "sonner";
 
@@ -129,7 +130,7 @@ const ArquitetoDashboard = () => {
     e.pontos += Number(v.pontos_calculados) || 0;
     empresasMap.set(v.empresa_id, e);
   }
-  const empresas = Array.from(empresasMap.values()).sort((a, b) => b.vendas - a.vendas);
+  const empresas = ordenarPorNome(Array.from(empresasMap.values()), (e) => e.nome);
 
   // Ranking posição
   const minhaPosicao = ranking.findIndex((r) => r.arquiteto_id === user?.id) + 1;

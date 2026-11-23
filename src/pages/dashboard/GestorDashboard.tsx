@@ -25,6 +25,7 @@ import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { GerenciarBanners } from "@/components/banners/GerenciarBanners";
 import { GerenciarBannersHome } from "@/components/banners/GerenciarBannersHome";
 import VendasDetalhe from "@/components/VendasDetalhe";
+import { ordenarPorNome } from "@/lib/ordenar";
 import {
   Dialog,
   DialogContent,
@@ -80,10 +81,10 @@ const GestorDashboard = () => {
       const { data, error } = await supabase
         .from('empresas')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('nome', { ascending: true });
       
       if (error) throw error;
-      return data || [];
+      return ordenarPorNome(data || [], (e) => e.nome);
     },
   });
 
