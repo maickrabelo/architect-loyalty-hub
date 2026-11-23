@@ -19,3 +19,4 @@
 - Normalize story images client-side to 1080x1920 WebP before private storage upload to reduce transfer size while preserving visual quality.
 - Keep homepage banners separate from professional banners: managers manage `banners_home` and private `banners-home` uploads; the public read-only `banners-home` function exposes only active artwork through signed URLs (or seeded Lovable Assets URLs) so anonymous visitors can see the homepage without public buckets.
 - Detect global destination upgrades transactionally from sales using a seeded high-water mark; wake a private email outbox on enqueue and use hourly failure reconciliation and provider idempotency so old achievements and successful deliveries are not repeated.
+- Sort company lists and company-level report rows alphabetically with the shared `ordenarPorNome` helper in `src/lib/ordenar.ts`, because operators scan long company lists by name; professional rankings keep their points order.
