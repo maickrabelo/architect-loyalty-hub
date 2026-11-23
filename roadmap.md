@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Alternar Minha loja / Grupo Conexão na visão geral e no ranking do lojista, com dados reais e exportação correspondente.
+- [x] Alternar Minha loja / Grupo Conexão na visão geral e no ranking do lojista, com dados reais e exportação correspondente; validado com login lojista, CSV e tela de celular.
 
 - [x] Colocar listas e relatórios de empresas em ordem alfabética: faturas, resumo mensal, lançamento de pontos, cobranças extras, situação das empresas, cadastro do gestor, empresas parceiras do profissional e extrato pessoal.
 
