@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NivelBadge } from "@/components/NivelBadge";
 import { cn } from "@/lib/utils";
 
 type ProfessionalPhoto = {
@@ -74,16 +75,19 @@ export function ProfessionalName({
   name,
   imagePath,
   className,
+  mostrarNivel,
 }: {
   professionalId: string;
   name: string;
   imagePath?: string | null;
   className?: string;
+  mostrarNivel?: boolean;
 }) {
   return (
-    <div className={cn("flex min-w-0 items-center gap-2.5", className)}>
+    <div className={cn("flex min-w-0 items-center gap-2.5", mostrarNivel && "flex-wrap gap-y-1", className)}>
       <ProfessionalAvatar professionalId={professionalId} name={name} imagePath={imagePath} />
       <span className="min-w-0 truncate">{name}</span>
+      {mostrarNivel && <NivelBadge professionalId={professionalId} />}
     </div>
   );
 }

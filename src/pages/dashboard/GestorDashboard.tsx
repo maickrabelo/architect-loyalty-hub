@@ -526,7 +526,7 @@ const GestorDashboard = () => {
                       <TableRow key={arquiteto.id}>
                         <TableCell className="font-medium">#{(pagArquitetos.pagina - 1) * 10 + index + 1}</TableCell>
                         <TableCell className="font-semibold">
-                          <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome ?? "Profissional"} />
+                          <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome ?? "Profissional"} mostrarNivel />
                         </TableCell>
                         <TableCell className="text-muted-foreground">{arquiteto.empresas}</TableCell>
                         <TableCell className="text-muted-foreground">

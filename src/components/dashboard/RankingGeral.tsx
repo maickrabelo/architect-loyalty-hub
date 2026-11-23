@@ -101,7 +101,7 @@ const RankingGeral = ({ dados, escopo = "grupo", onAtualizar }: { dados?: Rankin
                 <TableRow key={l.id} className={i < 3 ? "bg-primary/5" : undefined}>
                   <TableCell className="font-semibold">{(pag.pagina - 1) * 10 + i + 1}</TableCell>
                   <TableCell className="font-medium">
-                    <ProfessionalName professionalId={l.id} name={l.nome} />
+                    <ProfessionalName professionalId={l.id} name={l.nome} mostrarNivel />
                   </TableCell>
                   <TableCell className="text-right">{fmtBRL(Number(l.vendas))}</TableCell>
                   <TableCell className="text-right font-bold text-primary">{Number(l.pontos).toLocaleString("pt-BR")}</TableCell>

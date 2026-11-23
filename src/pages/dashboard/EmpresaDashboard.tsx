@@ -36,6 +36,7 @@ import RankingGeral from "@/components/dashboard/RankingGeral";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
 import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
+import { NivelBadge } from "@/components/NivelBadge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExportarProfissionais } from "@/components/ExportarProfissionais";
 import { Switch } from "@/components/ui/switch";
@@ -506,7 +507,10 @@ const EmpresaDashboard = () => {
                       <ProfessionalAvatar professionalId={arquiteto.id} name={arquiteto.nome} imagePath={arquiteto.imagem_profissional} className="h-12 w-12" />
                       <div className="min-w-0">
                         <p className="truncate text-lg font-semibold">{arquiteto.nome}</p>
-                        <p className="truncate text-sm text-muted-foreground">{arquiteto.ultimoCliente}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <NivelBadge professionalId={arquiteto.id} />
+                          <p className="truncate text-sm text-muted-foreground">{arquiteto.ultimoCliente}</p>
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -630,7 +634,7 @@ const EmpresaDashboard = () => {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome} imagePath={arquiteto.imagem_profissional} className="font-semibold" />
+                        <ProfessionalName professionalId={arquiteto.id} name={arquiteto.nome} imagePath={arquiteto.imagem_profissional} className="font-semibold" mostrarNivel />
                         <p className="text-xs text-muted-foreground">
                           Premiação conquistada: {arquiteto.ultimaPremiacaoConquistada} pontos
                         </p>

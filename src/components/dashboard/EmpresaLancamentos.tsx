@@ -127,7 +127,7 @@ const EmpresaLancamentos = ({ vendas, arquitetos, nomeEmpresa }: Props) => {
                   {(() => {
                     const profissional = arquitetos.find((a) => a.id === selecionado);
                     return profissional ? (
-                      <ProfessionalName professionalId={profissional.id} name={profissional.nome} imagePath={profissional.imagem_profissional} />
+                      <ProfessionalName professionalId={profissional.id} name={profissional.nome} imagePath={profissional.imagem_profissional} mostrarNivel />
                     ) : nomePorId[selecionado];
                   })()}
                   <span>· {historico.length} lançamento(s)</span>

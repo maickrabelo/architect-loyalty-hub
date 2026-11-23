@@ -15,6 +15,7 @@ import {
 import { Download, RefreshCw, Search, Building2, Users, Award, DollarSign, Target, PieChart as PieIcon } from "lucide-react";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
 import { ordenarPorNome } from "@/lib/ordenar";
+import { destinoAtual } from "@/lib/destinos";
 
 type Overview = {
   kpis: {
@@ -114,7 +115,9 @@ export default function AdminOverview() {
 
   const arqsFiltrados = useMemo(() => {
     if (!data) return [];
-    return data.ranking_arquitetos.filter(a => a.nome.toLowerCase().includes(buscaProf.toLowerCase()));
+    return data.ranking_arquitetos
+      .filter(a => a.nome.toLowerCase().includes(buscaProf.toLowerCase()))
+      .map(a => ({ ...a, nivel: destinoAtual(Number(a.pontos))?.nome ?? "Sem nível" }));
   }, [data, buscaProf]);
 
   const pagArqs = usePaginacao(arqsFiltrados);
@@ -324,7 +327,7 @@ export default function AdminOverview() {
                 {pagArqs.paginados.map((a, i) => (
                   <TableRow key={a.id}>
                     <TableCell>#{(pagArqs.pagina - 1) * 10 + i + 1}</TableCell>
-                    <TableCell className="font-medium"><ProfessionalName professionalId={a.id} name={a.nome} /></TableCell>
+                    <TableCell className="font-medium"><ProfessionalName professionalId={a.id} name={a.nome} mostrarNivel /></TableCell>
                     <TableCell className="text-right">{fmtBRL(Number(a.vendas))}</TableCell>
                     <TableCell className="text-right font-bold text-primary">{Number(a.pontos).toLocaleString("pt-BR")}</TableCell>
                     <TableCell className="text-right">{a.empresas}</TableCell>

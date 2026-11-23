@@ -211,7 +211,7 @@ export default function VendasDetalhe({ empresaId, mes }: { empresaId?: string; 
                 const pct = totalPontos ? (c.pontos / totalPontos) * 100 : 0;
                 return (
                   <TableRow key={c.id}>
-                    <TableCell><ProfessionalName professionalId={c.id} name={c.nome} imagePath={imagemProf.get(c.id)} /></TableCell>
+                    <TableCell><ProfessionalName professionalId={c.id} name={c.nome} imagePath={imagemProf.get(c.id)} mostrarNivel /></TableCell>
                     <TableCell className="text-right">{c.vendas}</TableCell>
                     <TableCell className="text-right whitespace-nowrap">{brl(c.valor)}</TableCell>
                     <TableCell className="text-right font-semibold">{c.pontos.toLocaleString("pt-BR")}</TableCell>
