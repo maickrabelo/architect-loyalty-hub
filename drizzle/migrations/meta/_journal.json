@@ -218,6 +218,13 @@
       "when": 1795461482616,
       "tag": "0030_excluir_boleto",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1795461936126,
+      "tag": "0031_fatura_manual_vencida",
+      "breakpoints": true
     }
   ]
 }

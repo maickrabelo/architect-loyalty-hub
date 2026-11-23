@@ -45,7 +45,8 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
         _empresa_id: m.empresa, _tipo: m.tipo, _valor: valor, _vencimento: m.vencimento, _descricao: m.descricao,
       });
       if (error) throw error;
-      return m.vencimento.slice(0, 7);
+      const hoje = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
+      return m.vencimento < hoje ? hoje.slice(0, 7) : m.vencimento.slice(0, 7);
     },
     onSuccess: (mesFatura: string) => {
       toast.success(mesFatura === mes ? "Fatura manual criada" : `Fatura criada em ${labelMes(mesFatura)} (mês do vencimento)`);
@@ -288,7 +289,7 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                 <Label>Descrição (opcional)</Label>
                 <Input maxLength={500} value={manual.descricao} onChange={(e) => setManual({ ...manual, descricao: e.target.value })} />
               </div>
-              <p className="text-xs text-muted-foreground">A fatura entra no mês do vencimento. Depois, emita o boleto em "Boletos".</p>
+              <p className="text-xs text-muted-foreground">A fatura entra no mês do vencimento. Se o vencimento já passou (dívida), ela entra no mês atual como vencida. Depois, emita o boleto em "Boletos".</p>
             </div>
           )}
           <DialogFooter>
