@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { exportarCSV } from "@/hooks/useFinanceiro";
 import { ProfessionalName } from "@/components/ProfessionalAvatar";
-import { vendaNoMes } from "@/lib/filtroVendasMes";
 
 type Venda = {
   id: string; empresa_id: string; arquiteto_id: string; valor_venda: number; pontos_calculados: number;
@@ -26,8 +25,9 @@ const TODOS = "__todos";
 export default function VendasDetalhe({ empresaId, mes }: { empresaId?: string; mes?: string }) {
   const [fEmpresa, setFEmpresa] = useState(TODOS);
   const [fProf, setFProf] = useState(TODOS);
-  const [inicio, setInicio] = useState("");
-  const [fim, setFim] = useState("");
+  const mesFim = mes ? new Date(Number(mes.slice(0, 4)), Number(mes.slice(5, 7)), 0).getDate() : 0;
+  const [inicio, setInicio] = useState(mes ? `${mes}-01` : "");
+  const [fim, setFim] = useState(mes ? `${mes}-${String(mesFim).padStart(2, "0")}` : "");
 
   const { data: vendas = [], isLoading, isError } = useQuery({
     queryKey: ["vendas-detalhe", empresaId ?? "todas"],
@@ -77,12 +77,11 @@ export default function VendasDetalhe({ empresaId, mes }: { empresaId?: string; 
   }, [vendas, nomeProf]);
 
   const filtradas = useMemo(() => vendas.filter(v =>
-    vendaNoMes(v.data_venda, mes) &&
     (fEmpresa === TODOS || v.empresa_id === fEmpresa) &&
     (fProf === TODOS || v.arquiteto_id === fProf) &&
     (!inicio || v.data_venda >= inicio) &&
     (!fim || v.data_venda <= fim)
-  ), [vendas, mes, fEmpresa, fProf, inicio, fim]);
+  ), [vendas, fEmpresa, fProf, inicio, fim]);
 
   const totalValor = filtradas.reduce((s, v) => s + Number(v.valor_venda), 0);
   const totalPontos = filtradas.reduce((s, v) => s + Number(v.pontos_calculados), 0);
