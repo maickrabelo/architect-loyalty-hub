@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Alternar Minha loja / Grupo Conexão na visão geral e no ranking do lojista, com dados reais e exportação correspondente.
+
 - [x] Colocar listas e relatórios de empresas em ordem alfabética: faturas, resumo mensal, lançamento de pontos, cobranças extras, situação das empresas, cadastro do gestor, empresas parceiras do profissional e extrato pessoal.
 
 - [x] Adicionar PDF comparativo no gestor com os 12 meses, variações entre campanhas e entre meses do mesmo ano; downloads autenticados 2024/2025 e 2024/2026, testes e todas as páginas revisados.

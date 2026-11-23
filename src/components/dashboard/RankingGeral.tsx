@@ -14,7 +14,7 @@ import { toast } from "sonner";
 const fmtBRL = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // Ranking geral de profissionais do grupo inteiro (todas as lojas)
-const RankingGeral = () => {
+const RankingGeral = ({ dados, escopo = "grupo", onAtualizar }: { dados?: RankingLinha[]; escopo?: "loja" | "grupo"; onAtualizar?: () => Promise<unknown> }) => {
   const [linhas, setLinhas] = useState<RankingLinha[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [atualizando, setAtualizando] = useState(false);
@@ -22,6 +22,11 @@ const RankingGeral = () => {
 
   const carregar = async (mostrarSpinner = false) => {
     if (mostrarSpinner) setAtualizando(true);
+    if (dados) {
+      try { await onAtualizar?.(); } catch { toast.error("Não foi possível atualizar o ranking."); }
+      finally { setAtualizando(false); }
+      return;
+    }
     const { data, error } = await supabase.rpc("get_ranking_geral");
     if (!error && data) {
       setLinhas(data as unknown as RankingLinha[]);
@@ -30,18 +35,18 @@ const RankingGeral = () => {
     setAtualizando(false);
   };
 
-  useEffect(() => { carregar(); }, []);
+  useEffect(() => { if (dados) { setCarregando(false); } else { carregar(); } }, [dados]);
 
   const filtradas = useMemo(
-    () => linhas.filter(l => l.nome?.toLowerCase().includes(busca.toLowerCase())),
-    [linhas, busca]
+    () => (dados ?? linhas).filter(l => l.nome?.toLowerCase().includes(busca.toLowerCase())),
+    [dados, linhas, busca]
   );
   const pag = usePaginacao(filtradas);
 
   const exportCSV = (rows: RankingLinha[]) => {
     if (rows.length === 0) return;
     const blob = new Blob([gerarRankingCsv(rows)], { type: "text/csv;charset=utf-8" });
-    void deliverFile(blob, "ranking-geral-profissionais.csv").catch(() => {
+    void deliverFile(blob, escopo === "loja" ? "ranking-minha-loja-profissionais.csv" : "ranking-geral-profissionais.csv").catch(() => {
       toast.error("Não foi possível exportar o ranking. Tente novamente.");
     });
   };
@@ -57,8 +62,8 @@ const RankingGeral = () => {
       <CardHeader>
         <div className="flex flex-col xl:flex-row gap-3 xl:items-center justify-between">
           <div className="min-w-0">
-            <CardTitle>Ranking Geral de Profissionais</CardTitle>
-            <CardDescription>Pontuação de todo o grupo Conexão, somando as vendas em todas as lojas parceiras</CardDescription>
+            <CardTitle>{escopo === "loja" ? "Ranking de Profissionais da Loja" : "Ranking Geral de Profissionais"}</CardTitle>
+            <CardDescription>{escopo === "loja" ? "Minha loja" : "Grupo Conexão"}{dados ? ` · Campanha ${new Date().getFullYear()}` : ""}</CardDescription>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
             <div className="relative w-full sm:w-64">

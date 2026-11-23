@@ -1413,6 +1413,7 @@ export type Database = {
         }[]
       }
       get_bb_webhook_token: { Args: never; Returns: string }
+      get_indicadores_grupo_lojista: { Args: never; Returns: Json }
       get_profissionais_publicos: {
         Args: never
         Returns: {

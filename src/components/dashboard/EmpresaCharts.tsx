@@ -20,12 +20,15 @@ type Venda = {
   data_venda: string;
   valor_venda: number | string;
   arquiteto_id: string;
+  pontos_calculados?: number | string;
+  registros?: number;
 };
 
 type Arquiteto = {
   id: string;
   nome: string;
   vendasTotal: number;
+  pontosTotal?: number;
 };
 
 interface Props {
@@ -73,8 +76,9 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
     return arquitetos
       .map((a) => {
         const vs = vendas.filter((v) => v.arquiteto_id === a.id);
-        const totalPontos = vs.reduce((s, v) => s + calcularPontos(Number(v.valor_venda)), 0);
-        const media = vs.length > 0 ? totalPontos / vs.length : 0;
+        const totalPontos = vs.reduce((s, v) => s + Number(v.pontos_calculados ?? calcularPontos(Number(v.valor_venda))), 0);
+        const registros = vs.reduce((s, v) => s + Number(v.registros ?? 1), 0);
+        const media = registros > 0 ? totalPontos / registros : 0;
         return { nome: a.nome.split(" ")[0], media: Number(media.toFixed(1)) };
       })
       .filter((x) => x.media > 0)
@@ -85,7 +89,7 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
   // 3) Pizza – top profissionais por pontuação
   const topProfissionais = useMemo(() => {
     const ranking = arquitetos
-      .map((a) => ({ nome: a.nome, pontos: calcularPontos(a.vendasTotal) }))
+      .map((a) => ({ nome: a.nome, pontos: a.pontosTotal ?? calcularPontos(a.vendasTotal) }))
       .filter((x) => x.pontos > 0)
       .sort((a, b) => b.pontos - a.pontos);
     const top = ranking.slice(0, 5);
@@ -167,7 +171,7 @@ export default function EmpresaCharts({ vendas, arquitetos }: Props) {
         <CardHeader>
           <CardTitle>Média de Pontos por Profissional</CardTitle>
           <CardDescription>
-            Média por venda registrada · Total de pontos: {arquitetos.reduce((s, a) => s + calcularPontos(a.vendasTotal), 0).toLocaleString("pt-BR")}
+            Média por venda registrada · Total de pontos: {arquitetos.reduce((s, a) => s + (a.pontosTotal ?? calcularPontos(a.vendasTotal)), 0).toLocaleString("pt-BR")}
           </CardDescription>
         </CardHeader>
         <CardContent>

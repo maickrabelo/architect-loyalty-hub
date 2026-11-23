@@ -30,7 +30,7 @@ import EmpresaFinanceiro from "@/components/dashboard/EmpresaFinanceiro";
 import EmpresaLancamentos from "@/components/dashboard/EmpresaLancamentos";
 import { usePaginacao, PaginacaoControles } from "@/components/Paginacao";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AniversariantesModulo, AniversariantesSemana } from "@/components/Aniversariantes";
 import RankingGeral from "@/components/dashboard/RankingGeral";
 import { UpgradesRecentes } from "@/components/UpgradesRecentes";
@@ -38,6 +38,8 @@ import { GerenciarStories } from "@/components/stories/GerenciarStories";
 import { ProfessionalAvatar, ProfessionalName } from "@/components/ProfessionalAvatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExportarProfissionais } from "@/components/ExportarProfissionais";
+import { Switch } from "@/components/ui/switch";
+import { indicadoresDaLoja, selecionarIndicadores, type IndicadoresLojista } from "@/lib/indicadoresLojista";
 
 const EmpresaDashboard = () => {
   const navigate = useNavigate();
@@ -55,6 +57,23 @@ const EmpresaDashboard = () => {
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [dataVenda, setDataVenda] = useState(() => periodoPermitidoVenda().max);
   const [abaAtiva, setAbaAtiva] = useState("overview");
+  const [mostrarGrupo, setMostrarGrupo] = useState(false);
+  const anoCampanha = new Date().getFullYear();
+  const grupoQuery = useQuery({
+    queryKey: ["indicadores-grupo-lojista", user?.id, anoCampanha],
+    enabled: mostrarGrupo && !!empresa && userRole === "empresa",
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_indicadores_grupo_lojista");
+      if (error) throw error;
+      return data as unknown as IndicadoresLojista;
+    },
+  });
+  const indicadores = selecionarIndicadores(mostrarGrupo, indicadoresDaLoja(vendas, arquitetos, anoCampanha), grupoQuery.data);
+  const mesAtual = format(new Date(), "yyyy-MM");
+  const vendasMesIndicadores = indicadores.vendas.filter(v => v.data_venda.startsWith(mesAtual));
+  const totalMesIndicadores = vendasMesIndicadores.reduce((s, v) => s + Number(v.valor_venda), 0);
+  const pontosMesIndicadores = vendasMesIndicadores.reduce((s, v) => s + Number(v.pontos_calculados), 0);
+  const profissionaisIndicadores = indicadores.ranking.map(r => ({ id: r.id, nome: r.nome, vendasTotal: Number(r.vendas), pontosTotal: Number(r.pontos) }));
   // Financeiro oculto no painel da empresa por enquanto (pedido do Maick, 06/10/2026) — mudar para true para reexibir
   const mostrarFinanceiro = true;
 
@@ -372,14 +391,28 @@ const EmpresaDashboard = () => {
             <TabsTrigger value="profissionais">Profissionais</TabsTrigger>
             {mostrarFinanceiro && <TabsTrigger value="financeiro">Financeiro</TabsTrigger>}
             <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
-            <TabsTrigger value="ranking">Ranking Geral</TabsTrigger>
+            <TabsTrigger value="ranking">Ranking</TabsTrigger>
             <TabsTrigger value="stories">Stories Conexão</TabsTrigger>
           </TabsList>
         </Tabs>
 
         {abaAtiva === "aniversariantes" && <AniversariantesModulo />}
 
-        {abaAtiva === "ranking" && <RankingGeral />}
+        {(abaAtiva === "overview" || abaAtiva === "ranking") && (
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold">{mostrarGrupo ? "Grupo Conexão" : empresa.nome} · Campanha {anoCampanha}</h2>
+            <div className="flex items-center gap-3">
+              <span className={cn("text-sm", !mostrarGrupo ? "font-semibold" : "text-muted-foreground")}>Minha loja</span>
+              <Switch aria-label="Mostrar números do Grupo Conexão" checked={mostrarGrupo} onCheckedChange={setMostrarGrupo} />
+              <span className={cn("text-sm", mostrarGrupo ? "font-semibold" : "text-muted-foreground")}>Grupo Conexão</span>
+            </div>
+          </div>
+        )}
+        {mostrarGrupo && (abaAtiva === "overview" || abaAtiva === "ranking") && grupoQuery.isLoading && <p className="py-8 text-center text-muted-foreground">Carregando números do grupo...</p>}
+        {mostrarGrupo && (abaAtiva === "overview" || abaAtiva === "ranking") && grupoQuery.isError && (
+          <div className="mb-6 flex items-center gap-3 text-destructive">Não foi possível carregar os números do grupo.<Button variant="outline" onClick={() => grupoQuery.refetch()}>Tentar novamente</Button></div>
+        )}
+        {abaAtiva === "ranking" && (!mostrarGrupo || grupoQuery.isSuccess) && <RankingGeral key={mostrarGrupo ? "grupo" : "loja"} dados={indicadores.ranking} escopo={mostrarGrupo ? "grupo" : "loja"} onAtualizar={() => mostrarGrupo ? grupoQuery.refetch() : queryClient.invalidateQueries({ queryKey: ['vendas', empresa.id] })} />}
 
         {abaAtiva === "stories" && (
           <GerenciarStories empresaId={empresa.id} logoAtual={(empresa as any).logo_url} />
@@ -400,18 +433,18 @@ const EmpresaDashboard = () => {
 
 
         {/* Stats Overview */}
-        {abaAtiva === "overview" && <>
+        {abaAtiva === "overview" && (!mostrarGrupo || grupoQuery.isSuccess) && <>
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Profissionais
+                Profissionais pontuados
 
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">{totalArquitetos}</p>
+              <p className="text-4xl font-bold">{indicadores.ranking.length}</p>
             </CardContent>
           </Card>
 
@@ -424,17 +457,17 @@ const EmpresaDashboard = () => {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold bg-gradient-gold bg-clip-text text-transparent">
-                R$ {vendasTotaisMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {totalMesIndicadores.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                {calcularPontos(vendasTotaisMes)} pontos
+                {pontosMesIndicadores.toLocaleString('pt-BR')} pontos
               </p>
             </CardContent>
           </Card>
         </div>
 
         {/* Gráficos */}
-        <EmpresaCharts vendas={vendas} arquitetos={arquitetos} />
+        <EmpresaCharts vendas={indicadores.vendas} arquitetos={profissionaisIndicadores} />
         </>}
 
         {abaAtiva === "vendas" && <VendasDetalhe empresaId={empresa.id} />}
