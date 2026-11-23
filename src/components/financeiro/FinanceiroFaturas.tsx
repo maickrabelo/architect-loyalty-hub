@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Download, RefreshCw, Loader2 } from "lucide-react";
+import { Download, RefreshCw, Loader2, Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFaturas, formatBRL, labelMes, exportarCSV } from "@/hooks/useFinanceiro";
 import { statusBadge } from "./FinanceiroResumo";
 import BoletosFatura from "./BoletosFatura";
@@ -24,6 +26,34 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
   const [pagamento, setPagamento] = useState<any>(null);
   const [boletosDe, setBoletosDe] = useState<any>(null);
   const [valorPago, setValorPago] = useState("");
+  const [manual, setManual] = useState<null | { empresa: string; tipo: string; valor: string; vencimento: string; descricao: string }>(null);
+
+  const { data: empresas = [] } = useQuery({
+    queryKey: ["empresas-fatura-manual"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("empresas").select("id, nome").eq("demo", false);
+      if (error) throw error;
+      return ordenarPorNome(data || [], (e: any) => e.nome);
+    },
+  });
+
+  const criarManual = useMutation({
+    mutationFn: async () => {
+      const m = manual!;
+      const valor = Number(m.valor.replace(/\./g, "").replace(",", "."));
+      const { error } = await supabase.rpc("criar_fatura_manual" as any, {
+        _empresa_id: m.empresa, _tipo: m.tipo, _valor: valor, _vencimento: m.vencimento, _descricao: m.descricao,
+      });
+      if (error) throw error;
+      return m.vencimento.slice(0, 7);
+    },
+    onSuccess: (mesFatura: string) => {
+      toast.success(mesFatura === mes ? "Fatura manual criada" : `Fatura criada em ${labelMes(mesFatura)} (mês do vencimento)`);
+      setManual(null);
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["faturas"] });
@@ -105,7 +135,10 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
       <CardHeader className="gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <CardTitle className="text-base">Faturas de {labelMes(mes)}</CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => setManual({ empresa: "", tipo: "mensalidade", valor: "", vencimento: "", descricao: "" })}>
+              <Plus className="h-4 w-4 mr-2" /> Fatura manual
+            </Button>
             <Button size="sm" onClick={() => gerar.mutate()} disabled={gerar.isPending || caixaFechado}>
               {gerar.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
               Gerar / atualizar faturas
@@ -160,7 +193,14 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
             )}
             {filtradas.map((f: any) => (
               <TableRow key={f.id}>
-                <TableCell className="font-medium">{f.empresas?.nome}</TableCell>
+                <TableCell className="font-medium">
+                  {f.empresas?.nome}
+                  {f.manual && (
+                    <Badge variant="outline" className="ml-2">
+                      Manual · {f.tipo_manual === "pontos" ? "Pontos" : f.tipo_manual === "mensalidade" ? "Mensalidade" : "Outros"}
+                    </Badge>
+                  )}
+                </TableCell>
                 <TableCell className="text-right">{formatBRL(Number(f.valor_total))}</TableCell>
                 <TableCell className="text-right">{formatBRL(Number(f.valor_pago))}</TableCell>
                 <TableCell className="text-right">{formatBRL(Number(f.valor_total) - Number(f.valor_pago))}</TableCell>
@@ -189,6 +229,60 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
           </TableBody>
         </Table>
       </CardContent>
+
+      <Dialog open={!!manual} onOpenChange={(o) => !o && setManual(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Gerar fatura manual</DialogTitle></DialogHeader>
+          {manual && (
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label>Empresa</Label>
+                <Select value={manual.empresa} onValueChange={(v) => setManual({ ...manual, empresa: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecione a empresa" /></SelectTrigger>
+                  <SelectContent>
+                    {empresas.map((e: any) => <SelectItem key={e.id} value={e.id}>{e.nome}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Tipo de fatura</Label>
+                <Select value={manual.tipo} onValueChange={(v) => setManual({ ...manual, tipo: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pontos">Pontos</SelectItem>
+                    <SelectItem value="mensalidade">Mensalidade</SelectItem>
+                    <SelectItem value="extras">Outros</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Valor (R$)</Label>
+                  <Input inputMode="decimal" placeholder="0,00" value={manual.valor} onChange={(e) => setManual({ ...manual, valor: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Vencimento</Label>
+                  <Input type="date" value={manual.vencimento} onChange={(e) => setManual({ ...manual, vencimento: e.target.value })} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Descrição (opcional)</Label>
+                <Input maxLength={500} value={manual.descricao} onChange={(e) => setManual({ ...manual, descricao: e.target.value })} />
+              </div>
+              <p className="text-xs text-muted-foreground">A fatura entra no mês do vencimento. Depois, emita o boleto em "Boletos".</p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setManual(null)}>Cancelar</Button>
+            <Button
+              disabled={criarManual.isPending || !manual?.empresa || !manual?.vencimento || !(Number(manual?.valor.replace(/\./g, "").replace(",", ".")) > 0)}
+              onClick={() => criarManual.mutate()}
+            >
+              {criarManual.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Gerar fatura
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <BoletosFatura fatura={boletosDe} onClose={() => setBoletosDe(null)} />
       <Dialog open={!!pagamento} onOpenChange={(o) => !o && setPagamento(null)}>

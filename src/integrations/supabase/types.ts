@@ -628,11 +628,13 @@ export type Database = {
           custo_pontos_total: number
           empresa_id: string
           id: string
+          manual: boolean
           mes: string
           observacao: string | null
           pago_em: string | null
           pontos: number
           status: string
+          tipo_manual: string | null
           updated_at: string
           valor_extras: number
           valor_mensalidade: number
@@ -648,11 +650,13 @@ export type Database = {
           custo_pontos_total?: number
           empresa_id: string
           id?: string
+          manual?: boolean
           mes: string
           observacao?: string | null
           pago_em?: string | null
           pontos?: number
           status?: string
+          tipo_manual?: string | null
           updated_at?: string
           valor_extras?: number
           valor_mensalidade?: number
@@ -668,11 +672,13 @@ export type Database = {
           custo_pontos_total?: number
           empresa_id?: string
           id?: string
+          manual?: boolean
           mes?: string
           observacao?: string | null
           pago_em?: string | null
           pontos?: number
           status?: string
+          tipo_manual?: string | null
           updated_at?: string
           valor_extras?: number
           valor_mensalidade?: number
@@ -1337,6 +1343,16 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      criar_fatura_manual: {
+        Args: {
+          _descricao: string
+          _empresa_id: string
+          _tipo: string
+          _valor: number
+          _vencimento: string
+        }
+        Returns: string
       }
       definir_bloqueio_empresa: {
         Args: {

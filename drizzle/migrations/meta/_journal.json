@@ -197,6 +197,13 @@
       "when": 1795382383319,
       "tag": "0027_historico_campanhas_isolado",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1795460395911,
+      "tag": "0028_faturas_manuais",
+      "breakpoints": true
     }
   ]
 }
