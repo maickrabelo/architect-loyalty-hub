@@ -1374,6 +1374,7 @@ export type Database = {
         Args: { _arquiteto_id: string; _data: string }
         Returns: undefined
       }
+      excluir_boleto: { Args: { _boleto_id: string }; Returns: undefined }
       excluir_fatura: { Args: { _fatura_id: string }; Returns: undefined }
       exportar_contatos_profissionais: {
         Args: never

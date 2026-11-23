@@ -69,6 +69,18 @@ const BoletosFatura = ({ fatura, onClose }: { fatura: any | null; onClose: () =>
   const [edit, setEdit] = useState<{ tipo: string; label: string; valor: string; ativo: any } | null>(null);
   const [salvando, setSalvando] = useState(false);
 
+  const excluirBoleto = async (b: any) => {
+    if (!confirm(b.status === "emitido" ? "Cancelar este boleto no banco e excluí-lo?" : "Excluir este boleto?")) return;
+    setSalvando(true);
+    try {
+      if (b.status === "emitido") await invokeBB({ action: "baixar", boleto_id: b.id });
+      const { error } = await supabase.rpc("excluir_boleto" as any, { _boleto_id: b.id });
+      if (error) throw error;
+      toast.success("Boleto excluído");
+      qc.invalidateQueries();
+    } catch (e: any) { toast.error(e.message); } finally { setSalvando(false); }
+  };
+
   const salvarValor = async () => {
     if (!edit) return;
     const v = Number(edit.valor.replace(/\./g, "").replace(",", "."));
@@ -168,6 +180,9 @@ const BoletosFatura = ({ fatura, onClose }: { fatura: any | null; onClose: () =>
                         onClick={() => emitir(t.tipo, t.label, t.venc(fatura))}>
                         {acao.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />} Emitir boleto
                       </Button>
+                    )}
+                    {ultimo && ultimo.status !== "pago" && (
+                      <Button size="sm" variant="destructive" disabled={acao.isPending || salvando} onClick={() => excluirBoleto(ultimo)}>Excluir boleto</Button>
                     )}
                     {ativo?.status === "emitido" && (
                       <>

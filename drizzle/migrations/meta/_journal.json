@@ -211,6 +211,13 @@
       "when": 1795461363972,
       "tag": "0029_excluir_fatura",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1795461482616,
+      "tag": "0030_excluir_boleto",
+      "breakpoints": true
     }
   ]
 }
