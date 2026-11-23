@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Generate manager campaign-comparison PDFs from refreshed authenticated comparison reads, using shared annual calculations, bundled Unicode fonts and file delivery; show year-over-year and within-year monthly variation without mixing campaign points or adding payment information.
+
 - Store imported annual campaign snapshots and monthly totals in report-only historical tables, never in operational sales or linked profile points; compare matching months and preserve source discrepancies so past campaigns cannot affect rankings, rewards, invoices or upgrade emails.
 
 - Reuse the manager's read-only sales detail view for finance, scoped to the dashboard's selected month; rely on existing finance SELECT policies so consultation does not grant sales editing or manager access.

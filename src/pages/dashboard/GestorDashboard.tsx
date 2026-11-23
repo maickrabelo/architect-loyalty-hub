@@ -872,7 +872,7 @@ const GestorDashboard = () => {
 
           {/* Reports Tab */}
           <TabsContent value="relatorios" className="space-y-8">
-            <ComparativoCampanhas />
+            <ComparativoCampanhas permitirPdf />
           </TabsContent>
         </Tabs>
       </div>

@@ -18,6 +18,15 @@ export function totalComparavel(linhas: LinhaComparativa[]) {
   return { base, comparada, meses: comuns.length, variacao: base > 0 ? (comparada / base - 1) * 100 : null };
 }
 
+// January never compares with December of another campaign; missing/zero bases are undefined.
+export function variacaoMensal(linhas: LinhaComparativa[], campo: "base" | "comparada") {
+  return linhas.map((linha, index) => {
+    const anterior = index > 0 ? linhas[index - 1][campo] : null;
+    const atual = linha[campo];
+    return atual !== null && anterior !== null && anterior > 0 ? (atual / anterior - 1) * 100 : null;
+  });
+}
+
 export function agruparVendasCampanha(vendas: { data_venda: string; valor_venda: number; demo: boolean }[], ano: number, ultimoMes = 12): MesCampanha[] {
   return Array.from({ length: ultimoMes }, (_, i) => ({ ano, mes: i + 1, valor_vendido: Math.round(vendas.filter(v => !v.demo && v.data_venda.slice(0, 7) === `${ano}-${String(i + 1).padStart(2, "0")}`).reduce((s, v) => s + Number(v.valor_venda), 0) * 100) / 100 }));
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Download } from "lucide-react";
+import { Download, FileText, Loader2 } from "lucide-react";
 import { deliverFile } from "@/lib/download";
 import { agruparVendasCampanha, compararCampanhas, comparativoCsv, MESES_CAMPANHA, totalComparavel } from "@/lib/campanhasComparativo";
 import { toast } from "sonner";
@@ -22,9 +22,10 @@ interface ResumoHistorico {
 const brl = (v: number | null) => v === null ? "—" : v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const percentual = (v: number | null) => v === null ? "—" : `${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
 
-export default function ComparativoCampanhas() {
+export default function ComparativoCampanhas({ permitirPdf = false }: { permitirPdf?: boolean }) {
   const [base, setBase] = useState("2024");
   const [comparada, setComparada] = useState("2025");
+  const [gerandoPdf, setGerandoPdf] = useState(false);
   const agora = new Date();
   const anoAtual = agora.getFullYear();
   const { data, isLoading, isError, refetch } = useQuery({
@@ -64,14 +65,26 @@ export default function ComparativoCampanhas() {
       await deliverFile(new Blob([comparativoCsv(linhas, Number(base), Number(comparada))], { type: "text/csv;charset=utf-8" }), `comparativo-campanhas-${base}-${comparada}.csv`);
     } catch { toast.error("Não foi possível baixar o comparativo."); }
   };
+  const exportarPdf = async () => {
+    if (gerandoPdf) return;
+    setGerandoPdf(true);
+    try {
+      const atual = await refetch();
+      if (atual.error || !atual.data) throw atual.error ?? new Error("Dados indisponíveis.");
+      const { gerarCampanhasPdf } = await import("@/lib/campanhasPdf");
+      await gerarCampanhasPdf(atual.data, Number(base), Number(comparada));
+    } catch { toast.error("Não foi possível gerar o PDF. Tente novamente."); }
+    finally { setGerandoPdf(false); }
+  };
   return <div className="space-y-8">
     <section className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div><h2 className="font-serif text-2xl">Comparativo de campanhas</h2><p className="text-sm text-muted-foreground">Vendas mensais · campanhas anuais independentes</p></div>
         <div className="flex flex-wrap items-end gap-3 print:hidden">
-          <div className="space-y-1"><label className="text-sm" htmlFor="campanha-base">Campanha base</label><Select value={base} onValueChange={v => { setBase(v); if (v === comparada) setComparada(base); }}><SelectTrigger id="campanha-base" aria-label="Campanha base" className="w-32"><SelectValue /></SelectTrigger><SelectContent>{anos.map(a => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent></Select></div>
-          <div className="space-y-1"><label className="text-sm" htmlFor="campanha-comparada">Comparar com</label><Select value={comparada} onValueChange={v => { setComparada(v); if (v === base) setBase(comparada); }}><SelectTrigger id="campanha-comparada" aria-label="Comparar com" className="w-32"><SelectValue /></SelectTrigger><SelectContent>{anos.map(a => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent></Select></div>
+          <div className="space-y-1"><label className="text-sm" htmlFor="campanha-base">Campanha base</label><Select disabled={gerandoPdf} value={base} onValueChange={v => { setBase(v); if (v === comparada) setComparada(base); }}><SelectTrigger id="campanha-base" aria-label="Campanha base" className="w-32"><SelectValue /></SelectTrigger><SelectContent>{anos.map(a => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent></Select></div>
+          <div className="space-y-1"><label className="text-sm" htmlFor="campanha-comparada">Comparar com</label><Select disabled={gerandoPdf} value={comparada} onValueChange={v => { setComparada(v); if (v === base) setBase(comparada); }}><SelectTrigger id="campanha-comparada" aria-label="Comparar com" className="w-32"><SelectValue /></SelectTrigger><SelectContent>{anos.map(a => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent></Select></div>
           <Button variant="outline" onClick={exportar}><Download className="mr-2 h-4 w-4" />Baixar comparativo</Button>
+          {permitirPdf && <Button onClick={exportarPdf} disabled={gerandoPdf}>{gerandoPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}{gerandoPdf ? "Gerando PDF…" : "Gerar PDF"}</Button>}
         </div>
       </div>
       <div className="grid gap-4 border-y py-4 sm:grid-cols-3">

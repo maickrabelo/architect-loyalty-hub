@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Adicionar PDF comparativo no gestor com os 12 meses, variações entre campanhas e entre meses do mesmo ano; downloads autenticados 2024/2025 e 2024/2026, testes e todas as páginas revisados.
+
 - [x] Importar 24 meses, indicadores, curvas ABC e os 35 profissionais históricos do PDF; totais e divergências preservados, vendas/pontos atuais inalterados.
 - [x] Disponibilizar comparação mensal por campanha no gestor e financeiro; validar com login financeiro, download CSV e celular, sem misturar anos; remover o relatório legado que rotulava agregados atuais como 2025.
 
