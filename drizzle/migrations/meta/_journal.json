@@ -204,6 +204,13 @@
       "when": 1795460395911,
       "tag": "0028_faturas_manuais",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1795461363972,
+      "tag": "0029_excluir_fatura",
+      "breakpoints": true
     }
   ]
 }

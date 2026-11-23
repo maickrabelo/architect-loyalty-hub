@@ -55,6 +55,15 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
     onError: (e: any) => toast.error(e.message),
   });
 
+  const excluir = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("excluir_fatura" as any, { _fatura_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Fatura excluída"); invalidate(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["faturas"] });
     queryClient.invalidateQueries({ queryKey: ["saldo-campanha"] });
@@ -222,6 +231,16 @@ const FinanceiroFaturas = ({ mes, caixaFechado }: { mes: string; caixaFechado: b
                     }}
                   >
                     Registrar pagamento
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={caixaFechado || Number(f.valor_pago) > 0 || excluir.isPending}
+                    onClick={() => {
+                      if (confirm(`Excluir a fatura de ${f.empresas?.nome}? Esta ação não pode ser desfeita.`)) excluir.mutate(f.id);
+                    }}
+                  >
+                    Excluir
                   </Button>
                 </TableCell>
               </TableRow>
