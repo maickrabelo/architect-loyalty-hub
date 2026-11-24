@@ -1,5 +1,7 @@
 ## Architecture decisions
 
+- Render professional destination badges from the shared authenticated group ranking and destination thresholds, never store-scoped points, so the achieved level stays consistent across store and group views.
+
 - Share one store/group scope across the company overview and ranking; expose group campaign indicators only as authenticated, demo-excluded monthly/professional aggregates, never other stores' raw sales or client details.
 
 - Generate manager campaign-comparison PDFs from refreshed authenticated comparison reads, using shared annual calculations, bundled Unicode fonts and file delivery; show year-over-year and within-year monthly variation without mixing campaign points or adding payment information.
